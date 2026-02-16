@@ -1,5 +1,5 @@
-import { Check, Info } from "lucide-react";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Check, Shield } from "lucide-react";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -37,25 +37,25 @@ export function BoilerCard({
       transition={{ type: "spring", stiffness: 300 }}
       className="h-full"
     >
-      <Card className={`h-full flex flex-col relative overflow-hidden border-2 transition-colors ${popular ? 'border-primary shadow-xl scale-105 z-10' : 'border-border hover:border-primary/50'}`}>
+      <Card className={`h-full flex flex-col relative ${popular ? 'border-2 border-[#005F9E] shadow-xl scale-105 z-10' : ''}`} data-testid={`card-boiler-${model}`}>
         {popular && (
-          <div className="absolute top-0 right-0 bg-primary text-white text-xs font-bold px-3 py-1 rounded-bl-lg z-20">
+          <div className="absolute top-0 right-0 bg-[#005F9E] text-white text-xs font-bold px-3 py-1 rounded-bl-lg z-20">
             MOST POPULAR
           </div>
         )}
-        
-        <div className="relative h-48 overflow-hidden bg-gray-100 group">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-          <img 
-            src={imageUrl} 
-            alt={`Worcester Bosch ${model}`} 
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+
+        <div className="relative h-48 overflow-hidden bg-gray-100 group rounded-t-md">
+          <div className="absolute inset-0 bg-gradient-to-t from-[#003d66]/70 to-transparent z-10" />
+          <img
+            src={imageUrl}
+            alt={`Worcester Bosch Greenstar ${model}`}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
           <div className="absolute bottom-4 left-4 z-20 text-white">
-            <Badge variant={popular ? "default" : "secondary"} className="mb-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm border-none text-white">
+            <Badge variant="secondary" className="mb-2 bg-white/20 backdrop-blur-sm border-none text-white">
               {category}
             </Badge>
-            <h3 className="text-2xl font-bold font-display leading-none">Worcester {model}</h3>
+            <h3 className="text-2xl font-bold leading-none">Greenstar {model}</h3>
           </div>
         </div>
 
@@ -64,16 +64,16 @@ export function BoilerCard({
         </CardHeader>
 
         <CardContent className="flex-grow">
-          <div className="flex items-center gap-2 mb-4 p-2 bg-blue-50 text-blue-800 rounded-lg text-sm font-medium">
-            <Info className="w-4 h-4" />
+          <div className="flex items-center gap-2 mb-4 p-2 bg-[#005F9E]/5 text-[#005F9E] rounded-md text-sm font-medium">
+            <Shield className="w-4 h-4" />
             <span>{guaranteeYears} Year Guarantee</span>
           </div>
-          
+
           <ul className="space-y-3">
             {features.map((feature, i) => (
               <li key={i} className="flex items-start gap-2 text-sm">
-                <Check className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
-                <span className="text-gray-700">{feature.text}</span>
+                <Check className="w-4 h-4 text-[#007BC0] mt-0.5 shrink-0" />
+                <span className="text-muted-foreground">{feature.text}</span>
               </li>
             ))}
           </ul>
@@ -82,12 +82,13 @@ export function BoilerCard({
         <CardFooter className="pt-2 flex flex-col gap-3">
           <div className="text-center w-full">
             <span className="text-sm text-muted-foreground">From</span>
-            <div className="text-2xl font-bold text-secondary">{priceEstimate}</div>
+            <div className="text-2xl font-bold text-[#005F9E]">{priceEstimate}</div>
           </div>
-          <Button 
-            onClick={onSelect} 
+          <Button
+            onClick={onSelect}
             variant={popular ? "default" : "outline"}
             className="w-full"
+            data-testid={`button-quote-${model}`}
           >
             Get a Quote
           </Button>

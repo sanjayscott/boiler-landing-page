@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertInquirySchema, type InsertInquiry } from "@shared/schema";
@@ -9,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Send } from "lucide-react";
-import { motion } from "framer-motion";
 
 interface LeadFormProps {
   preselectedModel?: string;
@@ -18,7 +18,7 @@ interface LeadFormProps {
 
 export function LeadForm({ preselectedModel = "unsure", className }: LeadFormProps) {
   const mutation = useCreateInquiry();
-  
+
   const form = useForm<InsertInquiry>({
     resolver: zodResolver(insertInquirySchema),
     defaultValues: {
@@ -31,6 +31,12 @@ export function LeadForm({ preselectedModel = "unsure", className }: LeadFormPro
     },
   });
 
+  useEffect(() => {
+    if (preselectedModel) {
+      form.setValue("selectedModel", preselectedModel);
+    }
+  }, [preselectedModel, form]);
+
   function onSubmit(data: InsertInquiry) {
     mutation.mutate(data, {
       onSuccess: () => {
@@ -40,9 +46,9 @@ export function LeadForm({ preselectedModel = "unsure", className }: LeadFormPro
   }
 
   return (
-    <Card className={`w-full shadow-2xl border-t-4 border-t-primary ${className}`} id="get-quote">
+    <Card className={`w-full shadow-2xl border-t-4 border-t-[#005F9E] ${className}`} id="get-quote" data-testid="card-lead-form">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-primary">Get Your Free Quote</CardTitle>
+        <CardTitle className="text-2xl text-[#005F9E]" data-testid="text-form-title">Get Your Free Quote</CardTitle>
         <CardDescription>
           Fill out the form below and our heating experts will contact you within 24 hours.
         </CardDescription>
@@ -58,13 +64,13 @@ export function LeadForm({ preselectedModel = "unsure", className }: LeadFormPro
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Smith" {...field} />
+                      <Input placeholder="John Smith" data-testid="input-name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="postcode"
@@ -72,7 +78,7 @@ export function LeadForm({ preselectedModel = "unsure", className }: LeadFormPro
                   <FormItem>
                     <FormLabel>Postcode</FormLabel>
                     <FormControl>
-                      <Input placeholder="SW1A 1AA" {...field} />
+                      <Input placeholder="SW1A 1AA" data-testid="input-postcode" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -88,7 +94,7 @@ export function LeadForm({ preselectedModel = "unsure", className }: LeadFormPro
                   <FormItem>
                     <FormLabel>Email Address</FormLabel>
                     <FormControl>
-                      <Input placeholder="john@example.com" type="email" {...field} />
+                      <Input placeholder="john@example.com" type="email" data-testid="input-email" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -102,7 +108,7 @@ export function LeadForm({ preselectedModel = "unsure", className }: LeadFormPro
                   <FormItem>
                     <FormLabel>Phone Number</FormLabel>
                     <FormControl>
-                      <Input placeholder="07700 900000" type="tel" {...field} />
+                      <Input placeholder="07700 900000" type="tel" data-testid="input-phone" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -116,17 +122,17 @@ export function LeadForm({ preselectedModel = "unsure", className }: LeadFormPro
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Interested In</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value || "unsure"}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger data-testid="select-model">
                         <SelectValue placeholder="Select a boiler model" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="unsure">I'm not sure yet</SelectItem>
-                      <SelectItem value="2000">Worcester 2000 (Entry)</SelectItem>
-                      <SelectItem value="4000">Worcester 4000 (Mid-Range)</SelectItem>
-                      <SelectItem value="8000">Worcester 8000 (Premium)</SelectItem>
+                      <SelectItem value="2000">Greenstar 2000 (Entry)</SelectItem>
+                      <SelectItem value="4000">Greenstar 4000 (Mid-Range)</SelectItem>
+                      <SelectItem value="8000">Greenstar 8000 (Premium)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -141,10 +147,11 @@ export function LeadForm({ preselectedModel = "unsure", className }: LeadFormPro
                 <FormItem>
                   <FormLabel>Additional Details (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea 
+                    <Textarea
                       placeholder="Tell us about your current system or any specific requirements..."
                       className="resize-none"
-                      {...field} 
+                      data-testid="textarea-message"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -152,10 +159,11 @@ export function LeadForm({ preselectedModel = "unsure", className }: LeadFormPro
               )}
             />
 
-            <Button 
-              type="submit" 
-              className="w-full bg-primary hover:bg-primary/90 text-lg py-6 mt-4 transition-all duration-300 shadow-lg hover:shadow-primary/25"
+            <Button
+              type="submit"
+              className="w-full text-lg py-6 mt-4 shadow-lg"
               disabled={mutation.isPending}
+              data-testid="button-submit-quote"
             >
               {mutation.isPending ? (
                 <>
@@ -169,7 +177,7 @@ export function LeadForm({ preselectedModel = "unsure", className }: LeadFormPro
                 </>
               )}
             </Button>
-            
+
             <p className="text-xs text-center text-muted-foreground mt-4">
               By submitting this form, you agree to our privacy policy. Your data is safe with us.
             </p>
