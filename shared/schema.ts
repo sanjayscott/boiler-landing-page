@@ -5,11 +5,8 @@ import { z } from "zod";
 export const inquiries = pgTable("inquiries", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  email: text("email").notNull(),
   phone: varchar("phone", { length: 20 }).notNull(),
   postcode: varchar("postcode", { length: 10 }).notNull(),
-  selectedModel: text("selected_model").default("unsure"), // 2000, 4000, 8000, unsure
-  message: text("message"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

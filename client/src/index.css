@@ -172,6 +172,22 @@
   background: linear-gradient(135deg, #003d66 0%, #005F9E 40%, #007BC0 100%);
 }
 
+.pricing-popular {
+  border: 3px solid #F57C00;
+  position: relative;
+  transform: scale(1.03);
+  z-index: 1;
+}
+
+.dark-overlay {
+  background: linear-gradient(to bottom, rgba(0,30,60,0.7) 0%, rgba(0,50,90,0.85) 100%);
+}
+
+.section-navy {
+  background-color: #003d66;
+  color: white;
+}
+
 /**
  * Using the elevate system.
  * Automatic contrast adjustment.
