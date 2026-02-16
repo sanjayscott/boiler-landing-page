@@ -32,6 +32,7 @@ import {
   ThumbsUp,
   Calendar,
   ClipboardCheck,
+  BadgeCheck,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -46,6 +47,9 @@ import guarantee10Img from "@assets/10_Blue_Ast_320x320_copy_2_1771281377729.jpg
 
 const PHONE = "0800 048 5737";
 const PHONE_HREF = "tel:08000485737";
+const WB_BLUE = "#00205B";
+const WB_GREEN = "#78BE20";
+const COMPANY = "We Service Boilers Ltd";
 
 function scrollToSection(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -57,13 +61,14 @@ function Header() {
       <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-4">
         <img
           src={logoImg}
-          alt="We Install Boilers Ltd"
+          alt={COMPANY}
           className="h-8 md:h-10 w-auto"
           data-testid="img-logo"
         />
         <a
           href={PHONE_HREF}
-          className="flex items-center gap-2 text-[#00205B] font-bold text-base md:text-lg"
+          className="flex items-center gap-2 font-bold text-base md:text-lg"
+          style={{ color: WB_BLUE }}
           data-testid="link-phone-header"
         >
           <Phone className="w-5 h-5" />
@@ -71,6 +76,22 @@ function Header() {
         </a>
       </div>
     </header>
+  );
+}
+
+function StickyMobilePhoneBar() {
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden" data-testid="sticky-mobile-bar">
+      <a
+        href={PHONE_HREF}
+        className="flex items-center justify-center gap-3 py-3.5 text-white font-bold text-lg shadow-lg"
+        style={{ backgroundColor: WB_GREEN }}
+        data-testid="link-phone-sticky"
+      >
+        <Phone className="w-5 h-5" />
+        Call Free: {PHONE}
+      </a>
+    </div>
   );
 }
 
@@ -96,7 +117,7 @@ function HeroSection() {
           >
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight">
               New Worcester Bosch Boiler Installed From{" "}
-              <span className="text-[#F57C00]">£1,790</span>
+              <span style={{ color: WB_GREEN }}>£1,790</span>
               <br />
               <span className="text-xl sm:text-2xl md:text-3xl font-bold text-blue-100 block mt-2">
                 Fixed Price, No Hidden Costs
@@ -119,7 +140,8 @@ function HeroSection() {
               <Button
                 size="lg"
                 onClick={() => scrollToSection("book-assessment")}
-                className="bg-[#F57C00] border-[#E65100] text-white font-bold text-lg"
+                className="text-white font-bold text-lg border-[#5fa519]"
+                style={{ backgroundColor: WB_GREEN }}
                 data-testid="button-hero-cta"
               >
                 Book Your Free Assessment
@@ -129,26 +151,41 @@ function HeroSection() {
         </div>
       </div>
 
-      <div className="bg-white py-6 border-b" data-testid="section-trust-badges">
+      <div className="py-8 border-b" style={{ backgroundColor: "#f0f4f8" }} data-testid="section-trust-badges">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12">
-            <div className="flex items-center gap-2" data-testid="badge-gas-safe">
-              <div className="w-10 h-10 rounded-full bg-[#00205B] flex items-center justify-center shrink-0">
-                <Shield className="w-5 h-5 text-white" />
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-14">
+            <div className="flex items-center gap-3" data-testid="badge-gas-safe">
+              <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: WB_BLUE }}>
+                <Shield className="w-7 h-7 text-white" />
               </div>
-              <span className="text-sm font-bold text-foreground">Gas Safe Registered</span>
+              <div>
+                <span className="text-sm font-bold text-foreground block">Gas Safe</span>
+                <span className="text-xs text-muted-foreground">Registered</span>
+              </div>
             </div>
             <img
               src={worcesterBoschLogo}
               alt="Worcester Bosch Accredited Installer"
-              className="h-8 md:h-10 w-auto"
+              className="h-12 md:h-14 w-auto"
               data-testid="img-worcester-bosch-logo"
             />
-            <div className="flex items-center gap-2" data-testid="badge-checkatrade">
-              <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center shrink-0">
-                <CheckCircle className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-3" data-testid="badge-checkatrade">
+              <div className="w-14 h-14 rounded-full bg-green-600 flex items-center justify-center shrink-0">
+                <CheckCircle className="w-7 h-7 text-white" />
               </div>
-              <span className="text-sm font-bold text-foreground">Checkatrade Member</span>
+              <div>
+                <span className="text-sm font-bold text-foreground block">Checkatrade</span>
+                <span className="text-xs text-muted-foreground">Verified Member</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-3" data-testid="badge-which-best-buy">
+              <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#D4213D" }}>
+                <BadgeCheck className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <span className="text-sm font-bold text-foreground block">Which?</span>
+                <span className="text-xs text-muted-foreground">Best Buy 2024</span>
+              </div>
             </div>
           </div>
         </div>
@@ -165,24 +202,30 @@ interface PricingCardProps {
   warrantyImg?: string;
   image: string;
   popular?: boolean;
+  whichBestBuy?: boolean;
   features: string[];
 }
 
-function PricingCard({ tier, model, price, warranty, warrantyImg, image, popular, features }: PricingCardProps) {
+function PricingCard({ tier, model, price, warranty, warrantyImg, image, popular, whichBestBuy, features }: PricingCardProps) {
   return (
     <Card
       className={`flex flex-col p-0 ${popular ? "pricing-popular" : ""}`}
       data-testid={`card-pricing-${tier.toLowerCase()}`}
     >
       {popular && (
-        <div className="bg-[#F57C00] text-white text-center py-2 font-bold text-sm uppercase tracking-wider rounded-t-md">
+        <div className="text-white text-center py-2 font-bold text-sm uppercase tracking-wider rounded-t-md" style={{ backgroundColor: WB_GREEN }}>
           Most Popular
         </div>
       )}
       <div className="p-6 flex flex-col flex-1 gap-4">
         <div className="text-center">
-          <p className="text-sm font-semibold text-[#0047AB] uppercase tracking-wide mb-1">{tier}</p>
+          <p className="text-sm font-semibold uppercase tracking-wide mb-1" style={{ color: WB_BLUE }}>{tier}</p>
           <h3 className="text-xl font-bold text-foreground">{model}</h3>
+          {whichBestBuy && (
+            <span className="inline-flex items-center gap-1 mt-1 text-xs font-bold text-white px-2 py-0.5 rounded-md" style={{ backgroundColor: "#D4213D" }} data-testid={`badge-which-${tier.toLowerCase()}`}>
+              <BadgeCheck className="w-3 h-3" /> Which? Best Buy
+            </span>
+          )}
         </div>
 
         <div className="flex justify-center py-4">
@@ -194,7 +237,7 @@ function PricingCard({ tier, model, price, warranty, warrantyImg, image, popular
         </div>
 
         <div className="text-center">
-          <p className="text-4xl font-extrabold text-[#00205B]">{price}</p>
+          <p className="text-4xl font-extrabold" style={{ color: WB_BLUE }}>{price}</p>
           <p className="text-sm text-muted-foreground mt-1">Fully installed, fixed price</p>
         </div>
 
@@ -202,7 +245,7 @@ function PricingCard({ tier, model, price, warranty, warrantyImg, image, popular
           {warrantyImg ? (
             <img src={warrantyImg} alt={warranty} className="h-16 w-16 object-contain" />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-[#0047AB] flex items-center justify-center text-white text-xs font-bold text-center leading-tight p-1">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-xs font-bold text-center leading-tight p-1" style={{ backgroundColor: WB_BLUE }}>
               {warranty}
             </div>
           )}
@@ -219,7 +262,8 @@ function PricingCard({ tier, model, price, warranty, warrantyImg, image, popular
 
         <Button
           onClick={() => scrollToSection("book-assessment")}
-          className={popular ? "bg-[#F57C00] border-[#E65100] text-white font-bold w-full" : "bg-[#00205B] border-[#001845] text-white font-bold w-full"}
+          className={popular ? "text-white font-bold w-full border-[#5fa519]" : "text-white font-bold w-full border-[#5fa519]"}
+          style={{ backgroundColor: WB_GREEN }}
           data-testid={`button-pricing-${tier.toLowerCase()}`}
         >
           Book Free Assessment
@@ -234,7 +278,7 @@ function PricingSection() {
     <section id="pricing" className="py-16 md:py-20 bg-background" data-testid="section-pricing">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-[#0047AB] uppercase tracking-widest mb-2">Fixed Price Packages</p>
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_BLUE }}>Fixed Price Packages</p>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">Choose Your New Boiler</h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
             All prices include full installation, removal of your old boiler, and system flush. No hidden costs.
@@ -265,6 +309,7 @@ function PricingSection() {
             warrantyImg={guarantee10Img}
             image={boiler4000Img}
             popular
+            whichBestBuy
             features={[
               "Modern colour display",
               "Which? Best Buy award",
@@ -320,7 +365,7 @@ function HowItWorks() {
     <section className="py-16 md:py-20 bg-white" data-testid="section-how-it-works">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-[#0047AB] uppercase tracking-widest mb-2">Simple Process</p>
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_BLUE }}>Simple Process</p>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground">How It Works</h2>
         </div>
 
@@ -334,10 +379,10 @@ function HowItWorks() {
               transition={{ delay: i * 0.15 }}
               className="text-center space-y-4"
             >
-              <div className="mx-auto w-16 h-16 rounded-full bg-[#00205B] flex items-center justify-center">
+              <div className="mx-auto w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: WB_BLUE }}>
                 <step.icon className="w-7 h-7 text-white" />
               </div>
-              <div className="w-8 h-8 rounded-full bg-[#F57C00] text-white font-bold flex items-center justify-center mx-auto text-sm">
+              <div className="w-8 h-8 rounded-full text-white font-bold flex items-center justify-center mx-auto text-sm" style={{ backgroundColor: WB_GREEN }}>
                 {i + 1}
               </div>
               <h3 className="text-lg font-bold text-foreground" data-testid={`text-step-${i + 1}`}>{step.title}</h3>
@@ -364,8 +409,8 @@ function WhyChooseUs() {
     <section className="py-16 md:py-20 bg-background" data-testid="section-why-choose">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-[#0047AB] uppercase tracking-widest mb-2">Trust & Quality</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground">Why Choose We Install Boilers?</h2>
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_BLUE }}>Trust & Quality</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground">Why Choose {COMPANY}?</h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -378,8 +423,8 @@ function WhyChooseUs() {
               transition={{ delay: i * 0.1 }}
             >
               <Card className="p-6 text-center space-y-3 h-full" data-testid={`card-benefit-${i}`}>
-                <div className="mx-auto w-12 h-12 rounded-full bg-[#00205B]/10 flex items-center justify-center">
-                  <b.icon className="w-6 h-6 text-[#00205B]" />
+                <div className="mx-auto w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${WB_BLUE}1a` }}>
+                  <b.icon className="w-6 h-6" style={{ color: WB_BLUE }} />
                 </div>
                 <h3 className="font-bold text-foreground">{b.title}</h3>
                 <p className="text-sm text-muted-foreground">{b.description}</p>
@@ -409,7 +454,7 @@ function Testimonials() {
     {
       name: "Karen Mitchell",
       location: "Rochester, Kent",
-      text: "After getting quotes from several companies, We Install Boilers offered the best value and the longest warranty. The whole process was smooth and the team were friendly. Our heating bills have already dropped noticeably.",
+      text: "After getting quotes from several companies, We Service Boilers Ltd offered the best value and the longest warranty. The whole process was smooth and the team were friendly. Our heating bills have already dropped noticeably.",
       rating: 5,
     },
     {
@@ -424,7 +469,7 @@ function Testimonials() {
     <section className="py-16 md:py-20 bg-white" data-testid="section-testimonials">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-[#0047AB] uppercase tracking-widest mb-2">Customer Reviews</p>
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_BLUE }}>Customer Reviews</p>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground">What Our Customers Say</h2>
         </div>
 
@@ -485,7 +530,7 @@ function FAQSection() {
     <section className="py-16 md:py-20 bg-background" data-testid="section-faq">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-[#0047AB] uppercase tracking-widest mb-2">Common Questions</p>
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_BLUE }}>Common Questions</p>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground">Frequently Asked Questions</h2>
         </div>
 
@@ -542,7 +587,7 @@ function FinalCTASection() {
               <h2 className="text-3xl md:text-4xl font-bold text-white">
                 Get Your New Boiler
                 <br />
-                <span className="text-[#F57C00]">From Just £1,790</span>
+                <span style={{ color: WB_GREEN }}>From Just £1,790</span>
               </h2>
               <ul className="space-y-3 text-blue-100">
                 <li className="flex items-center gap-2">
@@ -639,7 +684,8 @@ function FinalCTASection() {
                         <Button
                           type="submit"
                           size="lg"
-                          className="bg-[#F57C00] border-[#E65100] text-white font-bold w-full"
+                          className="text-white font-bold w-full border-[#5fa519]"
+                          style={{ backgroundColor: WB_GREEN }}
                           disabled={mutation.isPending}
                           data-testid="button-submit-form"
                         >
@@ -663,15 +709,15 @@ function FinalCTASection() {
 
 function Footer() {
   return (
-    <footer className="bg-[#002a4a] text-blue-200 py-8" data-testid="footer">
+    <footer className="text-blue-200 py-8 pb-20 md:pb-8" style={{ backgroundColor: "#001540" }} data-testid="footer">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
           <div className="text-center md:text-left">
-            <p className="font-bold text-white mb-1">We Install Boilers Ltd</p>
+            <p className="font-bold text-white mb-1">{COMPANY}</p>
             <p>Gas Safe Registered | Worcester Bosch Accredited Installer</p>
           </div>
           <div className="text-center md:text-right">
-            <p>&copy; {new Date().getFullYear()} We Install Boilers Ltd. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} {COMPANY}. All rights reserved.</p>
           </div>
         </div>
       </div>
@@ -691,6 +737,7 @@ export default function Home() {
       <FAQSection />
       <FinalCTASection />
       <Footer />
+      <StickyMobilePhoneBar />
     </div>
   );
 }
