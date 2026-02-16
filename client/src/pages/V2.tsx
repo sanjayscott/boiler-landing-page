@@ -364,11 +364,11 @@ function Footer() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
           <div className="text-center md:text-left">
-            <p className="font-bold text-white mb-1">We Install Boilers Ltd</p>
+            <p className="font-bold text-white mb-1">We Service Boilers Ltd</p>
             <p>Gas Safe Registered | Worcester Bosch Accredited Installer</p>
           </div>
           <div className="text-center md:text-right">
-            <p>&copy; {new Date().getFullYear()} We Install Boilers Ltd. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} We Service Boilers Ltd. All rights reserved.</p>
           </div>
         </div>
       </div>

@@ -127,7 +127,7 @@ function Testimonials() {
   const reviews = [
     { name: "Sarah Thompson", location: "Chatham, Kent", text: "Brilliant service from start to finish. The engineer was professional, tidy and explained everything clearly. Our new Greenstar 4000 is so much quieter than our old boiler. Highly recommend!", rating: 5 },
     { name: "David Richardson", location: "Gillingham, Kent", text: "Fixed price was exactly what they quoted. No nasty surprises. The installation was done in a single day and they left the kitchen spotless. Couldn't be happier.", rating: 5 },
-    { name: "Karen Mitchell", location: "Rochester, Kent", text: "After getting quotes from several companies, We Install Boilers offered the best value and the longest warranty. The whole process was smooth and the team were friendly.", rating: 5 },
+    { name: "Karen Mitchell", location: "Rochester, Kent", text: "After getting quotes from several companies, We Service Boilers Ltd offered the best value and the longest warranty. The whole process was smooth and the team were friendly.", rating: 5 },
     { name: "James Patel", location: "Rainham, Kent", text: "Really pleased with the new 8000 Life. It looks stunning on the wall and heats the house in no time. The 12 year warranty gives great peace of mind too.", rating: 5 },
     { name: "Linda Foster", location: "Strood, Kent", text: "From the initial assessment to final installation, everything was handled professionally. Our old boiler was on its last legs and the new one is brilliant.", rating: 5 },
     { name: "Mark Stevens", location: "Rochester, Kent", text: "Very impressed with the whole service. Engineer arrived on time, was polite and efficient. New boiler is working perfectly. Highly recommend.", rating: 5 },
@@ -312,10 +312,10 @@ function Footer() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
           <div className="text-center md:text-left">
-            <p className="font-bold text-white mb-1">We Install Boilers Ltd</p>
+            <p className="font-bold text-white mb-1">We Service Boilers Ltd</p>
             <p>Gas Safe Registered | Worcester Bosch Accredited</p>
           </div>
-          <p>&copy; {new Date().getFullYear()} We Install Boilers Ltd.</p>
+          <p>&copy; {new Date().getFullYear()} We Service Boilers Ltd.</p>
         </div>
       </div>
     </footer>

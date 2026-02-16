@@ -262,7 +262,7 @@ function Footer() {
   return (
     <footer style={{ backgroundColor: "#001540" }} className="text-blue-200 py-6" data-testid="footer">
       <div className="container mx-auto px-4 text-center text-xs space-y-1">
-        <p className="font-bold text-white">We Install Boilers Ltd</p>
+        <p className="font-bold text-white">We Service Boilers Ltd</p>
         <p>Gas Safe Registered | Worcester Bosch Accredited | &copy; {new Date().getFullYear()}</p>
       </div>
     </footer>

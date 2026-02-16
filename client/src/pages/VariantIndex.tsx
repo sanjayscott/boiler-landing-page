@@ -29,7 +29,7 @@ export default function VariantIndex() {
             Landing Page Variations
           </h1>
           <p className="text-blue-200 max-w-xl mx-auto">
-            10 unique landing page designs for Worcester Bosch boiler installations by We Install Boilers Ltd.
+            10 unique landing page designs for Worcester Bosch boiler installations by We Service Boilers Ltd.
           </p>
         </div>
 

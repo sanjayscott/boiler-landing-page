@@ -59,7 +59,7 @@ function HeroSection() {
         <div className="container mx-auto px-4 relative z-10 py-16 md:py-24">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl mx-auto text-center space-y-6">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight">
-              Why Choose<br />We Install Boilers?
+              Why Choose<br />We Service Boilers Ltd?
             </h1>
             <p className="text-blue-200 text-lg max-w-xl mx-auto">
               See how we compare to Boxt, British Gas and other national providers. Better prices, better warranty, better service.
@@ -98,7 +98,7 @@ function ComparisonTable() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <p className="text-sm font-semibold text-[#F57C00] uppercase tracking-widest mb-2">Head-to-Head Comparison</p>
-          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>We Install Boilers vs The Rest</h2>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>We Service Boilers Ltd vs The Rest</h2>
         </div>
         <div className="max-w-4xl mx-auto overflow-x-auto">
           <table className="w-full border-collapse text-sm" data-testid="table-comparison">
@@ -107,7 +107,7 @@ function ComparisonTable() {
                 <th className="text-left p-3 font-semibold text-gray-500 border-b"></th>
                 <th className="p-3 text-center font-bold border-b" style={{ color: WB_BLUE, backgroundColor: "#f0f4f8" }}>
                   <div className="space-y-1">
-                    <p className="text-lg">We Install Boilers</p>
+                    <p className="text-lg">We Service Boilers Ltd</p>
                     <div className="flex justify-center gap-0.5">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="w-3 h-3 text-yellow-400 fill-yellow-400" />)}</div>
                   </div>
                 </th>
@@ -352,10 +352,10 @@ function Footer() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
           <div className="text-center md:text-left">
-            <p className="font-bold text-white mb-1">We Install Boilers Ltd</p>
+            <p className="font-bold text-white mb-1">We Service Boilers Ltd</p>
             <p>Gas Safe Registered | Worcester Bosch Accredited</p>
           </div>
-          <p>&copy; {new Date().getFullYear()} We Install Boilers Ltd.</p>
+          <p>&copy; {new Date().getFullYear()} We Service Boilers Ltd.</p>
         </div>
       </div>
     </footer>

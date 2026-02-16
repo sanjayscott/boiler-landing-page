@@ -342,23 +342,18 @@ function PricingSection() {
   );
 }
 
+function StepIcon({ index }: { index: number }) {
+  const cls = "w-7 h-7 text-white";
+  if (index === 0) return <Calendar className={cls} />;
+  if (index === 1) return <ClipboardCheck className={cls} />;
+  return <Wrench className={cls} />;
+}
+
 function HowItWorks() {
   const steps = [
-    {
-      icon: Calendar,
-      title: "Book Your Free Assessment",
-      description: "Call us or fill in the form. We'll arrange a convenient time to visit your home.",
-    },
-    {
-      icon: ClipboardCheck,
-      title: "We Visit & Confirm Your Fixed Price",
-      description: "Our engineer surveys your home and confirms the fixed price quote on the spot. No surprises.",
-    },
-    {
-      icon: Wrench,
-      title: "Professional Installation",
-      description: "Our Gas Safe engineers install your new boiler, typically completed in just one day.",
-    },
+    { title: "Book Your Free Assessment", description: "Call us or fill in the form. We'll arrange a convenient time to visit your home." },
+    { title: "We Visit & Confirm Your Fixed Price", description: "Our engineer surveys your home and confirms the fixed price quote on the spot. No surprises." },
+    { title: "Professional Installation", description: "Our Gas Safe engineers install your new boiler, typically completed in just one day." },
   ];
 
   return (
@@ -380,7 +375,7 @@ function HowItWorks() {
               className="text-center space-y-4"
             >
               <div className="mx-auto w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: WB_BLUE }}>
-                <step.icon className="w-7 h-7 text-white" />
+                <StepIcon index={i} />
               </div>
               <div className="w-8 h-8 rounded-full text-white font-bold flex items-center justify-center mx-auto text-sm" style={{ backgroundColor: WB_GREEN }}>
                 {i + 1}
@@ -395,14 +390,25 @@ function HowItWorks() {
   );
 }
 
+function BenefitIcon({ index }: { index: number }) {
+  const cls = "w-6 h-6";
+  const st = { color: WB_BLUE };
+  if (index === 0) return <ThumbsUp className={cls} style={st} />;
+  if (index === 1) return <Award className={cls} style={st} />;
+  if (index === 2) return <Shield className={cls} style={st} />;
+  if (index === 3) return <CheckCircle className={cls} style={st} />;
+  if (index === 4) return <MapPin className={cls} style={st} />;
+  return <Star className={cls} style={st} />;
+}
+
 function WhyChooseUs() {
   const benefits = [
-    { icon: ThumbsUp, title: "Fixed Price, No Surprises", description: "The price we quote is the price you pay. No hidden extras." },
-    { icon: Award, title: "Worcester Bosch Accredited", description: "Trained and approved by Worcester Bosch for quality installations." },
-    { icon: Shield, title: "Up to 12 Years Warranty", description: "Extended manufacturer warranty for complete peace of mind." },
-    { icon: CheckCircle, title: "Gas Safe Registered", description: "All our engineers are Gas Safe registered for your safety." },
-    { icon: MapPin, title: "Local Medway Engineers", description: "Based in Medway, Kent. We know our local community." },
-    { icon: Star, title: "4.8 Star Reviews", description: "Hundreds of happy customers across Medway and Kent." },
+    { title: "Fixed Price, No Surprises", description: "The price we quote is the price you pay. No hidden extras." },
+    { title: "Worcester Bosch Accredited", description: "Trained and approved by Worcester Bosch for quality installations." },
+    { title: "Up to 12 Years Warranty", description: "Extended manufacturer warranty for complete peace of mind." },
+    { title: "Gas Safe Registered", description: "All our engineers are Gas Safe registered for your safety." },
+    { title: "Local Medway Engineers", description: "Based in Medway, Kent. We know our local community." },
+    { title: "4.8 Star Reviews", description: "Hundreds of happy customers across Medway and Kent." },
   ];
 
   return (
@@ -423,8 +429,8 @@ function WhyChooseUs() {
               transition={{ delay: i * 0.1 }}
             >
               <Card className="p-6 text-center space-y-3 h-full" data-testid={`card-benefit-${i}`}>
-                <div className="mx-auto w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${WB_BLUE}1a` }}>
-                  <b.icon className="w-6 h-6" style={{ color: WB_BLUE }} />
+                <div className="mx-auto w-12 h-12 rounded-full flex items-center justify-center bg-blue-50">
+                  <BenefitIcon index={i} />
                 </div>
                 <h3 className="font-bold text-foreground">{b.title}</h3>
                 <p className="text-sm text-muted-foreground">{b.description}</p>
