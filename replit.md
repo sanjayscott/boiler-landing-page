@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a lead generation landing page for Worcester Bosch Greenstar boilers. It's a single-page marketing site that showcases three boiler models (Greenstar 2000, 4000, and 8000), highlights key features, and collects customer inquiries through a quote request form. The form data is stored in a PostgreSQL database.
+This is a lead generation landing page system for Worcester Bosch Greenstar boilers with 10 A/B test variations. Each variation is a complete standalone landing page at /v1 through /v10, with an index page at / listing all variants. Forms submit to both /api/inquiries and /api/leads endpoints. The form data is stored in a PostgreSQL database.
 
 ## User Preferences
 
@@ -12,16 +12,16 @@ Preferred communication style: Simple, everyday language.
 
 ### Frontend
 - **Framework**: React with TypeScript, built using Vite
-- **Routing**: Wouter (lightweight React router) — only two routes: Home (`/`) and a 404 catch-all
+- **Routing**: Wouter — 12 routes: Index (`/`), V1-V10 landing page variants (`/v1` through `/v10`), and 404 catch-all
 - **UI Components**: shadcn/ui (new-york style) with Radix UI primitives, styled with Tailwind CSS and CSS variables for theming
 - **Animations**: Framer Motion for scroll animations and hover effects
 - **Forms**: React Hook Form with Zod validation (via `@hookform/resolvers`)
 - **Data Fetching**: TanStack React Query for server state management
-- **Brand Colors**: Worcester Bosch palette — Dark Blue `#005F9E`, Light Blue `#007BC0`, with clean whites/greys. Defined as CSS custom properties in `client/src/index.css`
+- **Brand Colors**: Worcester Bosch deep blue `#00205B` as primary brand colour across all variants, with `#78BE20` (WB green) and `#F57C00` (orange) as accent colours. CSS custom properties in `client/src/index.css`
 
 ### Backend
 - **Framework**: Express 5 on Node.js, written in TypeScript (run with `tsx`)
-- **API**: Single REST endpoint — `POST /api/inquiries` for form submissions
+- **API**: Two REST endpoints — `POST /api/inquiries` and `POST /api/leads` (both use same handler)
 - **Route Definitions**: Shared route contracts in `shared/routes.ts` using Zod schemas, consumed by both client and server
 - **Dev Server**: Vite dev server is mounted as Express middleware in development (see `server/vite.ts`), with HMR support
 - **Production**: Client is built to `dist/public`, server is bundled with esbuild to `dist/index.cjs`

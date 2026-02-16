@@ -8,7 +8,7 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express,
 ): Promise<Server> {
-  app.post("/api/inquiries", async (req, res) => {
+  const handleInquiry = async (req: any, res: any) => {
     try {
       const data = insertInquirySchema.parse(req.body);
       const inquiry = await storage.createInquiry(data);
@@ -20,7 +20,10 @@ export async function registerRoutes(
         res.status(500).json({ message: "Internal server error" });
       }
     }
-  });
+  };
+
+  app.post("/api/inquiries", handleInquiry);
+  app.post("/api/leads", handleInquiry);
 
   return httpServer;
 }

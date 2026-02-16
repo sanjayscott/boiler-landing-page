@@ -63,7 +63,7 @@ function Header() {
         />
         <a
           href={PHONE_HREF}
-          className="flex items-center gap-2 text-[#005F9E] font-bold text-base md:text-lg"
+          className="flex items-center gap-2 text-[#00205B] font-bold text-base md:text-lg"
           data-testid="link-phone-header"
         >
           <Phone className="w-5 h-5" />
@@ -133,7 +133,7 @@ function HeroSection() {
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12">
             <div className="flex items-center gap-2" data-testid="badge-gas-safe">
-              <div className="w-10 h-10 rounded-full bg-[#005F9E] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-full bg-[#00205B] flex items-center justify-center shrink-0">
                 <Shield className="w-5 h-5 text-white" />
               </div>
               <span className="text-sm font-bold text-foreground">Gas Safe Registered</span>
@@ -181,7 +181,7 @@ function PricingCard({ tier, model, price, warranty, warrantyImg, image, popular
       )}
       <div className="p-6 flex flex-col flex-1 gap-4">
         <div className="text-center">
-          <p className="text-sm font-semibold text-[#007BC0] uppercase tracking-wide mb-1">{tier}</p>
+          <p className="text-sm font-semibold text-[#0047AB] uppercase tracking-wide mb-1">{tier}</p>
           <h3 className="text-xl font-bold text-foreground">{model}</h3>
         </div>
 
@@ -194,7 +194,7 @@ function PricingCard({ tier, model, price, warranty, warrantyImg, image, popular
         </div>
 
         <div className="text-center">
-          <p className="text-4xl font-extrabold text-[#005F9E]">{price}</p>
+          <p className="text-4xl font-extrabold text-[#00205B]">{price}</p>
           <p className="text-sm text-muted-foreground mt-1">Fully installed, fixed price</p>
         </div>
 
@@ -202,7 +202,7 @@ function PricingCard({ tier, model, price, warranty, warrantyImg, image, popular
           {warrantyImg ? (
             <img src={warrantyImg} alt={warranty} className="h-16 w-16 object-contain" />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-[#007BC0] flex items-center justify-center text-white text-xs font-bold text-center leading-tight p-1">
+            <div className="w-16 h-16 rounded-full bg-[#0047AB] flex items-center justify-center text-white text-xs font-bold text-center leading-tight p-1">
               {warranty}
             </div>
           )}
@@ -219,7 +219,7 @@ function PricingCard({ tier, model, price, warranty, warrantyImg, image, popular
 
         <Button
           onClick={() => scrollToSection("book-assessment")}
-          className={popular ? "bg-[#F57C00] border-[#E65100] text-white font-bold w-full" : "bg-[#005F9E] border-[#004A7C] text-white font-bold w-full"}
+          className={popular ? "bg-[#F57C00] border-[#E65100] text-white font-bold w-full" : "bg-[#00205B] border-[#001845] text-white font-bold w-full"}
           data-testid={`button-pricing-${tier.toLowerCase()}`}
         >
           Book Free Assessment
@@ -234,7 +234,7 @@ function PricingSection() {
     <section id="pricing" className="py-16 md:py-20 bg-background" data-testid="section-pricing">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-[#007BC0] uppercase tracking-widest mb-2">Fixed Price Packages</p>
+          <p className="text-sm font-semibold text-[#0047AB] uppercase tracking-widest mb-2">Fixed Price Packages</p>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">Choose Your New Boiler</h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
             All prices include full installation, removal of your old boiler, and system flush. No hidden costs.
@@ -320,7 +320,7 @@ function HowItWorks() {
     <section className="py-16 md:py-20 bg-white" data-testid="section-how-it-works">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-[#007BC0] uppercase tracking-widest mb-2">Simple Process</p>
+          <p className="text-sm font-semibold text-[#0047AB] uppercase tracking-widest mb-2">Simple Process</p>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground">How It Works</h2>
         </div>
 
@@ -334,7 +334,7 @@ function HowItWorks() {
               transition={{ delay: i * 0.15 }}
               className="text-center space-y-4"
             >
-              <div className="mx-auto w-16 h-16 rounded-full bg-[#005F9E] flex items-center justify-center">
+              <div className="mx-auto w-16 h-16 rounded-full bg-[#00205B] flex items-center justify-center">
                 <step.icon className="w-7 h-7 text-white" />
               </div>
               <div className="w-8 h-8 rounded-full bg-[#F57C00] text-white font-bold flex items-center justify-center mx-auto text-sm">
@@ -364,7 +364,7 @@ function WhyChooseUs() {
     <section className="py-16 md:py-20 bg-background" data-testid="section-why-choose">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-[#007BC0] uppercase tracking-widest mb-2">Trust & Quality</p>
+          <p className="text-sm font-semibold text-[#0047AB] uppercase tracking-widest mb-2">Trust & Quality</p>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground">Why Choose We Install Boilers?</h2>
         </div>
 
@@ -378,8 +378,8 @@ function WhyChooseUs() {
               transition={{ delay: i * 0.1 }}
             >
               <Card className="p-6 text-center space-y-3 h-full" data-testid={`card-benefit-${i}`}>
-                <div className="mx-auto w-12 h-12 rounded-full bg-[#005F9E]/10 flex items-center justify-center">
-                  <b.icon className="w-6 h-6 text-[#005F9E]" />
+                <div className="mx-auto w-12 h-12 rounded-full bg-[#00205B]/10 flex items-center justify-center">
+                  <b.icon className="w-6 h-6 text-[#00205B]" />
                 </div>
                 <h3 className="font-bold text-foreground">{b.title}</h3>
                 <p className="text-sm text-muted-foreground">{b.description}</p>
@@ -424,7 +424,7 @@ function Testimonials() {
     <section className="py-16 md:py-20 bg-white" data-testid="section-testimonials">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-[#007BC0] uppercase tracking-widest mb-2">Customer Reviews</p>
+          <p className="text-sm font-semibold text-[#0047AB] uppercase tracking-widest mb-2">Customer Reviews</p>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground">What Our Customers Say</h2>
         </div>
 
@@ -485,7 +485,7 @@ function FAQSection() {
     <section className="py-16 md:py-20 bg-background" data-testid="section-faq">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-[#007BC0] uppercase tracking-widest mb-2">Common Questions</p>
+          <p className="text-sm font-semibold text-[#0047AB] uppercase tracking-widest mb-2">Common Questions</p>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground">Frequently Asked Questions</h2>
         </div>
 
@@ -517,7 +517,7 @@ function FinalCTASection() {
 
   const mutation = useMutation({
     mutationFn: async (data: InsertInquiry) => {
-      const res = await apiRequest("POST", "/api/inquiries", data);
+      const res = await apiRequest("POST", "/api/leads", data);
       return res.json();
     },
     onSuccess: () => {
