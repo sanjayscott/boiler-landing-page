@@ -430,13 +430,13 @@ function BallparkQuiz() {
               <Calculator className="w-8 h-8" style={{ color: WB_BLUE }} />
             </div>
             <h2 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: WB_BLUE }}>
-              Want a Ballpark Price Without a Visit?
+              Want a Price Without a Visit?
             </h2>
             <p className="text-gray-500 mb-6 max-w-md mx-auto">
               Answer 3 quick questions and we'll suggest which boiler is likely right for your home — with an estimated starting price.
             </p>
             <Button size="lg" onClick={() => setOpen(true)} variant="outline" className="font-bold text-base px-8 gap-2" style={{ borderColor: WB_BLUE, color: WB_BLUE }}>
-              <HelpCircle className="w-5 h-5" /> Get a Ballpark Estimate
+              <HelpCircle className="w-5 h-5" /> Get an Estimate
             </Button>
           </motion.div>
         )}
@@ -445,7 +445,7 @@ function BallparkQuiz() {
           {open && !result && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <Card className="p-6 md:p-8">
-                <h3 className="text-xl font-bold mb-1 text-center" style={{ color: WB_BLUE }}>Quick Ballpark Estimate</h3>
+                <h3 className="text-xl font-bold mb-1 text-center" style={{ color: WB_BLUE }}>Quick Price Estimate</h3>
                 <p className="text-sm text-gray-500 text-center mb-6">This is an estimate only — your free home assessment confirms the exact price.</p>
 
                 <div className="space-y-6">
