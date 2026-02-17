@@ -63,15 +63,15 @@ function Header() {
   return (
     <header className="sticky top-0 w-full z-50 bg-white shadow-sm" data-testid="header">
       <PromoBanner />
-      <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <img src={wsbLogo} alt={COMPANY} className="h-9 md:h-11 w-auto" data-testid="img-company-logo" />
-          <div className="hidden lg:block h-8 w-px bg-gray-200" />
-          <img src={worcesterBoschLogo} alt="Worcester Bosch Accredited Installer" className="hidden lg:block h-7 w-auto opacity-80" data-testid="img-wb-logo" />
+      <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-3 min-w-0">
+          <img src={wsbLogo} alt={COMPANY} className="h-7 md:h-8 w-auto shrink-0" data-testid="img-company-logo" />
+          <div className="hidden md:block h-6 w-px bg-gray-200 shrink-0" />
+          <img src={worcesterBoschLogo} alt="Worcester Bosch Accredited Installer" className="hidden md:block h-7 md:h-8 w-auto shrink-0" data-testid="img-wb-logo" />
         </div>
-        <div className="flex items-center gap-4">
-          <a href={PHONE_HREF} className="hidden sm:flex items-center gap-2 font-bold text-lg" style={{ color: WB_BLUE }} data-testid="link-phone-header">
-            <Phone className="w-5 h-5" /><span>{PHONE}</span>
+        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+          <a href={PHONE_HREF} className="hidden lg:flex items-center gap-2 font-bold text-base" style={{ color: WB_BLUE }} data-testid="link-phone-header">
+            <Phone className="w-4 h-4" /><span>{PHONE}</span>
           </a>
           <Button size="default" onClick={() => scrollTo("book-assessment")} className="text-white font-semibold text-sm" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-header-cta">
             Free Assessment
@@ -82,86 +82,58 @@ function Header() {
   );
 }
 
-function TrustBar() {
-  return (
-    <div className="bg-white border-b border-gray-100 py-4" data-testid="section-trust-bar">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
-          <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-8 md:h-10 w-auto opacity-90" />
-          <img src={gasSafeLogo} alt="Gas Safe Registered" className="h-10 md:h-12 w-auto" />
-          <img src={checkatradeLogo} alt="Checkatrade" className="h-7 md:h-9 w-auto" />
-          <img src={whichBestBuy} alt="Which? Best Buy" className="h-10 md:h-14 w-auto" />
-          <img src={leapLogo} alt="LEAP" className="h-8 md:h-10 w-auto" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function HeroSection() {
   return (
-    <section data-testid="section-hero" style={{ backgroundColor: "#F8F9FA" }}>
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center py-12 md:py-20">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="space-y-6 order-2 lg:order-1">
-            <div className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold" style={{ backgroundColor: "#E8F5E9", color: "#2E7D32" }} data-testid="badge-spring-promo">
-              <Zap className="w-4 h-4" /> Spring Promotion - Save Up To &pound;500
-            </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight" style={{ color: WB_BLUE }} data-testid="text-hero-headline">
-              Is Your Boiler<br />Costing You<br />Money?
-            </h1>
-            <p className="text-lg md:text-xl text-gray-600 max-w-lg">
-              If your boiler is over 10 years old, you could be wasting hundreds of pounds a year. Book a free, no-obligation home heating assessment today.
-            </p>
-            <div className="flex flex-wrap gap-3 pt-1">
-              <Button size="lg" onClick={() => scrollTo("book-assessment")} className="text-white font-bold text-base px-8" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-hero-cta">
-                Book Free Assessment
+    <section
+      className="relative w-full"
+      data-testid="section-hero"
+    >
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroLifestyle})` }}
+        data-testid="img-hero-lifestyle"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/60 to-black/30" />
+      <div className="relative z-10 container mx-auto px-4 py-20 md:py-28 lg:py-36">
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-2xl space-y-6">
+          <div className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold bg-white/15 backdrop-blur-sm text-white" data-testid="badge-spring-promo">
+            <Zap className="w-4 h-4" style={{ color: WB_GREEN }} /> Spring Promotion - Save Up To &pound;500
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight text-white" data-testid="text-hero-headline">
+            Is Your Boiler<br />Costing You<br />Money?
+          </h1>
+          <p className="text-lg md:text-xl text-white/80 max-w-lg">
+            If your boiler is over 10 years old, you could be wasting hundreds of pounds a year. Book a free, no-obligation home heating assessment today.
+          </p>
+          <div className="flex flex-wrap gap-3 pt-1">
+            <Button size="lg" onClick={() => scrollTo("book-assessment")} className="text-white font-bold text-base px-8" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-hero-cta">
+              Book Free Assessment
+            </Button>
+            <a href={PHONE_HREF} data-testid="link-phone-hero">
+              <Button size="lg" variant="outline" className="font-bold text-base px-8 gap-2 text-white border-white/40 bg-white/10 backdrop-blur-sm">
+                <Phone className="w-5 h-5" /> {PHONE}
               </Button>
-              <a href={PHONE_HREF} data-testid="link-phone-hero">
-                <Button size="lg" variant="outline" className="font-bold text-base px-8 gap-2" style={{ color: WB_BLUE, borderColor: WB_BLUE }}>
-                  <Phone className="w-5 h-5" /> {PHONE}
-                </Button>
-              </a>
+            </a>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-6" data-testid="hero-trust-logos">
+            <img src={gasSafeLogo} alt="Gas Safe Registered" className="h-10 w-auto brightness-0 invert opacity-90" />
+            <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-7 w-auto brightness-0 invert opacity-90" />
+            <img src={checkatradeLogo} alt="Checkatrade" className="h-6 w-auto brightness-0 invert opacity-90" />
+            <div className="flex items-center gap-1.5">
+              <div className="flex gap-0.5">
+                {[1,2,3,4,5].map(n => <Star key={n} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}
+              </div>
+              <span className="text-sm font-bold text-white">4.8/5</span>
             </div>
-            <div className="flex flex-wrap items-center gap-4 pt-4" data-testid="hero-trust-logos">
-              <div className="flex items-center gap-2 bg-white rounded-md px-3 py-2 shadow-sm border border-gray-100">
-                <img src={gasSafeLogo} alt="Gas Safe" className="h-8 w-auto" />
-                <span className="text-xs font-semibold" style={{ color: WB_BLUE }}>Gas Safe</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white rounded-md px-3 py-2 shadow-sm border border-gray-100">
-                <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-6 w-auto" />
-              </div>
-              <div className="flex items-center gap-2 bg-white rounded-md px-3 py-2 shadow-sm border border-gray-100">
-                <img src={checkatradeLogo} alt="Checkatrade" className="h-5 w-auto" />
-              </div>
-              <div className="flex items-center gap-2 bg-white rounded-md px-3 py-2 shadow-sm border border-gray-100">
-                <div className="flex gap-0.5">
-                  {[1,2,3,4,5].map(n => <Star key={n} className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />)}
-                </div>
-                <span className="text-xs font-bold" style={{ color: WB_BLUE }}>4.8/5</span>
-              </div>
+          </div>
+          <div className="flex items-center gap-3 pt-2">
+            <img src={whichBestBuy} alt="Which? Best Buy 2025" className="h-14 w-auto" />
+            <div>
+              <p className="text-white font-bold text-sm">Which? Best Buy 2025</p>
+              <p className="text-white/70 text-xs">Recommended by Which? magazine</p>
             </div>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2 }} className="order-1 lg:order-2">
-            <div className="relative rounded-md overflow-hidden shadow-lg">
-              <img
-                src={heroLifestyle}
-                alt="Worcester Bosch Greenstar boiler in a bright modern kitchen"
-                className="w-full h-auto min-h-[300px] md:min-h-[400px] object-cover"
-                data-testid="img-hero-lifestyle"
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 md:p-6">
-                <div className="flex items-center gap-3">
-                  <img src={whichBestBuy} alt="Which? Best Buy" className="h-12 md:h-16 w-auto" />
-                  <div>
-                    <p className="text-white font-bold text-sm md:text-base">Which? Best Buy 2025</p>
-                    <p className="text-white/80 text-xs md:text-sm">Recommended by Which? magazine</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -330,10 +302,10 @@ function HowItWorks() {
 
 function WhatHappensNext() {
   const nextSteps = [
-    { icon: <Calendar className="w-6 h-6 text-white" />, title: "Book Your Free Assessment", desc: "Fill in the form or call us. We'll arrange a time that suits you. Completely free, no obligation." },
-    { icon: <ShieldCheck className="w-6 h-6 text-white" />, title: "We Visit & Recommend", desc: "Our Gas Safe engineer visits your home, checks your current system, and recommends the right boiler for your needs." },
-    { icon: <Users className="w-6 h-6 text-white" />, title: "You Decide - No Pressure", desc: "Take your time. There's no hard sell, no pressure. You choose whether to go ahead in your own time." },
-    { icon: <Rocket className="w-6 h-6 text-white" />, title: "Installed in 48 Hours", desc: "If you choose to go ahead, we can have your new boiler installed in as little as 48 hours." },
+    { icon: <Calendar className="w-6 h-6" style={{ color: WB_GREEN }} />, title: "Book Your Free Assessment", desc: "Fill in the form or call us. We'll arrange a time that suits you. Completely free, no obligation." },
+    { icon: <ShieldCheck className="w-6 h-6" style={{ color: WB_GREEN }} />, title: "We Visit & Recommend", desc: "Our Gas Safe engineer visits your home, checks your current system, and recommends the right boiler for your needs." },
+    { icon: <Users className="w-6 h-6" style={{ color: WB_GREEN }} />, title: "You Decide - No Pressure", desc: "Take your time. There's no hard sell, no pressure. You choose whether to go ahead in your own time." },
+    { icon: <Rocket className="w-6 h-6" style={{ color: WB_GREEN }} />, title: "Installed in 48 Hours", desc: "If you choose to go ahead, we can have your new boiler installed in as little as 48 hours." },
   ];
 
   return (
@@ -344,25 +316,23 @@ function WhatHappensNext() {
           <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>What Happens Next?</h2>
           <p className="text-gray-500 mt-2 max-w-xl mx-auto">From booking to installation, we make the whole process simple and pressure-free.</p>
         </div>
-        <div className="max-w-3xl mx-auto space-y-4">
+        <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
           {nextSteps.map((step, i) => (
-            <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-              <Card className="p-5 flex items-start gap-4" data-testid={`card-next-step-${i}`}>
-                <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: WB_BLUE }}>
+            <motion.div key={i} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="flex gap-4" data-testid={`card-next-step-${i}`}>
+              <div className="shrink-0 flex flex-col items-center gap-2">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-white border-2 shadow-sm" style={{ borderColor: WB_GREEN }}>
                   {step.icon}
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-md text-white" style={{ backgroundColor: WB_GREEN }}>Step {i + 1}</span>
-                    <h3 className="font-bold" style={{ color: WB_BLUE }}>{step.title}</h3>
-                  </div>
-                  <p className="text-sm text-gray-500">{step.desc}</p>
-                </div>
-              </Card>
+                <span className="text-xs font-black w-6 h-6 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: WB_BLUE }}>{i + 1}</span>
+              </div>
+              <div className="pt-1">
+                <h3 className="font-bold mb-1" style={{ color: WB_BLUE }}>{step.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
+              </div>
             </motion.div>
           ))}
         </div>
-        <div className="text-center mt-8">
+        <div className="text-center mt-10">
           <Button size="lg" onClick={() => scrollTo("book-assessment")} className="text-white font-bold px-8" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-next-steps-cta">
             Get Started - It's Free
           </Button>
@@ -664,7 +634,6 @@ export default function V10() {
   return (
     <div className="min-h-screen flex flex-col font-sans" data-testid="landing-page-v10">
       <Header />
-      <TrustBar />
       <HeroSection />
       <PricingSection />
       <WhyChooseUs />
