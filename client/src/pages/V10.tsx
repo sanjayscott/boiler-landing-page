@@ -23,7 +23,7 @@ import worcesterBoschLogo from "@assets/worcester-bosch-logo_(2)_1771281246798.p
 import heroImg from "@assets/4000-Traditional_Kitchen-face-on_1771281416429.jpg";
 import boiler4000Img from "@assets/Worcester_Bosch_4000_Which_24_1080x1080_1771281354652.jpg";
 import boiler8000Img from "@assets/Worcester_Bosch_8000_Which_24_1080x1080_1771281280295.jpg";
-import gasSafeLogo from "@assets/Gas_Safe_Logo_1771320908697.png";
+import gasSafeLogo from "@assets/GS_Reglogo_1c_1771321067729.png";
 import whichBadge from "@/assets/images/which-best-buy-badge.png";
 
 const PHONE = "0800 048 5737";
