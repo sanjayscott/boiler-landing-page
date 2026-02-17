@@ -93,7 +93,7 @@ function HeroSection() {
         style={{ backgroundImage: `url(${heroLifestyle})` }}
         data-testid="img-hero-lifestyle"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/60 to-black/30" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/70 to-black/40" />
       <div className="relative z-10 container mx-auto px-4 py-20 md:py-28 lg:py-36">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-2xl space-y-6">
           <div className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold bg-white/15 backdrop-blur-sm text-white" data-testid="badge-spring-promo">
@@ -185,7 +185,7 @@ function PricingSection() {
                   </div>
                 )}
                 <div className="p-6 pb-4 flex flex-col items-center gap-2 border-b border-gray-100" style={{ backgroundColor: tier.popular ? "#F0FAF0" : "#F8F9FA" }}>
-                  <img src={tier.image} alt={tier.name} className="h-52 md:h-60 w-auto object-contain" loading="lazy" data-testid={`img-boiler-${i}`} />
+                  <img src={tier.image} alt={tier.name} className="h-60 md:h-72 w-auto object-contain" loading="lazy" data-testid={`img-boiler-${i}`} />
                   <h3 className="text-lg font-bold mt-1" style={{ color: WB_BLUE }}>{tier.name}</h3>
                   <p className="text-xs text-gray-500">{tier.desc}</p>
                   <p className="text-2xl font-black" style={{ color: WB_GREEN }}>{tier.price}</p>
