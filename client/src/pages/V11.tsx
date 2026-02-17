@@ -15,7 +15,7 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
-  Phone, Star, CheckCircle, ChevronRight, ChevronLeft, Clock, ShieldCheck, Zap, Home, Flame, MapPin, ArrowRight, Thermometer,
+  Phone, Star, CheckCircle, ChevronRight, ChevronLeft, Clock, ShieldCheck, Zap, Home, Flame, MapPin, ArrowRight, Thermometer, PhoneCall,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -456,6 +456,22 @@ function ResultSection({ recommendation: rec, answers, onBack }: { recommendatio
             <BookingForm postcode={answers.postcode || ""} boiler={rec.name} price={rec.price} />
           </motion.div>
 
+          {/* Callback alternative */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mt-6">
+            <Card className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${WB_BLUE}10` }}>
+                  <PhoneCall className="w-5 h-5" style={{ color: WB_BLUE }} />
+                </div>
+                <div>
+                  <h3 className="font-bold" style={{ color: WB_BLUE }}>Prefer to Talk?</h3>
+                  <p className="text-sm text-gray-500">Request a free callback — no forms, no fuss</p>
+                </div>
+              </div>
+              <CallbackForm boiler={rec.name} price={rec.price} />
+            </Card>
+          </motion.div>
+
           {/* Why home assessment */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mt-8">
             <Card className="p-6" style={{ backgroundColor: "#F8F9FA" }}>
@@ -547,6 +563,70 @@ function BookingForm({ postcode, boiler, price }: { postcode: string; boiler: st
         </a>
       </div>
     </Card>
+  );
+}
+
+// ─── Callback Form ───────────────────────────────────────────────────────
+
+function CallbackForm({ boiler, price }: { boiler?: string; price?: string }) {
+  const [submitted, setSubmitted] = useState(false);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const { toast } = useToast();
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/leads", {
+        name,
+        phone,
+        postcode: "",
+        notes: `Callback request${boiler ? `: ${boiler} at ${price}` : ""}`,
+      });
+      return res.json();
+    },
+    onSuccess: () => { setSubmitted(true); setName(""); setPhone(""); },
+    onError: () => { toast({ title: "Something went wrong", description: "Please try again or call us.", variant: "destructive" }); },
+  });
+
+  if (submitted) {
+    return (
+      <div className="text-center py-6 space-y-3">
+        <div className="mx-auto w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: "#E8F5E9" }}>
+          <CheckCircle className="w-6 h-6" style={{ color: WB_GREEN }} />
+        </div>
+        <h3 className="text-lg font-bold" style={{ color: WB_BLUE }}>We'll Call You Back!</h3>
+        <p className="text-sm text-gray-500">Expect a call within 2 hours during business hours.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <Input
+        placeholder="Your Name"
+        value={name}
+        onChange={e => setName(e.target.value)}
+        className="border-gray-200 py-5 text-base"
+      />
+      <Input
+        placeholder="Phone Number"
+        type="tel"
+        value={phone}
+        onChange={e => setPhone(e.target.value)}
+        className="border-gray-200 py-5 text-base"
+      />
+      <Button
+        size="lg"
+        onClick={() => mutation.mutate()}
+        disabled={!name.trim() || !phone.trim() || mutation.isPending}
+        className="w-full text-white font-bold text-base"
+        style={{ backgroundColor: WB_BLUE, borderColor: WB_BLUE }}
+      >
+        {mutation.isPending ? "Requesting..." : (
+          <><PhoneCall className="w-5 h-5 mr-2" /> Request a Callback</>
+        )}
+      </Button>
+      <p className="text-xs text-center text-gray-400">We'll call you back within 2 hours. No obligation.</p>
+    </div>
   );
 }
 
@@ -777,17 +857,50 @@ function Footer() {
 }
 
 function StickyMobileCTA() {
+  const [showCallback, setShowCallback] = useState(false);
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden shadow-lg">
-      <div className="flex">
-        <a href={PHONE_HREF} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_GREEN }}>
-          <Phone className="w-5 h-5" /> Call Free
-        </a>
-        <button onClick={() => scrollTo("configurator")} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_BLUE }}>
-          Get Your Price
-        </button>
+    <>
+      {/* Callback modal */}
+      <AnimatePresence>
+        {showCallback && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-end justify-center bg-black/40"
+            onClick={() => setShowCallback(false)}
+          >
+            <motion.div
+              initial={{ y: 200 }}
+              animate={{ y: 0 }}
+              exit={{ y: 200 }}
+              className="w-full max-w-lg bg-white rounded-t-2xl p-6 pb-8"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold" style={{ color: WB_BLUE }}>Request a Free Callback</h3>
+                <button onClick={() => setShowCallback(false)} className="text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+              </div>
+              <p className="text-sm text-gray-500 mb-4">Leave your name and number — we'll call you back within 2 hours during business hours.</p>
+              <CallbackForm />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Sticky bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden shadow-lg">
+        <div className="flex">
+          <button onClick={() => setShowCallback(true)} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_GREEN }}>
+            <PhoneCall className="w-5 h-5" /> Book a Callback
+          </button>
+          <button onClick={() => scrollTo("configurator")} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_BLUE }}>
+            Get Your Price
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
