@@ -131,7 +131,7 @@ function BookingForm({ context }: { context?: string }) {
   return (
     <Card className="p-6 md:p-8" style={{ backgroundColor: WB_BLUE }}>
       <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold text-white">Book Your Free Home Assessment</h3>
+        <h3 className="text-2xl font-bold text-white">Book your free home assessment</h3>
         <p className="text-blue-200 mt-1">We'll visit, confirm the right boiler, and give you an exact fixed price — no obligation</p>
       </div>
       <Form {...form}>
@@ -260,7 +260,7 @@ function PricingSection() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-4">
           <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Transparent Pricing</p>
-          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>New Boiler Prices — Fully Installed</h2>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>New boiler prices — fully installed</h2>
           <p className="text-gray-500 mt-2 max-w-xl mx-auto">Everything included: boiler, installation, flue, fittings, chemical flush, magnetic filter, CO alarm, building control certificate, and old boiler removal.</p>
         </div>
 
@@ -337,10 +337,10 @@ function PricingSection() {
 
 function WhatHappensNext() {
   const steps = [
-    { icon: <Phone className="w-6 h-6" />, title: "1. Book Your Free Assessment", desc: "Fill in the form or call us. We'll arrange a visit at a time that suits you." },
-    { icon: <Home className="w-6 h-6" />, title: "2. We Visit Your Home", desc: "Our Gas Safe engineer checks your system, confirms the right boiler, and gives you an exact fixed price." },
-    { icon: <CheckCircle className="w-6 h-6" />, title: "3. You Decide — No Pressure", desc: "Take your time. There's no hard sell. If you want to go ahead, we can usually install within 48 hours." },
-    { icon: <Flame className="w-6 h-6" />, title: "4. Installed & Guaranteed", desc: "Professional installation in a day. Up to 12 years manufacturer warranty. We handle everything." },
+    { icon: <Phone className="w-6 h-6" />, title: "1. Book your free assessment", desc: "Fill in the form or call us. We'll arrange a visit at a time that suits you." },
+    { icon: <Home className="w-6 h-6" />, title: "2. We visit your home", desc: "Our Gas Safe engineer checks your system, confirms the right boiler, and gives you an exact fixed price." },
+    { icon: <CheckCircle className="w-6 h-6" />, title: "3. You decide — no pressure", desc: "Take your time. There's no hard sell. If you want to go ahead, we can usually install within 48 hours." },
+    { icon: <Flame className="w-6 h-6" />, title: "4. Installed and guaranteed", desc: "Professional installation in a day. Up to 12 years manufacturer warranty. We handle everything." },
   ];
 
   return (
@@ -348,7 +348,7 @@ function WhatHappensNext() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Simple Process</p>
-          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>What Happens Next</h2>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>What happens next</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
           {steps.map((step, i) => (
@@ -445,7 +445,7 @@ function BallparkQuiz() {
           {open && !result && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <Card className="p-6 md:p-8">
-                <h3 className="text-xl font-bold mb-1 text-center" style={{ color: WB_BLUE }}>Quick Price Estimate</h3>
+                <h3 className="text-xl font-bold mb-1 text-center" style={{ color: WB_BLUE }}>Quick price estimate</h3>
                 <p className="text-sm text-gray-500 text-center mb-6">This is an estimate only — your free home assessment confirms the exact price.</p>
 
                 <div className="space-y-6">
@@ -514,7 +514,7 @@ function BallparkQuiz() {
                   </div>
 
                   <Button size="lg" onClick={() => scrollTo("book")} className="text-white font-bold text-base px-8" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
-                    Book Free Assessment to Confirm Price
+                    Book free assessment to confirm price
                   </Button>
 
                   <button onClick={() => { setResult(null); setOpen(false); setBeds(""); setBaths(""); setRads(""); }}
@@ -538,7 +538,7 @@ function WhyAssessment() {
         <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto items-center">
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Why We Visit First</p>
-            <h2 className="text-3xl font-bold mb-4" style={{ color: WB_BLUE }}>No Surprises on Install Day</h2>
+            <h2 className="text-3xl font-bold mb-4" style={{ color: WB_BLUE }}>No surprises on install day</h2>
             <p className="text-gray-500 mb-6">
               Unlike online-only companies that rely on algorithms, we send a Gas Safe registered engineer to your home. This means:
             </p>
@@ -574,7 +574,7 @@ function ComparisonSection() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Why Choose Us</p>
-          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>The Best of Both Worlds</h2>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>The best of both worlds</h2>
         </div>
         <div className="max-w-3xl mx-auto overflow-hidden rounded-lg border border-gray-200 bg-white">
           <table className="w-full text-sm">
@@ -597,7 +597,7 @@ function ComparisonSection() {
               ].map((row, i) => (
                 <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                   <td className="py-3 px-4 font-medium" style={{ color: WB_BLUE }}>{row.feature}</td>
-                  <td className="py-3 px-4 text-center">{row.online ? <CheckCircle className="w-5 h-5 mx-auto text-gray-300" /> : <span className="text-gray-300">✕</span>}</td>
+                  <td className="py-3 px-4 text-center">{row.online ? <CheckCircle className="w-5 h-5 mx-auto text-gray-400" /> : <span className="text-red-400 font-bold text-lg">✕</span>}</td>
                   <td className="py-3 px-4 text-center"><CheckCircle className="w-5 h-5 mx-auto" style={{ color: WB_GREEN }} /></td>
                 </tr>
               ))}
@@ -624,7 +624,7 @@ function Testimonials() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Real Customer Reviews</p>
-          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>What Our Customers Say</h2>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>What our customers say</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {reviews.map((r, i) => (
@@ -660,7 +660,7 @@ function FAQ() {
     <section className="py-14 md:py-16 bg-white">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>Frequently Asked Questions</h2>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>Frequently asked questions</h2>
         </div>
         <Accordion type="single" collapsible className="space-y-3">
           {faqs.map((faq, i) => (
@@ -769,7 +769,7 @@ function StickyMobileCTA() {
             <motion.div initial={{ y: 200 }} animate={{ y: 0 }} exit={{ y: 200 }}
               className="w-full max-w-lg bg-white rounded-t-2xl p-6 pb-8" onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold" style={{ color: WB_BLUE }}>Request a Free Callback</h3>
+                <h3 className="text-lg font-bold" style={{ color: WB_BLUE }}>Request a free callback</h3>
                 <button onClick={() => setShowCallback(false)} className="text-gray-400 hover:text-gray-600 text-xl">&times;</button>
               </div>
               <p className="text-sm text-gray-500 mb-4">Leave your name and number — we'll call you back within 2 hours during business hours.</p>
