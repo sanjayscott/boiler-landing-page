@@ -63,17 +63,17 @@ function Header() {
   return (
     <header className="sticky top-0 w-full z-50 bg-white shadow-sm" data-testid="header">
       <PromoBanner />
-      <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-3 min-w-0">
-          <img src={worcesterBoschLogo} alt="Worcester Bosch Accredited Installer" className="h-7 md:h-8 w-auto shrink-0" data-testid="img-wb-logo" />
-          <div className="hidden sm:block h-6 w-px bg-gray-200 shrink-0" />
-          <img src={wsbLogo} alt={COMPANY} className="hidden sm:block h-4 md:h-5 w-auto shrink-0" data-testid="img-company-logo" />
+      <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2 md:gap-3 min-w-0 overflow-hidden">
+          <img src={worcesterBoschLogo} alt="Worcester Bosch Accredited Installer" className="h-6 md:h-8 w-auto shrink-0" data-testid="img-wb-logo" />
+          <div className="hidden md:block h-6 w-px bg-gray-200 shrink-0" />
+          <img src={wsbLogo} alt={COMPANY} className="hidden md:block h-3 lg:h-4 w-auto shrink-0" data-testid="img-company-logo" />
         </div>
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
           <a href={PHONE_HREF} className="hidden lg:flex items-center gap-2 font-bold text-base" style={{ color: WB_BLUE }} data-testid="link-phone-header">
             <Phone className="w-4 h-4" /><span>{PHONE}</span>
           </a>
-          <Button size="default" onClick={() => scrollTo("book-assessment")} className="text-white font-semibold text-sm" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-header-cta">
+          <Button size="sm" onClick={() => scrollTo("book-assessment")} className="text-white font-semibold text-xs md:text-sm whitespace-nowrap" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-header-cta">
             Free Assessment
           </Button>
         </div>
