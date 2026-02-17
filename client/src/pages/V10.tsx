@@ -15,16 +15,24 @@ import {
   Form, FormControl, FormField, FormItem, FormMessage,
 } from "@/components/ui/form";
 import {
-  Phone, Shield, Star, CheckCircle, Award, MapPin, Calendar, ClipboardCheck, Wrench, Thermometer, TrendingDown, Zap, Home, FileText,
+  Phone, Star, CheckCircle, Calendar, ClipboardCheck, Wrench, Thermometer, TrendingDown, Zap, Home, FileText, ChevronRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
 import worcesterBoschLogo from "@assets/worcester-bosch-logo_(2)_1771281246798.png";
-import heroImg from "@assets/4000-Traditional_Kitchen-face-on_1771281416429.jpg";
-import boiler4000Img from "@assets/Worcester_Bosch_4000_Which_24_1080x1080_1771281354652.jpg";
-import boiler8000Img from "@assets/Worcester_Bosch_8000_Which_24_1080x1080_1771281280295.jpg";
+import heroLifestyle from "@assets/Ri_-_Lifestyle_1771321781805.jpg";
+import boiler2000Img from "@assets/Worcester_Bosch_2000_584_x_550_1771321664217.jpg";
+import boiler4000Img from "@assets/Worcester_Bosch_4000_Combi_Boiler_584x550_1771321664218.jpg";
+import boiler8000Img from "@assets/8000_Style_Black_1771321846520.jpg";
 import gasSafeLogo from "@assets/Gas_Safe_Logo_1771321269776.png";
-import whichBadge from "@/assets/images/which-best-buy-badge.png";
+import checkatradeLogo from "@assets/Checkatrade_Logo_2023_1771322021422.png";
+import whichBestBuy from "@assets/Which_Best_Buy_Combi_Boilers_1771321755707.png";
+import wsbLogo from "@assets/WeServiceBoilers_Standard_1771321243040.png";
+import leapLogo from "@assets/LEAP_Logo_1771321364902.png";
+import easyControlImg from "@assets/Homeowner_adjusting_EasyControl_1771321797513.jpg";
+import engineerImg from "@assets/Worcester_Bosch_CDi_Classic_Model_and_Installer_Garage_1771321575771.jpg";
+import utilityRoomImg from "@assets/Greenstar_4000_utility1_1771321809308.jpg";
+import boilerPackShot from "@assets/Boiler_Pack_Shot_1771321846521.jpg";
 
 const PHONE = "0800 048 5737";
 const PHONE_HREF = "tel:08000485737";
@@ -36,75 +44,116 @@ function scrollTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function PromoBanner() {
+  return (
+    <div className="w-full py-2.5 px-4 text-center" style={{ backgroundColor: WB_BLUE }} data-testid="promo-banner">
+      <div className="container mx-auto flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+        <span className="text-white text-sm font-semibold">Spring Worcester Bosch Promotion</span>
+        <span className="text-blue-200 text-sm hidden sm:inline">|</span>
+        <span className="text-white text-sm">Save Up To <strong>&pound;500</strong> on a New Boiler Installation + <strong>Free Home Heating Assessment</strong></span>
+        <button onClick={() => scrollTo("book-assessment")} className="text-sm font-bold underline underline-offset-2 flex items-center gap-0.5" style={{ color: WB_GREEN }} data-testid="link-promo-cta">
+          Claim Offer <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function Header() {
   return (
-    <header className="fixed top-0 w-full z-50 bg-white shadow-md" data-testid="header">
+    <header className="sticky top-0 w-full z-50 bg-white shadow-sm" data-testid="header">
+      <PromoBanner />
       <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-4">
-        <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-8 md:h-10 w-auto" data-testid="img-logo" />
-        <a href={PHONE_HREF} className="flex items-center gap-2 font-bold" style={{ color: WB_BLUE }} data-testid="link-phone-header">
-          <Phone className="w-5 h-5" /><span>{PHONE}</span>
-        </a>
+        <div className="flex items-center gap-4">
+          <img src={wsbLogo} alt={COMPANY} className="h-9 md:h-11 w-auto" data-testid="img-company-logo" />
+          <div className="hidden lg:block h-8 w-px bg-gray-200" />
+          <img src={worcesterBoschLogo} alt="Worcester Bosch Accredited Installer" className="hidden lg:block h-7 w-auto opacity-80" data-testid="img-wb-logo" />
+        </div>
+        <div className="flex items-center gap-4">
+          <a href={PHONE_HREF} className="hidden sm:flex items-center gap-2 font-bold text-lg" style={{ color: WB_BLUE }} data-testid="link-phone-header">
+            <Phone className="w-5 h-5" /><span>{PHONE}</span>
+          </a>
+          <Button size="default" onClick={() => scrollTo("book-assessment")} className="text-white font-semibold text-sm" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-header-cta">
+            Free Assessment
+          </Button>
+        </div>
       </div>
     </header>
   );
 }
 
+function TrustBar() {
+  return (
+    <div className="bg-white border-b border-gray-100 py-4" data-testid="section-trust-bar">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+          <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-8 md:h-10 w-auto grayscale-0 opacity-90" />
+          <img src={gasSafeLogo} alt="Gas Safe Registered" className="h-10 md:h-12 w-auto" />
+          <img src={checkatradeLogo} alt="Checkatrade" className="h-7 md:h-9 w-auto" />
+          <img src={whichBestBuy} alt="Which? Best Buy" className="h-10 md:h-14 w-auto" />
+          <img src={leapLogo} alt="LEAP" className="h-8 md:h-10 w-auto" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function HeroSection() {
   return (
-    <section className="pt-20 md:pt-24" data-testid="section-hero">
-      <div className="relative min-h-[650px] md:min-h-[750px] flex items-center" style={{ background: "linear-gradient(135deg, #FFF8E1 0%, #FFF3E0 40%, #FFE0B2 100%)" }}>
-        <div className="absolute inset-0 overflow-hidden">
-          <img src={heroImg} alt="Beautiful kitchen with Worcester Bosch boiler" className="w-full h-full object-cover opacity-30" />
-        </div>
-        <div className="container mx-auto px-4 relative z-10 py-16 md:py-24">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-2xl space-y-8">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight" style={{ color: WB_BLUE }} data-testid="text-hero-headline">
+    <section data-testid="section-hero" style={{ backgroundColor: "#F8F9FA" }}>
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center py-12 md:py-20">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="space-y-6 order-2 lg:order-1">
+            <div className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold" style={{ backgroundColor: "#E8F5E9", color: "#2E7D32" }} data-testid="badge-spring-promo">
+              <Zap className="w-4 h-4" /> Spring Promotion - Save Up To &pound;500
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight" style={{ color: WB_BLUE }} data-testid="text-hero-headline">
               Is Your Boiler<br />Costing You<br />Money?
             </h1>
-            <p className="text-xl md:text-2xl font-semibold" style={{ color: WB_BLUE }}>
-              Book Your Free Home Heating Assessment
+            <p className="text-lg md:text-xl text-gray-600 max-w-lg">
+              If your boiler is over 10 years old, you could be wasting hundreds of pounds a year. Book a free, no-obligation home heating assessment today.
             </p>
-            <p className="text-gray-700 text-lg max-w-lg">
-              If your boiler is over 10 years old, you could be wasting hundreds of pounds a year on energy bills. Our free assessment will show you exactly how much you could save.
-            </p>
-
-            <div className="flex flex-wrap items-center gap-6 py-4" data-testid="section-trust-badges">
-              <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-md px-5 py-4 shadow-sm">
-                <img src={gasSafeLogo} alt="Gas Safe Register" className="w-12 h-12 shrink-0 object-contain" />
-                <div>
-                  <p className="font-bold text-sm" style={{ color: WB_BLUE }}>Gas Safe</p>
-                  <p className="text-xs text-gray-500">Registered</p>
-                </div>
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Button size="lg" onClick={() => scrollTo("book-assessment")} className="text-white font-bold text-base px-8" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-hero-cta">
+                Book Free Assessment
+              </Button>
+              <a href={PHONE_HREF} data-testid="link-phone-hero">
+                <Button size="lg" variant="outline" className="font-bold text-base px-8 gap-2" style={{ color: WB_BLUE, borderColor: WB_BLUE }}>
+                  <Phone className="w-5 h-5" /> {PHONE}
+                </Button>
+              </a>
+            </div>
+            <div className="flex flex-wrap items-center gap-4 pt-4" data-testid="hero-trust-logos">
+              <div className="flex items-center gap-2 bg-white rounded-md px-3 py-2 shadow-sm border border-gray-100">
+                <img src={gasSafeLogo} alt="Gas Safe" className="h-8 w-auto" />
+                <span className="text-xs font-semibold" style={{ color: WB_BLUE }}>Gas Safe</span>
               </div>
-              <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-md px-5 py-4 shadow-sm">
-                <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-10 shrink-0 object-contain" />
-                <div>
-                  <p className="font-bold text-sm" style={{ color: WB_BLUE }}>Worcester Bosch</p>
-                  <p className="text-xs text-gray-500">Accredited Installer</p>
-                </div>
+              <div className="flex items-center gap-2 bg-white rounded-md px-3 py-2 shadow-sm border border-gray-100">
+                <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-6 w-auto" />
               </div>
-              <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-md px-5 py-4 shadow-sm">
-                <div className="flex gap-0.5 shrink-0">
-                  {[1,2,3,4,5].map(n => <Star key={n} className="w-5 h-5 text-yellow-400 fill-yellow-400" />)}
-                </div>
-                <div>
-                  <p className="font-bold text-sm" style={{ color: WB_BLUE }}>4.8 / 5</p>
-                  <p className="text-xs text-gray-500">Customer Rating</p>
-                </div>
+              <div className="flex items-center gap-2 bg-white rounded-md px-3 py-2 shadow-sm border border-gray-100">
+                <img src={checkatradeLogo} alt="Checkatrade" className="h-5 w-auto" />
               </div>
-              <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-md px-5 py-4 shadow-sm">
-                <img src={whichBadge} alt="Which? Best Buy 2024" className="w-12 h-12 shrink-0 object-contain" />
-                <div>
-                  <p className="font-bold text-sm" style={{ color: WB_BLUE }}>Which?</p>
-                  <p className="text-xs text-gray-500">Best Buy 2024</p>
+              <div className="flex items-center gap-2 bg-white rounded-md px-3 py-2 shadow-sm border border-gray-100">
+                <div className="flex gap-0.5">
+                  {[1,2,3,4,5].map(n => <Star key={n} className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />)}
                 </div>
+                <span className="text-xs font-bold" style={{ color: WB_BLUE }}>4.8/5</span>
               </div>
             </div>
-
-            <div className="pt-2">
-              <Button size="lg" onClick={() => scrollTo("book-assessment")} className="text-white font-bold text-lg px-10 py-6 text-base" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-hero-cta">
-                Book Your Free Assessment
-              </Button>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2 }} className="order-1 lg:order-2">
+            <div className="relative rounded-md overflow-hidden shadow-lg">
+              <img src={heroLifestyle} alt="Worcester Bosch Greenstar boiler in a bright modern kitchen" className="w-full h-auto object-cover" data-testid="img-hero-lifestyle" />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 md:p-6">
+                <div className="flex items-center gap-3">
+                  <img src={whichBestBuy} alt="Which? Best Buy" className="h-12 md:h-16 w-auto" />
+                  <div>
+                    <p className="text-white font-bold text-sm md:text-base">Which? Best Buy 2024</p>
+                    <p className="text-white/80 text-xs md:text-sm">Recommended by Which? magazine</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -113,43 +162,153 @@ function HeroSection() {
   );
 }
 
-function ProblemIcon({ index }: { index: number }) {
-  const cls = "w-6 h-6";
-  const st = { color: WB_BLUE };
-  if (index === 0) return <Thermometer className={cls} style={st} />;
-  if (index === 1) return <TrendingDown className={cls} style={st} />;
-  if (index === 2) return <Home className={cls} style={st} />;
-  return <Wrench className={cls} style={st} />;
-}
-
-function ProblemSection() {
-  const problems = [
-    { title: "Rising Energy Bills", desc: "Old boilers run at 60-70% efficiency. A modern Worcester Bosch runs at 94%, meaning up to 30% less gas used." },
-    { title: "Losing Money Every Month", desc: "The average UK home with an old boiler wastes £340 per year. Over 5 years, that's £1,700 down the drain." },
-    { title: "Uneven Heating", desc: "Old boilers struggle to heat your home evenly. Some rooms too hot, others too cold. A new boiler fixes this." },
-    { title: "Expensive Repairs", desc: "Boiler repair costs increase dramatically after 10 years. Parts become harder to source and more expensive." },
+function PricingSection() {
+  const tiers = [
+    {
+      name: "Greenstar 2000",
+      price: "From £1,895",
+      image: boiler2000Img,
+      popular: false,
+      features: ["Up to 94% efficiency", "Compact design", "7 year warranty", "Quiet operation", "Easy controls", "Budget-friendly"],
+      desc: "Great value for smaller homes",
+    },
+    {
+      name: "Greenstar 4000",
+      price: "From £2,395",
+      image: boiler4000Img,
+      popular: true,
+      features: ["Up to 94% efficiency", "Which? Best Buy 2024", "10 year warranty", "Smart thermostat ready", "Quiet Mark certified", "Most popular choice"],
+      desc: "Our most recommended boiler",
+    },
+    {
+      name: "Greenstar 8000 Style",
+      price: "From £2,995",
+      image: boiler8000Img,
+      popular: false,
+      features: ["Up to 94% efficiency", "Which? Best Buy 2024", "10 year warranty", "Built-in smart controls", "Premium black finish", "Sleek wall-mounted design"],
+      desc: "Premium design for modern homes",
+    },
   ];
+
   return (
-    <section className="py-16 md:py-20 bg-white" data-testid="section-problems">
+    <section className="py-16 md:py-20 bg-white" data-testid="section-pricing">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>The Hidden Cost of an Old Boiler</p>
-          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>Why Your Old Boiler Is Costing You</h2>
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Worcester Bosch Greenstar Range</p>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>Choose Your New Boiler</h2>
+          <p className="text-gray-500 mt-3 max-w-2xl mx-auto">All prices include full installation, system flush, and waste removal. Finance options available.</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {problems.map((p, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {tiers.map((tier, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-              <Card className="p-6 h-full flex gap-4" data-testid={`card-problem-${i}`}>
-                <div className="w-12 h-12 rounded-full shrink-0 flex items-center justify-center bg-blue-50">
-                  <ProblemIcon index={i} />
+              <Card className={`relative overflow-visible flex flex-col h-full ${tier.popular ? "ring-2" : ""}`} style={tier.popular ? { borderColor: WB_GREEN, boxShadow: `0 0 0 2px ${WB_GREEN}` } : {}} data-testid={`card-pricing-${i}`}>
+                {tier.popular && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10 px-4 py-1 rounded-md text-white text-xs font-bold uppercase tracking-wider" style={{ backgroundColor: WB_GREEN }} data-testid="badge-most-popular">
+                    Most Popular
+                  </div>
+                )}
+                <div className="p-6 flex flex-col items-center gap-3 border-b border-gray-100" style={{ backgroundColor: tier.popular ? "#F0FAF0" : "#F8F9FA" }}>
+                  <img src={tier.image} alt={tier.name} className="h-36 w-auto object-contain" data-testid={`img-boiler-${i}`} />
+                  <h3 className="text-lg font-bold" style={{ color: WB_BLUE }}>{tier.name}</h3>
+                  <p className="text-xs text-gray-500">{tier.desc}</p>
+                  <p className="text-2xl font-black" style={{ color: WB_GREEN }}>{tier.price}</p>
                 </div>
-                <div>
-                  <h3 className="font-bold mb-1" style={{ color: WB_BLUE }}>{p.title}</h3>
-                  <p className="text-sm text-gray-500">{p.desc}</p>
+                <div className="p-6 flex-1 flex flex-col">
+                  <ul className="space-y-2.5 flex-1">
+                    {tier.features.map((f, j) => (
+                      <li key={j} className="flex items-start gap-2 text-sm text-gray-600">
+                        <CheckCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: WB_GREEN }} />{f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button size="lg" onClick={() => scrollTo("book-assessment")} className="w-full mt-6 text-white font-bold" style={{ backgroundColor: tier.popular ? WB_GREEN : WB_BLUE, borderColor: tier.popular ? WB_GREEN : WB_BLUE }} data-testid={`button-pricing-cta-${i}`}>
+                    Get Free Quote
+                  </Button>
                 </div>
               </Card>
             </motion.div>
           ))}
+        </div>
+        <div className="text-center mt-8">
+          <p className="text-sm text-gray-500">All installations include up to 10 year Worcester Bosch guarantee when installed by an accredited installer</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function WhyChooseUs() {
+  const benefits = [
+    { title: "Gas Safe Registered", desc: "All our engineers are fully Gas Safe registered and certified.", logo: gasSafeLogo, logoH: "h-12" },
+    { title: "Worcester Bosch Accredited", desc: "Official accredited installer with manufacturer-backed guarantees.", logo: worcesterBoschLogo, logoH: "h-9" },
+    { title: "Checkatrade Verified", desc: "Vetted and reviewed on Checkatrade with excellent ratings.", logo: checkatradeLogo, logoH: "h-8" },
+    { title: "Which? Best Buy Boilers", desc: "We install Which? Best Buy award-winning boilers.", logo: whichBestBuy, logoH: "h-14" },
+    { title: "4.8 Star Rated", desc: "Trusted by hundreds of homeowners across Medway and Kent.", stars: true },
+    { title: "LEAP Approved", desc: "Approved provider for energy efficiency improvements.", logo: leapLogo, logoH: "h-10" },
+  ];
+
+  return (
+    <section className="py-16 md:py-20" style={{ backgroundColor: "#F8F9FA" }} data-testid="section-why-choose-us">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Trusted Professionals</p>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>Why Choose {COMPANY}?</h2>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {benefits.map((b, i) => (
+            <Card key={i} className="p-6 text-center flex flex-col items-center gap-3" data-testid={`card-benefit-${i}`}>
+              <div className="h-16 flex items-center justify-center">
+                {b.stars ? (
+                  <div className="flex gap-0.5">{[1,2,3,4,5].map(n => <Star key={n} className="w-6 h-6 text-yellow-400 fill-yellow-400" />)}</div>
+                ) : (
+                  <img src={b.logo} alt={b.title} className={`${b.logoH} w-auto object-contain`} />
+                )}
+              </div>
+              <h3 className="font-bold" style={{ color: WB_BLUE }}>{b.title}</h3>
+              <p className="text-sm text-gray-500">{b.desc}</p>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HowItWorks() {
+  const steps = [
+    { icon: <Calendar className="w-7 h-7 text-white" />, title: "Book Your Free Assessment", desc: "Call us or fill in the form. We'll arrange a convenient time to visit your home. No obligation." },
+    { icon: <ClipboardCheck className="w-7 h-7 text-white" />, title: "We Assess Your Heating", desc: "Our Gas Safe engineer checks your current system, insulation, and calculates your potential savings." },
+    { icon: <FileText className="w-7 h-7 text-white" />, title: "Get Your Savings Report", desc: "We'll show you exactly how much you could save and recommend the best boiler for your home." },
+  ];
+
+  return (
+    <section className="py-16 md:py-20 bg-white" data-testid="section-how-it-works">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Simple Process</p>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>How It Works</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          {steps.map((s, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className="text-center space-y-4">
+              <div className="relative mx-auto">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ backgroundColor: WB_BLUE }}>
+                  {s.icon}
+                </div>
+                <div className="absolute -bottom-2 -right-2 w-7 h-7 rounded-full text-white font-bold flex items-center justify-center text-xs" style={{ backgroundColor: WB_GREEN }}>{i + 1}</div>
+              </div>
+              <h3 className="text-lg font-bold" style={{ color: WB_BLUE }} data-testid={`text-step-${i + 1}`}>{s.title}</h3>
+              <p className="text-sm text-gray-500">{s.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+        <div className="mt-12 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="rounded-md overflow-hidden shadow-md">
+            <img src={engineerImg} alt="Worcester Bosch accredited engineer installing a boiler" className="w-full h-48 md:h-64 object-cover" data-testid="img-engineer" />
+          </div>
+          <div className="rounded-md overflow-hidden shadow-md">
+            <img src={utilityRoomImg} alt="Greenstar 4000 installed in a modern utility room" className="w-full h-48 md:h-64 object-cover" data-testid="img-utility-room" />
+          </div>
         </div>
       </div>
     </section>
@@ -158,38 +317,48 @@ function ProblemSection() {
 
 function SavingsSection() {
   return (
-    <section className="py-16 md:py-20" style={{ backgroundColor: "#f0f4f8" }} data-testid="section-savings">
+    <section className="py-16 md:py-20" style={{ backgroundColor: "#F8F9FA" }} data-testid="section-savings">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <p className="text-sm font-semibold uppercase tracking-widest" style={{ color: WB_GREEN }}>Energy Savings Calculator</p>
+            <p className="text-sm font-semibold uppercase tracking-widest" style={{ color: WB_GREEN }}>Energy Savings</p>
             <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>How Much Could You Save?</h2>
-            <div className="space-y-4">
-              {[
-                { age: "10-15 years old", eff: "~75%", saving: "Up to £250/year" },
-                { age: "15-20 years old", eff: "~65%", saving: "Up to £380/year" },
-                { age: "20+ years old", eff: "~55%", saving: "Up to £500/year" },
-              ].map((row, i) => (
-                <div key={i} className="bg-white rounded-md p-4 flex items-center justify-between gap-4" data-testid={`savings-row-${i}`}>
-                  <div>
-                    <p className="font-bold" style={{ color: WB_BLUE }}>{row.age}</p>
-                    <p className="text-xs text-gray-500">Current efficiency: {row.eff}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-extrabold text-green-600">{row.saving}</p>
-                  </div>
-                </div>
-              ))}
+            <div className="overflow-hidden rounded-md border border-gray-200 bg-white">
+              <table className="w-full text-sm" data-testid="savings-table">
+                <thead>
+                  <tr style={{ backgroundColor: WB_BLUE }}>
+                    <th className="text-left text-white font-semibold py-3 px-4">Boiler Age</th>
+                    <th className="text-left text-white font-semibold py-3 px-4">Efficiency</th>
+                    <th className="text-right text-white font-semibold py-3 px-4">Annual Saving</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { age: "10-15 years", eff: "~75%", saving: "Up to £250/yr" },
+                    { age: "15-20 years", eff: "~65%", saving: "Up to £380/yr" },
+                    { age: "20+ years", eff: "~55%", saving: "Up to £500/yr" },
+                  ].map((row, i) => (
+                    <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"} data-testid={`savings-row-${i}`}>
+                      <td className="py-3 px-4 font-semibold" style={{ color: WB_BLUE }}>{row.age}</td>
+                      <td className="py-3 px-4 text-gray-500">{row.eff}</td>
+                      <td className="py-3 px-4 text-right font-bold text-green-600">{row.saving}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
             <p className="text-xs text-gray-400">Based on average UK gas consumption. Actual savings depend on home size and usage.</p>
+            <Button size="lg" onClick={() => scrollTo("book-assessment")} className="text-white font-bold" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-savings-cta">
+              Get Your Free Savings Report
+            </Button>
           </div>
-          <div className="hidden md:flex flex-col items-center gap-4">
-            <img src={boiler4000Img} alt="Worcester Bosch Greenstar 4000" className="max-w-sm w-full" />
-            <div className="flex items-center gap-4 bg-white rounded-md px-5 py-4 shadow-sm" data-testid="which-badge-savings">
-              <img src={whichBadge} alt="Which? Best Buy 2024" className="w-16 h-16 shrink-0 object-contain" />
+          <div className="hidden md:flex flex-col items-center gap-6">
+            <img src={boilerPackShot} alt="Worcester Bosch Greenstar range" className="max-w-sm w-full rounded-md" data-testid="img-boiler-range" />
+            <div className="flex items-center gap-4 bg-white rounded-md px-5 py-4 shadow-sm border border-gray-100">
+              <img src={whichBestBuy} alt="Which? Best Buy 2024" className="h-14 w-auto object-contain" />
               <div>
-                <p className="font-bold text-base" style={{ color: WB_BLUE }}>Which? Best Buy 2024</p>
-                <p className="text-sm text-gray-500">Recommended by Which? magazine</p>
+                <p className="font-bold text-sm" style={{ color: WB_BLUE }}>Which? Best Buy 2024</p>
+                <p className="text-xs text-gray-500">Recommended by Which? magazine</p>
               </div>
             </div>
           </div>
@@ -199,87 +368,28 @@ function SavingsSection() {
   );
 }
 
-function AssessmentStepIcon({ index }: { index: number }) {
-  const cls = "w-7 h-7 text-white";
-  if (index === 0) return <Calendar className={cls} />;
-  if (index === 1) return <ClipboardCheck className={cls} />;
-  return <FileText className={cls} />;
-}
-
-function HowItWorks() {
-  const steps = [
-    { title: "Book Your Free Assessment", description: "We'll arrange a convenient time to visit your home. No obligation." },
-    { title: "We Assess Your Heating", description: "Our engineer checks your current system and calculates potential savings." },
-    { title: "Get Your Savings Report", description: "We'll show you exactly how much you could save with a modern boiler." },
-  ];
+function SmartControlSection() {
   return (
-    <section className="py-16 md:py-20 bg-white" data-testid="section-how-it-works">
+    <section className="py-16 md:py-20 bg-white" data-testid="section-smart-control">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>What Happens at Your Free Assessment</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          {steps.map((s, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className="text-center space-y-4">
-              <div className="mx-auto w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: WB_BLUE }}>
-                <AssessmentStepIcon index={i} />
-              </div>
-              <div className="w-8 h-8 rounded-full text-white font-bold flex items-center justify-center mx-auto text-sm" style={{ backgroundColor: WB_GREEN }}>{i + 1}</div>
-              <h3 className="text-lg font-bold" style={{ color: WB_BLUE }} data-testid={`text-step-${i + 1}`}>{s.title}</h3>
-              <p className="text-sm text-gray-500">{s.description}</p>
-            </motion.div>
-          ))}
-        </div>
-        <div className="text-center mt-10">
-          <Button size="lg" onClick={() => scrollTo("book-assessment")} className="text-white font-bold" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-steps-cta">
-            Book Your Free Assessment
-          </Button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function BenefitVisual({ index }: { index: number }) {
-  if (index === 0) return <img src={gasSafeLogo} alt="Gas Safe Register" className="w-10 h-10 object-contain" />;
-  if (index === 1) return <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-8 object-contain" />;
-  if (index === 2) return (
-    <div className="flex gap-0.5">
-      {[1,2,3,4,5].map(n => <Star key={n} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}
-    </div>
-  );
-  const cls = "w-6 h-6";
-  const st = { color: WB_BLUE };
-  if (index === 3) return <MapPin className={cls} style={st} />;
-  if (index === 4) return <CheckCircle className={cls} style={st} />;
-  return <TrendingDown className={cls} style={st} />;
-}
-
-function Benefits() {
-  const items = [
-    { title: "Gas Safe Registered", desc: "All engineers fully certified and registered." },
-    { title: "Worcester Bosch Accredited", desc: "Official accredited installer." },
-    { title: "4.8 Star Rating", desc: "Trusted by hundreds of homeowners." },
-    { title: "Local to Medway", desc: "Your local heating specialists." },
-    { title: "No Obligation", desc: "Free assessment, no pressure." },
-    { title: "Save on Bills", desc: "Up to £500/year savings." },
-  ];
-  return (
-    <section className="py-16 md:py-20" style={{ backgroundColor: "#f0f4f8" }} data-testid="section-benefits">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>Why Choose Us</h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          {items.map((b, i) => (
-            <Card key={i} className="p-5 text-center space-y-3" data-testid={`card-benefit-${i}`}>
-              <div className="mx-auto w-14 h-14 rounded-full flex items-center justify-center bg-blue-50">
-                <BenefitVisual index={i} />
-              </div>
-              <h3 className="font-bold text-sm" style={{ color: WB_BLUE }}>{b.title}</h3>
-              <p className="text-xs text-gray-500">{b.desc}</p>
-            </Card>
-          ))}
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          <div className="rounded-md overflow-hidden shadow-md">
+            <img src={easyControlImg} alt="Homeowner adjusting Worcester Bosch EasyControl thermostat" className="w-full h-auto object-cover" data-testid="img-easycontrol" />
+          </div>
+          <div className="space-y-5">
+            <p className="text-sm font-semibold uppercase tracking-widest" style={{ color: WB_GREEN }}>Smart Heating</p>
+            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>Control Your Heating From Anywhere</h2>
+            <p className="text-gray-600">
+              Every Greenstar 4000 and 8000 installation includes the option to add the Worcester Bosch EasyControl smart thermostat. Control your heating room by room from your phone, set schedules, and save even more on energy bills.
+            </p>
+            <ul className="space-y-2">
+              {["Room-by-room temperature control", "Set schedules from your phone", "Works with Amazon Alexa & Google Home", "Automatically adjusts to weather changes"].map((f, i) => (
+                <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
+                  <CheckCircle className="w-4 h-4 shrink-0" style={{ color: WB_GREEN }} />{f}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>
@@ -293,16 +403,23 @@ function Testimonials() {
     { name: "Karen M", location: "Rochester", text: "We had no idea our old boiler was only 60% efficient. The savings since upgrading have been incredible.", rating: 5 },
     { name: "James P", location: "Rainham", text: "Professional assessment, clear explanation of the savings. No hard sell. Very impressed with the service.", rating: 5 },
   ];
+
   return (
-    <section className="py-16 md:py-20 bg-white" data-testid="section-testimonials">
+    <section className="py-16 md:py-20" style={{ backgroundColor: "#F8F9FA" }} data-testid="section-testimonials">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12"><h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>Customer Stories</h2></div>
+        <div className="text-center mb-12">
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Real Customer Reviews</p>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>What Our Customers Say</h2>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {reviews.map((r, i) => (
             <Card key={i} className="p-5 h-full flex flex-col gap-3" data-testid={`card-review-${i}`}>
               <div className="flex gap-0.5">{Array.from({ length: r.rating }).map((_, j) => <Star key={j} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}</div>
               <p className="text-sm text-gray-600 flex-1 italic">"{r.text}"</p>
-              <p className="font-bold text-sm" style={{ color: WB_BLUE }}>{r.name}, {r.location}</p>
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-bold text-sm" style={{ color: WB_BLUE }}>{r.name}, {r.location}</p>
+                <img src={checkatradeLogo} alt="Checkatrade" className="h-4 w-auto opacity-60" />
+              </div>
             </Card>
           ))}
         </div>
@@ -318,11 +435,15 @@ function FAQ() {
     { q: "Will I be pressured to buy?", a: "Absolutely not. The assessment is informational. We'll show you the facts and let you make your own decision in your own time." },
     { q: "How much could I really save?", a: "Depending on the age and condition of your current boiler, savings typically range from £200 to £500 per year on energy bills." },
     { q: "What areas do you cover?", a: "We cover Medway, Kent and surrounding areas including Chatham, Rochester, Gillingham, Rainham, Strood and more." },
+    { q: "What warranties do you offer?", a: "As a Worcester Bosch Accredited Installer, we can offer up to 10 year manufacturer-backed guarantees on Greenstar boilers." },
   ];
+
   return (
-    <section className="py-16 md:py-20" style={{ backgroundColor: "#f0f4f8" }} data-testid="section-faq">
+    <section className="py-16 md:py-20 bg-white" data-testid="section-faq">
       <div className="container mx-auto px-4 max-w-3xl">
-        <div className="text-center mb-12"><h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>FAQ</h2></div>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>Frequently Asked Questions</h2>
+        </div>
         <Accordion type="single" collapsible className="space-y-3">
           {faqs.map((faq, i) => (
             <AccordionItem key={i} value={`faq-${i}`} className="border rounded-md px-4 bg-white">
@@ -345,23 +466,29 @@ function LeadForm() {
     onSuccess: () => { setSubmitted(true); form.reset(); },
     onError: () => { toast({ title: "Something went wrong", description: "Please try again or call us.", variant: "destructive" }); },
   });
+
   return (
     <section id="book-assessment" className="py-16 md:py-24" style={{ backgroundColor: WB_BLUE }} data-testid="section-form">
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold text-white" data-testid="text-form-heading">
               Find Out How Much<br />You Could Save
             </h2>
             <p className="text-blue-200 text-lg">
-              Book your free, no-obligation home heating assessment today. Our Gas Safe engineer will visit your home and show you exactly how much you could save.
+              Book your free, no-obligation home heating assessment today. Our Gas Safe registered engineer will visit your home and show you exactly how much you could save.
             </p>
             <ul className="space-y-3 text-blue-100">
-              {["Completely free assessment", "No obligation to proceed", "Gas Safe registered engineer", "Honest advice, no pressure"].map((t, i) => (
-                <li key={i} className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-green-400 shrink-0" />{t}</li>
+              {["Completely free assessment", "No obligation to proceed", "Gas Safe registered engineer", "Honest advice, no pressure", "Up to £500 spring saving"].map((t, i) => (
+                <li key={i} className="flex items-center gap-2"><CheckCircle className="w-5 h-5 shrink-0" style={{ color: WB_GREEN }} />{t}</li>
               ))}
             </ul>
-            <div className="pt-4">
+            <div className="pt-4 flex flex-wrap items-center gap-4">
+              <img src={gasSafeLogo} alt="Gas Safe" className="h-10 w-auto" />
+              <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-8 w-auto brightness-0 invert" />
+              <img src={checkatradeLogo} alt="Checkatrade" className="h-6 w-auto brightness-0 invert" />
+            </div>
+            <div className="pt-2">
               <p className="text-blue-200 text-sm mb-2">Or call us free:</p>
               <a href={PHONE_HREF} className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3" data-testid="link-phone-final"><Phone className="w-7 h-7" />{PHONE}</a>
             </div>
@@ -371,15 +498,15 @@ function LeadForm() {
               <div className="text-center py-8 space-y-4" data-testid="form-success">
                 <div className="mx-auto w-16 h-16 rounded-full bg-green-100 flex items-center justify-center"><CheckCircle className="w-8 h-8 text-green-600" /></div>
                 <h3 className="text-xl font-bold" style={{ color: WB_BLUE }}>Thank You!</h3>
-                <p className="text-gray-500">We'll be in touch shortly to arrange your free assessment.</p>
+                <p className="text-gray-500">We'll be in touch shortly to arrange your free home heating assessment.</p>
               </div>
             ) : (
               <>
-                <h3 className="text-xl font-bold mb-1" style={{ color: WB_BLUE }}>Find Out How Much You Could Save</h3>
-                <p className="text-sm text-gray-500 mb-6">No obligation. Book your free assessment today.</p>
+                <h3 className="text-xl font-bold mb-1" style={{ color: WB_BLUE }}>Book Your Free Assessment</h3>
+                <p className="text-sm text-gray-500 mb-6">No obligation. Takes 2 minutes to book.</p>
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-4" data-testid="form-assessment">
-                    <FormField control={form.control} name="name" render={({ field }) => (<FormItem><FormControl><Input placeholder="Your Name" {...field} data-testid="input-name" /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField control={form.control} name="name" render={({ field }) => (<FormItem><FormControl><Input placeholder="Your Full Name" {...field} data-testid="input-name" /></FormControl><FormMessage /></FormItem>)} />
                     <FormField control={form.control} name="phone" render={({ field }) => (<FormItem><FormControl><Input placeholder="Phone Number" type="tel" {...field} data-testid="input-phone" /></FormControl><FormMessage /></FormItem>)} />
                     <FormField control={form.control} name="postcode" render={({ field }) => (<FormItem><FormControl><Input placeholder="Postcode" {...field} data-testid="input-postcode" /></FormControl><FormMessage /></FormItem>)} />
                     <Button type="submit" size="lg" className="text-white font-bold w-full" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} disabled={mutation.isPending} data-testid="button-submit-form">
@@ -399,33 +526,42 @@ function LeadForm() {
 
 function Footer() {
   return (
-    <footer style={{ backgroundColor: "#001540" }} className="text-blue-200 py-10 pb-24 md:pb-10" data-testid="footer">
+    <footer className="text-gray-500 py-12 pb-28 md:pb-12 bg-white border-t border-gray-100" data-testid="footer">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
-          <div>
-            <p className="font-bold text-white text-lg mb-2">{COMPANY}</p>
-            <p className="mb-1">Your local Worcester Bosch Accredited Installer</p>
-            <p>Serving Medway, Kent & surrounding areas</p>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="md:col-span-1">
+            <img src={wsbLogo} alt={COMPANY} className="h-10 w-auto mb-3" />
+            <p className="text-sm text-gray-500">Your local Worcester Bosch Accredited Installer serving Medway, Kent & surrounding areas.</p>
           </div>
           <div>
-            <p className="font-bold text-white mb-2">Credentials</p>
-            <ul className="space-y-1">
-              <li className="flex items-center gap-2"><Shield className="w-4 h-4 shrink-0" /> Gas Safe Registered</li>
-              <li className="flex items-center gap-2"><Award className="w-4 h-4 shrink-0" /> Worcester Bosch Accredited</li>
-              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 shrink-0" /> Which? Best Buy 2024</li>
-              <li className="flex items-center gap-2"><Star className="w-4 h-4 shrink-0" /> 4.8 Star Customer Rating</li>
+            <p className="font-bold text-sm mb-3" style={{ color: WB_BLUE }}>Credentials</p>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2"><img src={gasSafeLogo} alt="Gas Safe" className="h-6 w-auto" /><span className="text-sm">Gas Safe Registered</span></div>
+              <div className="flex items-center gap-2"><img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-5 w-auto" /><span className="text-sm">Accredited Installer</span></div>
+              <div className="flex items-center gap-2"><img src={checkatradeLogo} alt="Checkatrade" className="h-4 w-auto" /><span className="text-sm">Verified Member</span></div>
+              <div className="flex items-center gap-2"><img src={leapLogo} alt="LEAP" className="h-5 w-auto" /><span className="text-sm">LEAP Approved</span></div>
+            </div>
+          </div>
+          <div>
+            <p className="font-bold text-sm mb-3" style={{ color: WB_BLUE }}>Products</p>
+            <ul className="space-y-2 text-sm">
+              <li>Greenstar 2000</li>
+              <li>Greenstar 4000</li>
+              <li>Greenstar 8000 Style</li>
+              <li>EasyControl Smart Thermostat</li>
+              <li>System Upgrades</li>
             </ul>
           </div>
           <div>
-            <p className="font-bold text-white mb-2">Contact</p>
-            <a href={PHONE_HREF} className="flex items-center gap-2 text-white font-bold text-lg mb-2" data-testid="link-phone-footer">
+            <p className="font-bold text-sm mb-3" style={{ color: WB_BLUE }}>Contact</p>
+            <a href={PHONE_HREF} className="flex items-center gap-2 font-bold text-lg mb-3" style={{ color: WB_BLUE }} data-testid="link-phone-footer">
               <Phone className="w-5 h-5" /> {PHONE}
             </a>
-            <p>Free, no-obligation assessments</p>
-            <p>Monday - Saturday, 8am - 6pm</p>
+            <p className="text-sm">Free, no-obligation assessments</p>
+            <p className="text-sm">Monday - Saturday, 8am - 6pm</p>
           </div>
         </div>
-        <div className="border-t border-blue-800 mt-8 pt-6 text-center text-xs text-blue-300">
+        <div className="border-t border-gray-100 mt-8 pt-6 text-center text-xs text-gray-400">
           <p>&copy; {new Date().getFullYear()} {COMPANY}. All rights reserved. Gas Safe Registered. Worcester Bosch Accredited Installer.</p>
         </div>
       </div>
@@ -435,12 +571,12 @@ function Footer() {
 
 function StickyMobileCTA() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden" data-testid="sticky-mobile-cta">
+    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden shadow-lg" data-testid="sticky-mobile-cta">
       <div className="flex">
-        <a href={PHONE_HREF} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-lg" style={{ backgroundColor: WB_GREEN }} data-testid="link-phone-sticky">
+        <a href={PHONE_HREF} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_GREEN }} data-testid="link-phone-sticky">
           <Phone className="w-5 h-5" /> Call {PHONE}
         </a>
-        <button onClick={() => scrollTo("book-assessment")} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-lg" style={{ backgroundColor: WB_BLUE }} data-testid="button-sticky-form">
+        <button onClick={() => scrollTo("book-assessment")} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_BLUE }} data-testid="button-sticky-form">
           Free Assessment
         </button>
       </div>
@@ -452,11 +588,13 @@ export default function V10() {
   return (
     <div className="min-h-screen flex flex-col font-sans" data-testid="landing-page-v10">
       <Header />
+      <TrustBar />
       <HeroSection />
-      <ProblemSection />
-      <SavingsSection />
+      <PricingSection />
+      <WhyChooseUs />
       <HowItWorks />
-      <Benefits />
+      <SavingsSection />
+      <SmartControlSection />
       <Testimonials />
       <FAQ />
       <LeadForm />
