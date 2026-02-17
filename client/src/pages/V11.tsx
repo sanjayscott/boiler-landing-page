@@ -15,7 +15,7 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
-  Phone, Star, CheckCircle, ChevronRight, ChevronLeft, Clock, ShieldCheck, Zap, Home, Flame, MapPin, ArrowRight, Thermometer, PhoneCall,
+  Phone, Star, CheckCircle, ChevronRight, Clock, ShieldCheck, Zap, Home, Flame, MapPin, ArrowRight, PhoneCall, HelpCircle, Calculator,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -29,7 +29,6 @@ import checkatradeLogo from "@assets/Checkatrade_Logo_2023_1771322021422.png";
 import whichBestBuy from "@assets/Which_Best_Buy_Combi_Boilers_1771321755707.png";
 import wsbLogo from "@assets/WeServiceBoilers_Standard_1771321243040.png";
 import leapLogo from "@assets/LEAP_Logo_1771321364902.png";
-import easyControlImg from "@assets/Homeowner_adjusting_EasyControl_1771321797513.jpg";
 import engineerImg from "@assets/Worcester_Bosch_CDi_Classic_Model_and_Installer_Garage_1771321575771.jpg";
 
 const PHONE = "0800 048 5737";
@@ -42,474 +41,74 @@ function scrollTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-// ─── Configurator Types & Logic ──────────────────────────────────────────
+// ─── Boiler Data ─────────────────────────────────────────────────────────
 
-type Answer = {
-  owner?: string;
-  boilerType?: string;
-  homeType?: string;
-  bedrooms?: string;
-  bathrooms?: string;
-  radiators?: string;
-  postcode?: string;
-};
+const boilers = [
+  {
+    name: "Greenstar 2000i",
+    model: "25kW Combi",
+    price: "£1,790",
+    priceNum: 1790,
+    warranty: "8 year",
+    image: boiler2000Img,
+    kw: "25kW",
+    tag: "Great Value",
+    monthly: "£22.38",
+    features: ["Up to 94% efficiency", "Compact & lightweight", "8 year warranty", "Quiet operation", "Easy to use controls"],
+    idealFor: "1-2 bed homes with 1 bathroom and up to 10 radiators",
+  },
+  {
+    name: "Greenstar 4000",
+    model: "25kW Combi",
+    price: "£2,199",
+    priceNum: 2199,
+    warranty: "10 year",
+    image: boiler4000Img,
+    kw: "25kW",
+    tag: "Most Popular",
+    monthly: "£27.49",
+    features: ["Up to 94% efficiency", "Which? Best Buy 2025", "10 year warranty", "Built-in frost protection", "Smart thermostat compatible"],
+    idealFor: "3-4 bed homes with 1-2 bathrooms and 10-15 radiators",
+  },
+  {
+    name: "Greenstar 8000 Life",
+    model: "35kW Combi",
+    price: "£2,690",
+    priceNum: 2690,
+    warranty: "12 year",
+    image: boiler8000Img,
+    kw: "35kW",
+    tag: "Premium",
+    monthly: "£33.63",
+    features: ["Up to 94% efficiency", "Top-of-range model", "12 year warranty", "High hot water demand", "Designer black finish available"],
+    idealFor: "4+ bed homes with 2+ bathrooms and 15+ radiators",
+  },
+];
 
-type BoilerRec = {
-  name: string;
-  model: string;
-  price: string;
-  priceNum: number;
-  warranty: string;
-  image: string;
-  kw: string;
-  tag: string;
-  monthly: string;
-  features: string[];
-};
+// ─── Ballpark Quiz Logic ─────────────────────────────────────────────────
 
-function getRecommendation(a: Answer): BoilerRec {
-  // Scoring: bedrooms + bathrooms + radiators → small / medium / large
-  const beds = a.bedrooms === "1-2" ? 1 : a.bedrooms === "3" ? 2 : a.bedrooms === "4" ? 3 : 4;
-  const baths = a.bathrooms === "1" ? 1 : a.bathrooms === "2" ? 2 : 3;
-  const rads = a.radiators === "up-to-10" ? 1 : a.radiators === "10-15" ? 2 : 3;
-  const score = beds + baths + rads; // 3-10
-
-  if (score <= 4) {
-    return {
-      name: "Greenstar 2000i",
-      model: "25kW Combi",
-      price: "£1,790",
-      priceNum: 1790,
-      warranty: "8 year",
-      image: boiler2000Img,
-      kw: "25kW",
-      tag: "Great Value",
-      monthly: "£22.38",
-      features: ["Up to 94% efficiency", "Compact & lightweight", "8 year warranty", "Quiet operation", "Easy to use controls"],
-    };
-  } else if (score <= 7) {
-    return {
-      name: "Greenstar 4000",
-      model: "25kW Combi",
-      price: "£2,199",
-      priceNum: 2199,
-      warranty: "10 year",
-      image: boiler4000Img,
-      kw: "25kW",
-      tag: "Most Popular",
-      monthly: "£27.49",
-      features: ["Up to 94% efficiency", "Which? Best Buy 2025", "10 year warranty", "Smart thermostat ready", "Quiet Mark certified", "Most popular in the UK"],
-    };
-  } else {
-    return {
-      name: "Greenstar 8000 Life",
-      model: "35kW Combi",
-      price: "£2,690",
-      priceNum: 2690,
-      warranty: "12 year",
-      image: boiler8000Img,
-      kw: "35kW",
-      tag: "Premium",
-      monthly: "£33.63",
-      features: ["Up to 94% efficiency", "Which? Best Buy 2025", "12 year warranty", "Built-in smart controls", "Premium black design", "High hot water flow rate"],
-    };
-  }
-}
-
-// ─── Configurator Steps ──────────────────────────────────────────────────
-
-interface StepProps {
-  onSelect: (value: string) => void;
-}
-
-function OptionButton({ label, desc, icon, onClick, selected }: { label: string; desc?: string; icon?: React.ReactNode; onClick: () => void; selected?: boolean }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center gap-4 px-5 py-4 rounded-xl border-2 transition-all text-left hover:border-[${WB_GREEN}] hover:bg-green-50/50 ${selected ? "border-[#78BE20] bg-green-50/60" : "border-gray-200 bg-white"}`}
-      style={selected ? { borderColor: WB_GREEN, backgroundColor: "rgba(120,190,32,0.08)" } : {}}
-    >
-      {icon && <div className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${WB_BLUE}10` }}>{icon}</div>}
-      <div className="flex-1 min-w-0">
-        <p className="font-semibold text-base" style={{ color: WB_BLUE }}>{label}</p>
-        {desc && <p className="text-sm text-gray-500 mt-0.5">{desc}</p>}
-      </div>
-      <ChevronRight className="w-5 h-5 text-gray-300 shrink-0" />
-    </button>
-  );
-}
-
-function StepOwner({ onSelect }: StepProps) {
-  return (
-    <div className="space-y-3">
-      <OptionButton label="Homeowner" desc="I own the property" icon={<Home className="w-5 h-5" style={{ color: WB_BLUE }} />} onClick={() => onSelect("homeowner")} />
-      <OptionButton label="Landlord" desc="I rent the property out" icon={<Home className="w-5 h-5" style={{ color: WB_BLUE }} />} onClick={() => onSelect("landlord")} />
-    </div>
-  );
-}
-
-function StepBoilerType({ onSelect }: StepProps) {
-  return (
-    <div className="space-y-3">
-      <OptionButton label="Combi Boiler" desc="Heats water on demand — no tank or cylinder" icon={<Flame className="w-5 h-5" style={{ color: WB_BLUE }} />} onClick={() => onSelect("combi")} />
-      <OptionButton label="Standard / Regular" desc="Has a hot water cylinder and cold water tank" icon={<Flame className="w-5 h-5" style={{ color: WB_BLUE }} />} onClick={() => onSelect("standard")} />
-      <OptionButton label="System Boiler" desc="Has a cylinder but no tank in the loft" icon={<Flame className="w-5 h-5" style={{ color: WB_BLUE }} />} onClick={() => onSelect("system")} />
-      <OptionButton label="I'm not sure" desc="Don't worry — we'll check during the assessment" icon={<Flame className="w-5 h-5" style={{ color: WB_BLUE }} />} onClick={() => onSelect("unknown")} />
-    </div>
-  );
-}
-
-function StepHomeType({ onSelect }: StepProps) {
-  return (
-    <div className="space-y-3">
-      {[
-        { label: "Detached", desc: "Stands on its own" },
-        { label: "Semi-Detached", desc: "One shared wall" },
-        { label: "Terraced", desc: "Walls shared on both sides" },
-        { label: "Flat / Apartment", desc: "Part of a larger building" },
-        { label: "Bungalow", desc: "Single storey home" },
-      ].map(o => (
-        <OptionButton key={o.label} label={o.label} desc={o.desc} icon={<Home className="w-5 h-5" style={{ color: WB_BLUE }} />} onClick={() => onSelect(o.label.toLowerCase().replace(/\s.*/, ""))} />
-      ))}
-    </div>
-  );
-}
-
-function StepBedrooms({ onSelect }: StepProps) {
-  return (
-    <div className="grid grid-cols-2 gap-3">
-      {["1-2", "3", "4", "5+"].map(n => (
-        <button key={n} onClick={() => onSelect(n)} className="flex flex-col items-center gap-2 px-4 py-5 rounded-xl border-2 border-gray-200 bg-white hover:border-[#78BE20] hover:bg-green-50/50 transition-all">
-          <Home className="w-7 h-7" style={{ color: WB_BLUE }} />
-          <span className="font-bold text-lg" style={{ color: WB_BLUE }}>{n}</span>
-          <span className="text-xs text-gray-500">{n === "1-2" ? "bedrooms" : n === "5+" ? "or more" : "bedrooms"}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function StepBathrooms({ onSelect }: StepProps) {
-  return (
-    <div className="grid grid-cols-3 gap-3">
-      {["1", "2", "3+"].map(n => (
-        <button key={n} onClick={() => onSelect(n)} className="flex flex-col items-center gap-2 px-4 py-5 rounded-xl border-2 border-gray-200 bg-white hover:border-[#78BE20] hover:bg-green-50/50 transition-all">
-          <Home className="w-7 h-7" style={{ color: WB_BLUE }} />
-          <span className="font-bold text-lg" style={{ color: WB_BLUE }}>{n}</span>
-          <span className="text-xs text-gray-500">{n === "3+" ? "or more" : n === "1" ? "bathroom" : "bathrooms"}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function StepRadiators({ onSelect }: StepProps) {
-  return (
-    <div className="space-y-3">
-      {[
-        { value: "up-to-10", label: "Up to 10", desc: "Smaller home or flat" },
-        { value: "10-15", label: "10 – 15", desc: "Average 3 bed home" },
-        { value: "15+", label: "15 or more", desc: "Larger property" },
-      ].map(o => (
-        <OptionButton key={o.value} label={o.label} desc={o.desc} icon={<Thermometer className="w-5 h-5" style={{ color: WB_BLUE }} />} onClick={() => onSelect(o.value)} />
-      ))}
-    </div>
-  );
-}
-
-function StepPostcode({ onSubmit }: { onSubmit: (pc: string) => void }) {
-  const [pc, setPc] = useState("");
-  const valid = /^[A-Za-z]{1,2}\d[\dA-Za-z]?\s?\d[A-Za-z]{2}$/.test(pc.trim());
-
-  return (
-    <div className="space-y-4">
-      <p className="text-sm text-gray-500">We need this to check we cover your area and to arrange your assessment.</p>
-      <Input
-        placeholder="e.g. ME7 2NY"
-        value={pc}
-        onChange={e => setPc(e.target.value.toUpperCase())}
-        className="text-center text-xl font-bold tracking-wider py-6 border-2"
-        style={{ borderColor: valid ? WB_GREEN : undefined, color: WB_BLUE }}
-        maxLength={8}
-        autoFocus
-      />
-      <Button
-        size="lg"
-        onClick={() => onSubmit(pc.trim())}
-        disabled={!valid}
-        className="w-full text-white font-bold text-base"
-        style={{ backgroundColor: valid ? WB_GREEN : "#ccc", borderColor: valid ? WB_GREEN : "#ccc" }}
-      >
-        See My Fixed Price <ArrowRight className="w-5 h-5 ml-1" />
-      </Button>
-    </div>
-  );
-}
-
-// ─── Configurator Component ─────────────────────────────────────────────
-
-const STEPS = [
-  { key: "owner", q: "Are you a homeowner or landlord?", icon: <Home className="w-5 h-5" /> },
-  { key: "boilerType", q: "What type of boiler do you currently have?", icon: <Flame className="w-5 h-5" /> },
-  { key: "homeType", q: "What type of home do you live in?", icon: <Home className="w-5 h-5" /> },
-  { key: "bedrooms", q: "How many bedrooms?", icon: <Home className="w-5 h-5" /> },
-  { key: "bathrooms", q: "How many bathrooms?", icon: <Home className="w-5 h-5" /> },
-  { key: "radiators", q: "How many radiators do you have?", icon: <Thermometer className="w-5 h-5" /> },
-  { key: "postcode", q: "What's your postcode?", icon: <MapPin className="w-5 h-5" /> },
-] as const;
-
-function Configurator() {
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<Answer>({});
-  const [showResult, setShowResult] = useState(false);
-
-  const handleSelect = useCallback((key: string, value: string) => {
-    setAnswers(prev => ({ ...prev, [key]: value }));
-    if (step < STEPS.length - 1) {
-      setStep(s => s + 1);
-    }
-  }, [step]);
-
-  const handlePostcode = useCallback((pc: string) => {
-    setAnswers(prev => ({ ...prev, postcode: pc }));
-    setShowResult(true);
-  }, []);
-
-  const goBack = useCallback(() => {
-    if (showResult) {
-      setShowResult(false);
-    } else if (step > 0) {
-      setStep(s => s - 1);
-    }
-  }, [step, showResult]);
-
-  const rec = getRecommendation(answers);
-  const progress = showResult ? 100 : Math.round(((step) / STEPS.length) * 100);
-
-  if (showResult) {
-    return <ResultSection recommendation={rec} answers={answers} onBack={goBack} />;
-  }
-
-  return (
-    <section className="py-12 md:py-20 bg-white" id="configurator">
-      <div className="container mx-auto px-4">
-        <div className="max-w-lg mx-auto">
-          {/* Progress bar */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Step {step + 1} of {STEPS.length}</span>
-              <span className="text-xs font-semibold" style={{ color: WB_GREEN }}>{progress}%</span>
-            </div>
-            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full rounded-full"
-                style={{ backgroundColor: WB_GREEN }}
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.3 }}
-              />
-            </div>
-          </div>
-
-          {/* Back button */}
-          {step > 0 && (
-            <button onClick={goBack} className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-4 transition-colors">
-              <ChevronLeft className="w-4 h-4" /> Back
-            </button>
-          )}
-
-          {/* Question */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={step}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-            >
-              <h2 className="text-2xl md:text-3xl font-bold mb-6" style={{ color: WB_BLUE }}>
-                {STEPS[step].q}
-              </h2>
-
-              {step === 0 && <StepOwner onSelect={v => handleSelect("owner", v)} />}
-              {step === 1 && <StepBoilerType onSelect={v => handleSelect("boilerType", v)} />}
-              {step === 2 && <StepHomeType onSelect={v => handleSelect("homeType", v)} />}
-              {step === 3 && <StepBedrooms onSelect={v => handleSelect("bedrooms", v)} />}
-              {step === 4 && <StepBathrooms onSelect={v => handleSelect("bathrooms", v)} />}
-              {step === 5 && <StepRadiators onSelect={v => handleSelect("radiators", v)} />}
-              {step === 6 && <StepPostcode onSubmit={handlePostcode} />}
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Trust strip */}
-          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-10 pt-6 border-t border-gray-100">
-            <img src={gasSafeLogo} alt="Gas Safe" className="h-7 w-auto opacity-60" />
-            <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-5 w-auto opacity-60" />
-            <img src={checkatradeLogo} alt="Checkatrade" className="h-4 w-auto opacity-60" />
-            <div className="flex items-center gap-1">
-              {[1,2,3,4,5].map(n => <Star key={n} className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />)}
-              <span className="text-xs font-bold text-gray-400 ml-1">4.8/5</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─── Result Section (after configurator) ─────────────────────────────────
-
-function ResultSection({ recommendation: rec, answers, onBack }: { recommendation: BoilerRec; answers: Answer; onBack: () => void }) {
-  return (
-    <section className="py-12 md:py-20 bg-white" id="your-quote">
-      <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto">
-          {/* Back */}
-          <button onClick={onBack} className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mb-6 transition-colors">
-            <ChevronLeft className="w-4 h-4" /> Change answers
-          </button>
-
-          {/* Header */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold text-white mb-4" style={{ backgroundColor: WB_GREEN }}>
-              <CheckCircle className="w-4 h-4" /> Your Recommended Boiler
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>
-              Your Fixed Price
-            </h2>
-            <p className="text-gray-500 mt-2">Based on your {answers.bedrooms} bedroom {answers.homeType} with {answers.radiators === "up-to-10" ? "up to 10" : answers.radiators === "10-15" ? "10-15" : "15+"} radiators</p>
-          </motion.div>
-
-          {/* Recommendation card */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <Card className="overflow-hidden border-2" style={{ borderColor: WB_GREEN }}>
-              <div className="relative">
-                <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-md text-white text-xs font-bold uppercase tracking-wider" style={{ backgroundColor: WB_GREEN }}>
-                  {rec.tag}
-                </div>
-              </div>
-              <div className="grid md:grid-cols-2">
-                {/* Image side */}
-                <div className="p-8 flex items-center justify-center" style={{ backgroundColor: "#F8F9FA" }}>
-                  <img src={rec.image} alt={rec.name} className="max-h-72 w-auto object-contain" />
-                </div>
-                {/* Info side */}
-                <div className="p-6 md:p-8 space-y-5">
-                  <div>
-                    <p className="text-sm text-gray-500">{rec.model}</p>
-                    <h3 className="text-2xl font-bold" style={{ color: WB_BLUE }}>{rec.name}</h3>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm text-gray-500">Your fixed price including installation:</p>
-                    <p className="text-4xl font-black" style={{ color: WB_GREEN }}>{rec.price}</p>
-                    <p className="text-sm text-gray-500">or from <strong>{rec.monthly}/month</strong> (0% APR representative)</p>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full" style={{ backgroundColor: `${WB_BLUE}10`, color: WB_BLUE }}>
-                      <ShieldCheck className="w-3.5 h-3.5" /> {rec.warranty} warranty
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full" style={{ backgroundColor: `${WB_BLUE}10`, color: WB_BLUE }}>
-                      <Zap className="w-3.5 h-3.5" /> {rec.kw} output
-                    </span>
-                  </div>
-                  <ul className="space-y-2">
-                    {rec.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                        <CheckCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: WB_GREEN }} />{f}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-
-          {/* What's included */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-8">
-            <Card className="p-6">
-              <h3 className="font-bold text-lg mb-4" style={{ color: WB_BLUE }}>Everything Included in Your Price</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {[
-                  "New Worcester Bosch boiler",
-                  "Full professional installation",
-                  "Chemical system flush",
-                  "Magnetic filter fitted",
-                  "New flue & fittings",
-                  "CO alarm installed",
-                  "Condensate pipework",
-                  "Thermostat included",
-                  "Electrical connection",
-                  "Old boiler removed & recycled",
-                  "Building control certificate",
-                  `Up to ${rec.warranty} manufacturer warranty`,
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm text-gray-600">
-                    <CheckCircle className="w-4 h-4 shrink-0" style={{ color: WB_GREEN }} />{item}
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </motion.div>
-
-          {/* CTA: Book assessment */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-8">
-            <BookingForm postcode={answers.postcode || ""} boiler={rec.name} price={rec.price} />
-          </motion.div>
-
-          {/* Callback alternative */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mt-6">
-            <Card className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${WB_BLUE}10` }}>
-                  <PhoneCall className="w-5 h-5" style={{ color: WB_BLUE }} />
-                </div>
-                <div>
-                  <h3 className="font-bold" style={{ color: WB_BLUE }}>Prefer to Talk?</h3>
-                  <p className="text-sm text-gray-500">Request a free callback — no forms, no fuss</p>
-                </div>
-              </div>
-              <CallbackForm boiler={rec.name} price={rec.price} />
-            </Card>
-          </motion.div>
-
-          {/* Why home assessment */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mt-8">
-            <Card className="p-6" style={{ backgroundColor: "#F8F9FA" }}>
-              <h3 className="font-bold text-lg mb-3" style={{ color: WB_BLUE }}>Why We Visit Your Home First</h3>
-              <p className="text-sm text-gray-500 mb-4">Unlike online-only companies that rely on algorithms, we send a Gas Safe registered engineer to your home to:</p>
-              <ul className="space-y-2">
-                {[
-                  "Check your existing pipework and flue position",
-                  "Confirm the right boiler size for your home",
-                  "Identify any additional work needed (no surprises on install day)",
-                  "Answer your questions face-to-face",
-                  "Lock in your fixed price — guaranteed",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                    <CheckCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: WB_GREEN }} />{item}
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
+function getBallpark(beds: string, baths: string, rads: string) {
+  const b = beds === "1-2" ? 1 : beds === "3" ? 2 : 3;
+  const ba = baths === "1" ? 1 : baths === "2" ? 2 : 3;
+  const r = rads === "up-to-10" ? 1 : rads === "10-15" ? 2 : 3;
+  const score = b + ba + r;
+  if (score <= 4) return boilers[0];
+  if (score <= 7) return boilers[1];
+  return boilers[2];
 }
 
 // ─── Booking Form ────────────────────────────────────────────────────────
 
-function BookingForm({ postcode, boiler, price }: { postcode: string; boiler: string; price: string }) {
+function BookingForm({ context }: { context?: string }) {
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
   const form = useForm<InsertInquiry>({
     resolver: zodResolver(insertInquirySchema),
-    defaultValues: { name: "", phone: "", postcode },
+    defaultValues: { name: "", phone: "", postcode: "" },
   });
   const mutation = useMutation({
     mutationFn: async (data: InsertInquiry) => {
-      const res = await apiRequest("POST", "/api/leads", { ...data, notes: `Configurator: ${boiler} at ${price}` });
+      const res = await apiRequest("POST", "/api/leads", { ...data, notes: context || "V11 booking form" });
       return res.json();
     },
     onSuccess: () => { setSubmitted(true); form.reset(); },
@@ -524,7 +123,7 @@ function BookingForm({ postcode, boiler, price }: { postcode: string; boiler: st
         </div>
         <h3 className="text-2xl font-bold text-white mb-2">You're Booked In!</h3>
         <p className="text-blue-200 mb-1">We'll call you within 2 hours to confirm your free home assessment.</p>
-        <p className="text-blue-200 text-sm">Your quote: <strong className="text-white">{boiler} — {price} installed</strong></p>
+        <p className="text-blue-200 text-sm">No obligation. No pressure. Just honest advice.</p>
       </Card>
     );
   }
@@ -533,7 +132,7 @@ function BookingForm({ postcode, boiler, price }: { postcode: string; boiler: st
     <Card className="p-6 md:p-8" style={{ backgroundColor: WB_BLUE }}>
       <div className="text-center mb-6">
         <h3 className="text-2xl font-bold text-white">Book Your Free Home Assessment</h3>
-        <p className="text-blue-200 mt-1">We'll confirm your {boiler} quote in person — no obligation, no pressure</p>
+        <p className="text-blue-200 mt-1">We'll visit, confirm the right boiler, and give you an exact fixed price — no obligation</p>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-4 max-w-sm mx-auto">
@@ -568,7 +167,7 @@ function BookingForm({ postcode, boiler, price }: { postcode: string; boiler: st
 
 // ─── Callback Form ───────────────────────────────────────────────────────
 
-function CallbackForm({ boiler, price }: { boiler?: string; price?: string }) {
+function CallbackForm({ context }: { context?: string }) {
   const [submitted, setSubmitted] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -576,10 +175,8 @@ function CallbackForm({ boiler, price }: { boiler?: string; price?: string }) {
   const mutation = useMutation({
     mutationFn: async () => {
       const res = await apiRequest("POST", "/api/leads", {
-        name,
-        phone,
-        postcode: "",
-        notes: `Callback request${boiler ? `: ${boiler} at ${price}` : ""}`,
+        name, phone, postcode: "",
+        notes: `Callback request${context ? `: ${context}` : ""}`,
       });
       return res.json();
     },
@@ -601,74 +198,18 @@ function CallbackForm({ boiler, price }: { boiler?: string; price?: string }) {
 
   return (
     <div className="space-y-4">
-      <Input
-        placeholder="Your Name"
-        value={name}
-        onChange={e => setName(e.target.value)}
-        className="border-gray-200 py-5 text-base"
-      />
-      <Input
-        placeholder="Phone Number"
-        type="tel"
-        value={phone}
-        onChange={e => setPhone(e.target.value)}
-        className="border-gray-200 py-5 text-base"
-      />
-      <Button
-        size="lg"
-        onClick={() => mutation.mutate()}
-        disabled={!name.trim() || !phone.trim() || mutation.isPending}
-        className="w-full text-white font-bold text-base"
-        style={{ backgroundColor: WB_BLUE, borderColor: WB_BLUE }}
-      >
-        {mutation.isPending ? "Requesting..." : (
-          <><PhoneCall className="w-5 h-5 mr-2" /> Request a Callback</>
-        )}
+      <Input placeholder="Your Name" value={name} onChange={e => setName(e.target.value)} className="border-gray-200 py-5 text-base" />
+      <Input placeholder="Phone Number" type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="border-gray-200 py-5 text-base" />
+      <Button size="lg" onClick={() => mutation.mutate()} disabled={!name.trim() || !phone.trim() || mutation.isPending}
+        className="w-full text-white font-bold text-base" style={{ backgroundColor: WB_BLUE, borderColor: WB_BLUE }}>
+        {mutation.isPending ? "Requesting..." : <><PhoneCall className="w-5 h-5 mr-2" /> Request a Callback</>}
       </Button>
       <p className="text-xs text-center text-gray-400">We'll call you back within 2 hours. No obligation.</p>
     </div>
   );
 }
 
-// ─── Shared Sections (inherited from V10) ────────────────────────────────
-
-function PromoBanner() {
-  return (
-    <div className="w-full py-2.5 px-4 text-center" style={{ backgroundColor: WB_BLUE }}>
-      <div className="container mx-auto flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-        <span className="text-white text-sm font-semibold">Spring Worcester Bosch Promotion</span>
-        <span className="text-blue-200 text-sm hidden sm:inline">|</span>
-        <span className="text-white text-sm">New Boiler From <strong>£1,790</strong> Installed + <strong>Free Home Assessment</strong></span>
-        <button onClick={() => scrollTo("configurator")} className="text-sm font-bold underline underline-offset-2 flex items-center gap-0.5" style={{ color: WB_GREEN }}>
-          Get Your Price <ChevronRight className="w-3.5 h-3.5" />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function Header() {
-  return (
-    <header className="sticky top-0 w-full z-50 bg-white shadow-sm">
-      <PromoBanner />
-      <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2 md:gap-3 min-w-0 overflow-hidden">
-          <img src={worcesterBoschLogo} alt="Worcester Bosch Accredited Installer" className="h-6 md:h-8 w-auto shrink-0" />
-          <div className="hidden md:block h-6 w-px bg-gray-200 shrink-0" />
-          <img src={wsbLogo} alt={COMPANY} className="hidden md:block h-3 lg:h-4 w-auto shrink-0" />
-        </div>
-        <div className="flex items-center gap-2 md:gap-4 shrink-0">
-          <a href={PHONE_HREF} className="hidden lg:flex items-center gap-2 font-bold text-base" style={{ color: WB_BLUE }}>
-            <Phone className="w-4 h-4" /><span>{PHONE}</span>
-          </a>
-          <Button size="sm" onClick={() => scrollTo("configurator")} className="text-white font-semibold text-xs md:text-sm whitespace-nowrap" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
-            Get Your Price
-          </Button>
-        </div>
-      </div>
-    </header>
-  );
-}
+// ─── Hero Section ────────────────────────────────────────────────────────
 
 function HeroSection() {
   return (
@@ -681,14 +222,14 @@ function HeroSection() {
             <Zap className="w-4 h-4" style={{ color: WB_GREEN }} /> Spring Promotion — Save Up To £500
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight" style={{ color: WB_BLUE }}>
-            Get Your Fixed Price<br />In 60 Seconds
+            Worcester Bosch Boilers<br />From <span style={{ color: WB_GREEN }}>£1,790</span> Installed
           </h1>
           <p className="text-lg md:text-xl text-gray-700 max-w-lg mx-auto">
-            Answer a few quick questions about your home and we'll show you the exact cost of a new Worcester Bosch boiler — fully installed, no hidden extras.
+            Transparent pricing. Free home assessment. Up to 12 years warranty. From your local Gas Safe registered engineer.
           </p>
           <div className="flex flex-wrap justify-center gap-3 pt-1">
-            <Button size="lg" onClick={() => scrollTo("configurator")} className="text-white font-bold text-base px-8" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
-              Get My Fixed Price <ArrowRight className="w-5 h-5 ml-1" />
+            <Button size="lg" onClick={() => scrollTo("pricing")} className="text-white font-bold text-base px-8" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
+              See Our Prices <ArrowRight className="w-5 h-5 ml-1" />
             </Button>
             <a href={PHONE_HREF}>
               <Button size="lg" variant="outline" className="font-bold text-base px-8 gap-2 border-gray-300 text-gray-800 bg-white/70 backdrop-blur-sm">
@@ -711,12 +252,328 @@ function HeroSection() {
   );
 }
 
-function ComparisonSection() {
+// ─── Pricing Section ─────────────────────────────────────────────────────
+
+function PricingSection() {
+  return (
+    <section id="pricing" className="py-14 md:py-20 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-4">
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Transparent Pricing</p>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>New Boiler Prices — Fully Installed</h2>
+          <p className="text-gray-500 mt-2 max-w-xl mx-auto">Everything included: boiler, installation, flue, fittings, chemical flush, magnetic filter, CO alarm, building control certificate, and old boiler removal.</p>
+        </div>
+
+        {/* Urgency banner */}
+        <div className="max-w-2xl mx-auto mb-10 rounded-lg px-4 py-3 text-center" style={{ backgroundColor: "#FFF3CD" }}>
+          <p className="text-sm font-semibold" style={{ color: "#856404" }}>
+            <Clock className="w-4 h-4 inline mr-1" />
+            Spring offer ends 31st March — limited installations remaining at this price
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {boilers.map((boiler, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+              <Card className={`relative overflow-hidden h-full flex flex-col ${i === 1 ? "border-2 ring-2 ring-offset-2" : "border"}`} style={i === 1 ? { borderColor: WB_GREEN, ringColor: WB_GREEN } : {}}>
+                {/* Tag */}
+                <div className="absolute top-0 right-0 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white rounded-bl-lg" style={{ backgroundColor: i === 1 ? WB_GREEN : WB_BLUE }}>
+                  {boiler.tag}
+                </div>
+
+                {/* Image */}
+                <div className="p-6 pb-2 flex items-center justify-center" style={{ backgroundColor: "#F8F9FA" }}>
+                  <img src={boiler.image} alt={boiler.name} className="h-48 w-auto object-contain" />
+                </div>
+
+                {/* Content */}
+                <div className="p-6 flex flex-col flex-1">
+                  <p className="text-xs text-gray-400 uppercase tracking-wider">{boiler.model}</p>
+                  <h3 className="text-xl font-bold mt-1" style={{ color: WB_BLUE }}>{boiler.name}</h3>
+
+                  <div className="mt-4 mb-2">
+                    <p className="text-sm text-gray-500">From</p>
+                    <p className="text-4xl font-black" style={{ color: WB_GREEN }}>{boiler.price}</p>
+                    <p className="text-sm text-gray-500">or from <strong>{boiler.monthly}/mo</strong> (0% APR)</p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 my-3">
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full" style={{ backgroundColor: `${WB_BLUE}10`, color: WB_BLUE }}>
+                      <ShieldCheck className="w-3 h-3" /> {boiler.warranty}
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full" style={{ backgroundColor: `${WB_BLUE}10`, color: WB_BLUE }}>
+                      <Zap className="w-3 h-3" /> {boiler.kw}
+                    </span>
+                  </div>
+
+                  <ul className="space-y-1.5 flex-1">
+                    {boiler.features.map((f, j) => (
+                      <li key={j} className="flex items-start gap-2 text-sm text-gray-600">
+                        <CheckCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: WB_GREEN }} />{f}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <p className="text-xs text-gray-400 mt-3 italic">Ideal for: {boiler.idealFor}</p>
+
+                  <Button size="lg" onClick={() => scrollTo("book")} className="w-full mt-4 text-white font-bold" style={{ backgroundColor: i === 1 ? WB_GREEN : WB_BLUE }}>
+                    Book Free Assessment
+                  </Button>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        <p className="text-center text-sm text-gray-400 mt-6">
+          Exact price confirmed during your free home assessment. No hidden extras — the price we quote is the price you pay.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ─── What Happens Next ───────────────────────────────────────────────────
+
+function WhatHappensNext() {
+  const steps = [
+    { icon: <Phone className="w-6 h-6" />, title: "1. Book Your Free Assessment", desc: "Fill in the form or call us. We'll arrange a visit at a time that suits you." },
+    { icon: <Home className="w-6 h-6" />, title: "2. We Visit Your Home", desc: "Our Gas Safe engineer checks your system, confirms the right boiler, and gives you an exact fixed price." },
+    { icon: <CheckCircle className="w-6 h-6" />, title: "3. You Decide — No Pressure", desc: "Take your time. There's no hard sell. If you want to go ahead, we can usually install within 48 hours." },
+    { icon: <Flame className="w-6 h-6" />, title: "4. Installed & Guaranteed", desc: "Professional installation in a day. Up to 12 years manufacturer warranty. We handle everything." },
+  ];
+
   return (
     <section className="py-14 md:py-16" style={{ backgroundColor: "#F8F9FA" }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
-          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Why Choose Us Over Online-Only</p>
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Simple Process</p>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>What Happens Next</h2>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+          {steps.map((step, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+              <Card className="p-6 h-full text-center">
+                <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ backgroundColor: `${WB_GREEN}15`, color: WB_GREEN }}>
+                  {step.icon}
+                </div>
+                <h3 className="font-bold mb-2" style={{ color: WB_BLUE }}>{step.title}</h3>
+                <p className="text-sm text-gray-500">{step.desc}</p>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Main Booking Section ────────────────────────────────────────────────
+
+function BookingSection() {
+  return (
+    <section id="book" className="py-14 md:py-20 bg-white">
+      <div className="container mx-auto px-4 max-w-lg">
+        <BookingForm context="V11 main booking" />
+
+        {/* Callback alternative */}
+        <div className="mt-6">
+          <Card className="p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${WB_BLUE}10` }}>
+                <PhoneCall className="w-5 h-5" style={{ color: WB_BLUE }} />
+              </div>
+              <div>
+                <h3 className="font-bold" style={{ color: WB_BLUE }}>Prefer to Talk?</h3>
+                <p className="text-sm text-gray-500">Request a free callback — no forms, no fuss</p>
+              </div>
+            </div>
+            <CallbackForm context="V11 callback" />
+          </Card>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Ballpark Quiz ("Want to find out without a visit?") ─────────────────
+
+function BallparkQuiz() {
+  const [open, setOpen] = useState(false);
+  const [beds, setBeds] = useState("");
+  const [baths, setBaths] = useState("");
+  const [rads, setRads] = useState("");
+  const [result, setResult] = useState<typeof boilers[0] | null>(null);
+
+  const handleSubmit = () => {
+    if (beds && baths && rads) {
+      setResult(getBallpark(beds, baths, rads));
+    }
+  };
+
+  const OptionButton = ({ value, current, onClick, children }: { value: string; current: string; onClick: (v: string) => void; children: React.ReactNode }) => (
+    <button
+      onClick={() => onClick(value)}
+      className={`px-4 py-3 rounded-lg border-2 text-sm font-semibold transition-all ${current === value ? "text-white" : "bg-white hover:border-gray-300"}`}
+      style={current === value ? { backgroundColor: WB_GREEN, borderColor: WB_GREEN } : { borderColor: "#E5E7EB", color: WB_BLUE }}
+    >
+      {children}
+    </button>
+  );
+
+  return (
+    <section className="py-14 md:py-16 bg-white">
+      <div className="container mx-auto px-4 max-w-2xl">
+        {!open && !result && (
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center">
+            <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ backgroundColor: `${WB_BLUE}08` }}>
+              <Calculator className="w-8 h-8" style={{ color: WB_BLUE }} />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: WB_BLUE }}>
+              Want a Ballpark Price Without a Visit?
+            </h2>
+            <p className="text-gray-500 mb-6 max-w-md mx-auto">
+              Answer 3 quick questions and we'll suggest which boiler is likely right for your home — with an estimated starting price.
+            </p>
+            <Button size="lg" onClick={() => setOpen(true)} variant="outline" className="font-bold text-base px-8 gap-2" style={{ borderColor: WB_BLUE, color: WB_BLUE }}>
+              <HelpCircle className="w-5 h-5" /> Get a Ballpark Estimate
+            </Button>
+          </motion.div>
+        )}
+
+        <AnimatePresence>
+          {open && !result && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <Card className="p-6 md:p-8">
+                <h3 className="text-xl font-bold mb-1 text-center" style={{ color: WB_BLUE }}>Quick Ballpark Estimate</h3>
+                <p className="text-sm text-gray-500 text-center mb-6">This is an estimate only — your free home assessment confirms the exact price.</p>
+
+                <div className="space-y-6">
+                  {/* Bedrooms */}
+                  <div>
+                    <p className="font-semibold mb-3" style={{ color: WB_BLUE }}>How many bedrooms?</p>
+                    <div className="grid grid-cols-3 gap-3">
+                      <OptionButton value="1-2" current={beds} onClick={setBeds}>1-2</OptionButton>
+                      <OptionButton value="3" current={beds} onClick={setBeds}>3</OptionButton>
+                      <OptionButton value="4+" current={beds} onClick={setBeds}>4+</OptionButton>
+                    </div>
+                  </div>
+
+                  {/* Bathrooms */}
+                  <div>
+                    <p className="font-semibold mb-3" style={{ color: WB_BLUE }}>How many bathrooms/showers?</p>
+                    <div className="grid grid-cols-3 gap-3">
+                      <OptionButton value="1" current={baths} onClick={setBaths}>1</OptionButton>
+                      <OptionButton value="2" current={baths} onClick={setBaths}>2</OptionButton>
+                      <OptionButton value="3+" current={baths} onClick={setBaths}>3+</OptionButton>
+                    </div>
+                  </div>
+
+                  {/* Radiators */}
+                  <div>
+                    <p className="font-semibold mb-3" style={{ color: WB_BLUE }}>How many radiators?</p>
+                    <div className="grid grid-cols-3 gap-3">
+                      <OptionButton value="up-to-10" current={rads} onClick={setRads}>Up to 10</OptionButton>
+                      <OptionButton value="10-15" current={rads} onClick={setRads}>10-15</OptionButton>
+                      <OptionButton value="15+" current={rads} onClick={setRads}>15+</OptionButton>
+                    </div>
+                  </div>
+
+                  <Button size="lg" onClick={handleSubmit} disabled={!beds || !baths || !rads}
+                    className="w-full text-white font-bold text-base py-6" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
+                    Show My Estimate
+                  </Button>
+                </div>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {result && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              <Card className="overflow-hidden border-2" style={{ borderColor: WB_GREEN }}>
+                <div className="p-6 md:p-8 text-center">
+                  <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Based on your answers</p>
+                  <h3 className="text-2xl font-bold mb-1" style={{ color: WB_BLUE }}>We'd Recommend the {result.name}</h3>
+                  <p className="text-gray-500 text-sm mb-6">Estimated starting price for a standard installation:</p>
+
+                  <div className="flex items-center justify-center gap-6 mb-6">
+                    <img src={result.image} alt={result.name} className="h-32 w-auto object-contain" />
+                    <div className="text-left">
+                      <p className="text-sm text-gray-500">From</p>
+                      <p className="text-4xl font-black" style={{ color: WB_GREEN }}>{result.price}</p>
+                      <p className="text-sm text-gray-500">or from <strong>{result.monthly}/mo</strong></p>
+                      <p className="text-xs mt-1"><ShieldCheck className="w-3 h-3 inline" style={{ color: WB_BLUE }} /> {result.warranty} warranty</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-amber-50 rounded-lg p-4 mb-6 text-sm text-amber-800">
+                    <strong>This is an estimate.</strong> The exact price depends on your pipework, flue position, and any additional work needed.
+                    A free home assessment confirms everything — no obligation.
+                  </div>
+
+                  <Button size="lg" onClick={() => scrollTo("book")} className="text-white font-bold text-base px-8" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
+                    Book Free Assessment to Confirm Price
+                  </Button>
+
+                  <button onClick={() => { setResult(null); setOpen(false); setBeds(""); setBaths(""); setRads(""); }}
+                    className="block mx-auto mt-3 text-sm text-gray-400 underline">Start over</button>
+                </div>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}
+
+// ─── Why Home Assessment ─────────────────────────────────────────────────
+
+function WhyAssessment() {
+  return (
+    <section className="py-14 md:py-16" style={{ backgroundColor: "#F8F9FA" }}>
+      <div className="container mx-auto px-4">
+        <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Why We Visit First</p>
+            <h2 className="text-3xl font-bold mb-4" style={{ color: WB_BLUE }}>No Surprises on Install Day</h2>
+            <p className="text-gray-500 mb-6">
+              Unlike online-only companies that rely on algorithms, we send a Gas Safe registered engineer to your home. This means:
+            </p>
+            <ul className="space-y-3">
+              {[
+                "We check your existing pipework and flue position",
+                "We confirm the right boiler size for your home",
+                "We identify any additional work needed upfront",
+                "We answer your questions face-to-face",
+                "The price we quote is the price you pay — guaranteed",
+              ].map((item, i) => (
+                <li key={i} className="flex items-start gap-3 text-gray-600">
+                  <CheckCircle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: WB_GREEN }} />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-xl overflow-hidden shadow-lg">
+            <img src={engineerImg} alt="Gas Safe engineer" className="w-full h-auto" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Comparison Table ────────────────────────────────────────────────────
+
+function ComparisonSection() {
+  return (
+    <section className="py-14 md:py-16 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Why Choose Us</p>
           <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>The Best of Both Worlds</h2>
         </div>
         <div className="max-w-3xl mx-auto overflow-hidden rounded-lg border border-gray-200 bg-white">
@@ -730,13 +587,13 @@ function ComparisonSection() {
             </thead>
             <tbody>
               {[
-                { feature: "Fixed price online", online: true, us: true },
+                { feature: "Transparent starting prices", online: true, us: true },
                 { feature: "Home assessment before install", online: false, us: true },
                 { feature: "Named local engineer", online: false, us: true },
                 { feature: "No algorithm guesswork", online: false, us: true },
                 { feature: "Worcester Bosch warranty", online: true, us: true },
                 { feature: "Price match guarantee", online: false, us: true },
-                { feature: "Aftercare & servicing", online: false, us: true },
+                { feature: "Aftercare & annual servicing", online: false, us: true },
               ].map((row, i) => (
                 <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                   <td className="py-3 px-4 font-medium" style={{ color: WB_BLUE }}>{row.feature}</td>
@@ -752,16 +609,18 @@ function ComparisonSection() {
   );
 }
 
+// ─── Testimonials ────────────────────────────────────────────────────────
+
 function Testimonials() {
   const reviews = [
     { name: "Mr & Mrs Thompson", location: "Chatham", text: "The free assessment was really helpful. No pressure, just honest advice about our old boiler. We ended up saving over £300 a year!", rating: 5 },
-    { name: "David R", location: "Gillingham", text: "Got a fixed price online, then Sanjay came round and confirmed everything. No surprises. Boiler installed two days later.", rating: 5 },
+    { name: "David R", location: "Gillingham", text: "Transparent prices on the website, then Sanjay came round and confirmed everything. No surprises. Boiler installed two days later.", rating: 5 },
     { name: "Karen M", location: "Rochester", text: "We had no idea our old boiler was only 60% efficient. The savings since upgrading have been incredible.", rating: 5 },
     { name: "James P", location: "Rainham", text: "Professional assessment, clear explanation of the savings. No hard sell. Very impressed with the service.", rating: 5 },
   ];
 
   return (
-    <section className="py-14 md:py-16 bg-white">
+    <section className="py-14 md:py-16" style={{ backgroundColor: "#F8F9FA" }}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Real Customer Reviews</p>
@@ -784,18 +643,21 @@ function Testimonials() {
   );
 }
 
+// ─── FAQ ─────────────────────────────────────────────────────────────────
+
 function FAQ() {
   const faqs = [
-    { q: "How accurate is the online price?", a: "Very accurate for standard installations. The home assessment confirms everything — if anything changes, we'll explain why before you commit. Most customers get exactly the price shown." },
+    { q: "Why are these 'from' prices?", a: "Every home is different — pipework, flue position, and access can affect the final cost. Our starting prices cover a standard installation. The free home assessment confirms your exact price, and most customers pay exactly what's shown." },
     { q: "Is the home assessment really free?", a: "Yes, completely free with no obligation. Our engineer will check your system and confirm the right boiler. There's no pressure to go ahead." },
     { q: "How quickly can you install?", a: "Once you've had your assessment and decided to go ahead, we can usually install within 48 hours. Most installs take just one day." },
     { q: "What areas do you cover?", a: "We cover Medway, Kent and surrounding areas including Chatham, Rochester, Gillingham, Rainham, Strood, Gravesend, Canterbury and more." },
     { q: "What warranties do you offer?", a: "As a Worcester Bosch Accredited Installer, we can offer up to 12 year manufacturer-backed guarantees on Greenstar boilers. This is the longest warranty available." },
     { q: "Do you offer finance?", a: "Yes, we offer 0% APR representative finance options. We'll go through all payment options during your home assessment." },
+    { q: "Can you beat BOXT / online prices?", a: "Yes — our prices are competitive with or lower than online-only companies, and you get a proper home assessment included. We price match any like-for-like Worcester Bosch quote." },
   ];
 
   return (
-    <section className="py-14 md:py-16" style={{ backgroundColor: "#F8F9FA" }}>
+    <section className="py-14 md:py-16 bg-white">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>Frequently Asked Questions</h2>
@@ -810,6 +672,46 @@ function FAQ() {
         </Accordion>
       </div>
     </section>
+  );
+}
+
+// ─── Shared Components ───────────────────────────────────────────────────
+
+function PromoBanner() {
+  return (
+    <div className="w-full py-2.5 px-4 text-center" style={{ backgroundColor: WB_BLUE }}>
+      <div className="container mx-auto flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+        <span className="text-white text-sm font-semibold">Spring Worcester Bosch Promotion</span>
+        <span className="text-blue-200 text-sm hidden sm:inline">|</span>
+        <span className="text-white text-sm">New Boiler From <strong>£1,790</strong> Installed + <strong>Free Home Assessment</strong></span>
+        <button onClick={() => scrollTo("pricing")} className="text-sm font-bold underline underline-offset-2 flex items-center gap-0.5" style={{ color: WB_GREEN }}>
+          See Prices <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function Header() {
+  return (
+    <header className="sticky top-0 w-full z-50 bg-white shadow-sm">
+      <PromoBanner />
+      <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2 md:gap-3 min-w-0 overflow-hidden">
+          <img src={worcesterBoschLogo} alt="Worcester Bosch Accredited Installer" className="h-6 md:h-8 w-auto shrink-0" />
+          <div className="hidden md:block h-6 w-px bg-gray-200 shrink-0" />
+          <img src={wsbLogo} alt={COMPANY} className="hidden md:block h-3 lg:h-4 w-auto shrink-0" />
+        </div>
+        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+          <a href={PHONE_HREF} className="hidden lg:flex items-center gap-2 font-bold text-base" style={{ color: WB_BLUE }}>
+            <Phone className="w-4 h-4" /><span>{PHONE}</span>
+          </a>
+          <Button size="sm" onClick={() => scrollTo("pricing")} className="text-white font-semibold text-xs md:text-sm whitespace-nowrap" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
+            See Prices
+          </Button>
+        </div>
+      </div>
+    </header>
   );
 }
 
@@ -834,10 +736,9 @@ function Footer() {
           <div>
             <p className="font-bold text-sm mb-3" style={{ color: WB_BLUE }}>Products</p>
             <ul className="space-y-2 text-sm">
-              <li>Greenstar 2000i</li>
-              <li>Greenstar 4000</li>
-              <li>Greenstar 8000 Life</li>
-              <li>EasyControl Smart Thermostat</li>
+              <li>Greenstar 2000i — from £1,790</li>
+              <li>Greenstar 4000 — from £2,199</li>
+              <li>Greenstar 8000 Life — from £2,690</li>
             </ul>
           </div>
           <div>
@@ -861,42 +762,30 @@ function StickyMobileCTA() {
 
   return (
     <>
-      {/* Callback modal */}
       <AnimatePresence>
         {showCallback && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-end justify-center bg-black/40"
-            onClick={() => setShowCallback(false)}
-          >
-            <motion.div
-              initial={{ y: 200 }}
-              animate={{ y: 0 }}
-              exit={{ y: 200 }}
-              className="w-full max-w-lg bg-white rounded-t-2xl p-6 pb-8"
-              onClick={e => e.stopPropagation()}
-            >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-end justify-center bg-black/40" onClick={() => setShowCallback(false)}>
+            <motion.div initial={{ y: 200 }} animate={{ y: 0 }} exit={{ y: 200 }}
+              className="w-full max-w-lg bg-white rounded-t-2xl p-6 pb-8" onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold" style={{ color: WB_BLUE }}>Request a Free Callback</h3>
                 <button onClick={() => setShowCallback(false)} className="text-gray-400 hover:text-gray-600 text-xl">&times;</button>
               </div>
               <p className="text-sm text-gray-500 mb-4">Leave your name and number — we'll call you back within 2 hours during business hours.</p>
-              <CallbackForm />
+              <CallbackForm context="Mobile sticky callback" />
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Sticky bar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden shadow-lg">
         <div className="flex">
           <button onClick={() => setShowCallback(true)} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_GREEN }}>
             <PhoneCall className="w-5 h-5" /> Book a Callback
           </button>
-          <button onClick={() => scrollTo("configurator")} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_BLUE }}>
-            Get Your Price
+          <button onClick={() => scrollTo("pricing")} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_BLUE }}>
+            See Prices
           </button>
         </div>
       </div>
@@ -911,7 +800,11 @@ export default function V11() {
     <div className="min-h-screen flex flex-col font-sans">
       <Header />
       <HeroSection />
-      <Configurator />
+      <PricingSection />
+      <WhatHappensNext />
+      <BookingSection />
+      <BallparkQuiz />
+      <WhyAssessment />
       <ComparisonSection />
       <Testimonials />
       <FAQ />
