@@ -45,7 +45,7 @@ function scrollTo(id: string) {
 
 const boilers = [
   {
-    name: "Greenstar 2000i",
+    name: "Greenstar 2000",
     model: "25kW Combi",
     price: "£1,790",
     priceNum: 1790,
@@ -228,8 +228,8 @@ function HeroSection() {
             Transparent pricing. Free home assessment. Up to 12 years warranty. From your local Worcester Bosch accredited installer.
           </p>
           <div className="flex flex-wrap justify-center gap-3 pt-1">
-            <Button size="lg" onClick={() => scrollTo("pricing")} className="text-white font-bold text-base px-8" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
-              See Our Prices <ArrowRight className="w-5 h-5 ml-1" />
+            <Button size="lg" onClick={() => scrollTo("book")} className="text-white font-bold text-base px-8" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
+              Book Free Assessment <ArrowRight className="w-5 h-5 ml-1" />
             </Button>
             <a href={PHONE_HREF}>
               <Button size="lg" variant="outline" className="font-bold text-base px-8 gap-2 border-gray-300 text-gray-800 bg-white/70 backdrop-blur-sm">
@@ -684,8 +684,8 @@ function PromoBanner() {
         <span className="text-white text-sm font-semibold">Spring Worcester Bosch Promotion</span>
         <span className="text-blue-200 text-sm hidden sm:inline">|</span>
         <span className="text-white text-sm">New Boiler From <strong>£1,790</strong> Installed + <strong>Free Home Assessment</strong></span>
-        <button onClick={() => scrollTo("pricing")} className="text-sm font-bold underline underline-offset-2 flex items-center gap-0.5" style={{ color: WB_GREEN }}>
-          See Prices <ChevronRight className="w-3.5 h-3.5" />
+        <button onClick={() => scrollTo("book")} className="text-sm font-bold underline underline-offset-2 flex items-center gap-0.5" style={{ color: WB_GREEN }}>
+          Book Free Assessment <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>
@@ -706,8 +706,8 @@ function Header() {
           <a href={PHONE_HREF} className="hidden lg:flex items-center gap-2 font-bold text-base" style={{ color: WB_BLUE }}>
             <Phone className="w-4 h-4" /><span>{PHONE}</span>
           </a>
-          <Button size="sm" onClick={() => scrollTo("pricing")} className="text-white font-semibold text-xs md:text-sm whitespace-nowrap" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
-            See Prices
+          <Button size="sm" onClick={() => scrollTo("book")} className="text-white font-semibold text-xs md:text-sm whitespace-nowrap" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
+            Book Free Assessment
           </Button>
         </div>
       </div>
@@ -736,7 +736,7 @@ function Footer() {
           <div>
             <p className="font-bold text-sm mb-3" style={{ color: WB_BLUE }}>Products</p>
             <ul className="space-y-2 text-sm">
-              <li>Greenstar 2000i — from £1,790</li>
+              <li>Greenstar 2000 — from £1,790</li>
               <li>Greenstar 4000 — from £2,199</li>
               <li>Greenstar 8000 Life — from £2,690</li>
             </ul>
@@ -784,8 +784,8 @@ function StickyMobileCTA() {
           <button onClick={() => setShowCallback(true)} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_GREEN }}>
             <PhoneCall className="w-5 h-5" /> Book a Callback
           </button>
-          <button onClick={() => scrollTo("pricing")} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_BLUE }}>
-            See Prices
+          <button onClick={() => scrollTo("book")} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_BLUE }}>
+            Book Assessment
           </button>
         </div>
       </div>
