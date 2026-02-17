@@ -225,7 +225,7 @@ function HeroSection() {
             Worcester Bosch Boilers<br />From <span style={{ color: WB_GREEN }}>£1,790</span> Installed
           </h1>
           <p className="text-lg md:text-xl text-gray-700 max-w-lg mx-auto">
-            Transparent pricing. Free home assessment. Up to 12 years warranty. From your local Gas Safe registered engineer.
+            Transparent pricing. Free home assessment. Up to 12 years warranty. From your local Worcester Bosch accredited installer.
           </p>
           <div className="flex flex-wrap justify-center gap-3 pt-1">
             <Button size="lg" onClick={() => scrollTo("pricing")} className="text-white font-bold text-base px-8" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
