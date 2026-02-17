@@ -93,16 +93,16 @@ function HeroSection() {
         style={{ backgroundImage: `url(${heroLifestyle})` }}
         data-testid="img-hero-lifestyle"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/70 to-black/40" />
+      <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/80 to-white/50" />
       <div className="relative z-10 container mx-auto px-4 py-20 md:py-28 lg:py-36">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-2xl space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold bg-white/15 backdrop-blur-sm text-white" data-testid="badge-spring-promo">
+          <div className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold text-white" style={{ backgroundColor: WB_BLUE }} data-testid="badge-spring-promo">
             <Zap className="w-4 h-4" style={{ color: WB_GREEN }} /> Spring Promotion - Save Up To &pound;500
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight text-white" data-testid="text-hero-headline">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight" style={{ color: WB_BLUE }} data-testid="text-hero-headline">
             Is Your Boiler<br />Costing You<br />Money?
           </h1>
-          <p className="text-lg md:text-xl text-white/80 max-w-lg">
+          <p className="text-lg md:text-xl text-gray-700 max-w-lg">
             If your boiler is over 10 years old, you could be wasting hundreds of pounds a year. Book a free, no-obligation home heating assessment today.
           </p>
           <div className="flex flex-wrap gap-3 pt-1">
@@ -110,27 +110,27 @@ function HeroSection() {
               Book Free Assessment
             </Button>
             <a href={PHONE_HREF} data-testid="link-phone-hero">
-              <Button size="lg" variant="outline" className="font-bold text-base px-8 gap-2 text-white border-white/40 bg-white/10 backdrop-blur-sm">
+              <Button size="lg" variant="outline" className="font-bold text-base px-8 gap-2 border-gray-300 text-gray-800 bg-white/70 backdrop-blur-sm">
                 <Phone className="w-5 h-5" /> {PHONE}
               </Button>
             </a>
           </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-6" data-testid="hero-trust-logos">
-            <img src={gasSafeLogo} alt="Gas Safe Registered" className="h-10 w-auto brightness-0 invert opacity-90" />
-            <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-7 w-auto brightness-0 invert opacity-90" />
-            <img src={checkatradeLogo} alt="Checkatrade" className="h-6 w-auto brightness-0 invert opacity-90" />
+            <img src={gasSafeLogo} alt="Gas Safe Registered" className="h-10 w-auto" />
+            <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-7 w-auto" />
+            <img src={checkatradeLogo} alt="Checkatrade" className="h-6 w-auto" />
             <div className="flex items-center gap-1.5">
               <div className="flex gap-0.5">
                 {[1,2,3,4,5].map(n => <Star key={n} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}
               </div>
-              <span className="text-sm font-bold text-white">4.8/5</span>
+              <span className="text-sm font-bold text-gray-800">4.8/5</span>
             </div>
           </div>
           <div className="flex items-center gap-3 pt-2">
             <img src={whichBestBuy} alt="Which? Best Buy 2025" className="h-14 w-auto" />
             <div>
-              <p className="text-white font-bold text-sm">Which? Best Buy 2025</p>
-              <p className="text-white/70 text-xs">Recommended by Which? magazine</p>
+              <p className="font-bold text-sm" style={{ color: WB_BLUE }}>Which? Best Buy 2025</p>
+              <p className="text-gray-500 text-xs">Recommended by Which? magazine</p>
             </div>
           </div>
         </motion.div>
