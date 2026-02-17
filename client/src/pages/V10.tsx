@@ -65,9 +65,9 @@ function Header() {
       <PromoBanner />
       <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-2">
         <div className="flex items-center gap-3 min-w-0">
-          <img src={worcesterBoschLogo} alt="Worcester Bosch Accredited Installer" className="h-7 md:h-8 w-auto shrink-0" data-testid="img-wb-logo" />
+          <img src={worcesterBoschLogo} alt="Worcester Bosch Accredited Installer" className="h-8 md:h-10 w-auto shrink-0" data-testid="img-wb-logo" />
           <div className="hidden sm:block h-6 w-px bg-gray-200 shrink-0" />
-          <img src={wsbLogo} alt={COMPANY} className="hidden sm:block h-6 md:h-7 w-auto shrink-0" data-testid="img-company-logo" />
+          <img src={wsbLogo} alt={COMPANY} className="hidden sm:block h-5 md:h-6 w-auto shrink-0" data-testid="img-company-logo" />
         </div>
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
           <a href={PHONE_HREF} className="hidden lg:flex items-center gap-2 font-bold text-base" style={{ color: WB_BLUE }} data-testid="link-phone-header">
