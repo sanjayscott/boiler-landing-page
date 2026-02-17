@@ -15,6 +15,7 @@ import V7 from "@/pages/V7";
 import V8 from "@/pages/V8";
 import V9 from "@/pages/V9";
 import V10 from "@/pages/V10";
+import V11 from "@/pages/V11";
 
 function Router() {
   return (
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/v8" component={V8} />
       <Route path="/v9" component={V9} />
       <Route path="/v10" component={V10} />
+      <Route path="/v11" component={V11} />
       <Route component={NotFound} />
     </Switch>
   );
