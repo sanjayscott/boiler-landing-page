@@ -93,8 +93,8 @@ function HeroSection() {
         style={{ backgroundImage: `url(${heroLifestyle})` }}
         data-testid="img-hero-lifestyle"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/80 to-white/50" />
-      <div className="relative z-10 container mx-auto px-4 py-20 md:py-28 lg:py-36">
+      <div className="absolute inset-0 bg-white/85" />
+      <div className="relative z-10 container mx-auto px-4 py-12 md:py-20 lg:py-28">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-2xl space-y-6">
           <div className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold text-white" style={{ backgroundColor: WB_BLUE }} data-testid="badge-spring-promo">
             <Zap className="w-4 h-4" style={{ color: WB_GREEN }} /> Spring Promotion - Save Up To &pound;500
