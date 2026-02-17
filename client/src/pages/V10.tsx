@@ -23,6 +23,8 @@ import worcesterBoschLogo from "@assets/worcester-bosch-logo_(2)_1771281246798.p
 import heroImg from "@assets/4000-Traditional_Kitchen-face-on_1771281416429.jpg";
 import boiler4000Img from "@assets/Worcester_Bosch_4000_Which_24_1080x1080_1771281354652.jpg";
 import boiler8000Img from "@assets/Worcester_Bosch_8000_Which_24_1080x1080_1771281280295.jpg";
+import gasSafeLogo from "@/assets/images/gas-safe-logo.png";
+import whichBadge from "@/assets/images/which-best-buy-badge.png";
 
 const PHONE = "0800 048 5737";
 const PHONE_HREF = "tel:08000485737";
@@ -68,28 +70,30 @@ function HeroSection() {
 
             <div className="flex flex-wrap items-center gap-6 py-4" data-testid="section-trust-badges">
               <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-md px-5 py-4 shadow-sm">
-                <Shield className="w-10 h-10 shrink-0" style={{ color: WB_BLUE }} />
+                <img src={gasSafeLogo} alt="Gas Safe Register" className="w-12 h-12 shrink-0 object-contain" />
                 <div>
                   <p className="font-bold text-sm" style={{ color: WB_BLUE }}>Gas Safe</p>
                   <p className="text-xs text-gray-500">Registered</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-md px-5 py-4 shadow-sm">
-                <Award className="w-10 h-10 shrink-0" style={{ color: WB_BLUE }} />
+                <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-10 shrink-0 object-contain" />
                 <div>
                   <p className="font-bold text-sm" style={{ color: WB_BLUE }}>Worcester Bosch</p>
                   <p className="text-xs text-gray-500">Accredited Installer</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-md px-5 py-4 shadow-sm">
-                <Star className="w-10 h-10 shrink-0 text-yellow-500 fill-yellow-500" />
+                <div className="flex gap-0.5 shrink-0">
+                  {[1,2,3,4,5].map(n => <Star key={n} className="w-5 h-5 text-yellow-400 fill-yellow-400" />)}
+                </div>
                 <div>
-                  <p className="font-bold text-sm" style={{ color: WB_BLUE }}>4.8 Star</p>
+                  <p className="font-bold text-sm" style={{ color: WB_BLUE }}>4.8 / 5</p>
                   <p className="text-xs text-gray-500">Customer Rating</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-md px-5 py-4 shadow-sm">
-                <CheckCircle className="w-10 h-10 shrink-0 text-green-600" />
+                <img src={whichBadge} alt="Which? Best Buy 2024" className="w-12 h-12 shrink-0 object-contain" />
                 <div>
                   <p className="font-bold text-sm" style={{ color: WB_BLUE }}>Which?</p>
                   <p className="text-xs text-gray-500">Best Buy 2024</p>
@@ -181,8 +185,8 @@ function SavingsSection() {
           </div>
           <div className="hidden md:flex flex-col items-center gap-4">
             <img src={boiler4000Img} alt="Worcester Bosch Greenstar 4000" className="max-w-sm w-full" />
-            <div className="flex items-center gap-3 bg-white rounded-md px-5 py-4 shadow-sm" data-testid="which-badge-savings">
-              <CheckCircle className="w-12 h-12 shrink-0 text-green-600" />
+            <div className="flex items-center gap-4 bg-white rounded-md px-5 py-4 shadow-sm" data-testid="which-badge-savings">
+              <img src={whichBadge} alt="Which? Best Buy 2024" className="w-16 h-16 shrink-0 object-contain" />
               <div>
                 <p className="font-bold text-base" style={{ color: WB_BLUE }}>Which? Best Buy 2024</p>
                 <p className="text-sm text-gray-500">Recommended by Which? magazine</p>
@@ -236,12 +240,16 @@ function HowItWorks() {
   );
 }
 
-function BenefitIcon({ index }: { index: number }) {
+function BenefitVisual({ index }: { index: number }) {
+  if (index === 0) return <img src={gasSafeLogo} alt="Gas Safe Register" className="w-10 h-10 object-contain" />;
+  if (index === 1) return <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-8 object-contain" />;
+  if (index === 2) return (
+    <div className="flex gap-0.5">
+      {[1,2,3,4,5].map(n => <Star key={n} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}
+    </div>
+  );
   const cls = "w-6 h-6";
   const st = { color: WB_BLUE };
-  if (index === 0) return <Shield className={cls} style={st} />;
-  if (index === 1) return <Award className={cls} style={st} />;
-  if (index === 2) return <Star className={cls} style={st} />;
   if (index === 3) return <MapPin className={cls} style={st} />;
   if (index === 4) return <CheckCircle className={cls} style={st} />;
   return <TrendingDown className={cls} style={st} />;
@@ -264,9 +272,9 @@ function Benefits() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {items.map((b, i) => (
-            <Card key={i} className="p-5 text-center space-y-2" data-testid={`card-benefit-${i}`}>
-              <div className="mx-auto w-12 h-12 rounded-full flex items-center justify-center bg-blue-50">
-                <BenefitIcon index={i} />
+            <Card key={i} className="p-5 text-center space-y-3" data-testid={`card-benefit-${i}`}>
+              <div className="mx-auto w-14 h-14 rounded-full flex items-center justify-center bg-blue-50">
+                <BenefitVisual index={i} />
               </div>
               <h3 className="font-bold text-sm" style={{ color: WB_BLUE }}>{b.title}</h3>
               <p className="text-xs text-gray-500">{b.desc}</p>
