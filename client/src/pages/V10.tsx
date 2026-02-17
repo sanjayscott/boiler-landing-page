@@ -15,9 +15,9 @@ import {
   Form, FormControl, FormField, FormItem, FormMessage,
 } from "@/components/ui/form";
 import {
-  Phone, Star, CheckCircle, Calendar, ClipboardCheck, Wrench, Thermometer, TrendingDown, Zap, Home, FileText, ChevronRight,
+  Phone, Star, CheckCircle, Calendar, ClipboardCheck, Zap, FileText, ChevronRight, Clock, ShieldCheck, Users, Rocket,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import worcesterBoschLogo from "@assets/worcester-bosch-logo_(2)_1771281246798.png";
 import heroLifestyle from "@assets/Ri_-_Lifestyle_1771321781805.jpg";
@@ -87,7 +87,7 @@ function TrustBar() {
     <div className="bg-white border-b border-gray-100 py-4" data-testid="section-trust-bar">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
-          <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-8 md:h-10 w-auto grayscale-0 opacity-90" />
+          <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-8 md:h-10 w-auto opacity-90" />
           <img src={gasSafeLogo} alt="Gas Safe Registered" className="h-10 md:h-12 w-auto" />
           <img src={checkatradeLogo} alt="Checkatrade" className="h-7 md:h-9 w-auto" />
           <img src={whichBestBuy} alt="Which? Best Buy" className="h-10 md:h-14 w-auto" />
@@ -144,12 +144,17 @@ function HeroSection() {
           </motion.div>
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2 }} className="order-1 lg:order-2">
             <div className="relative rounded-md overflow-hidden shadow-lg">
-              <img src={heroLifestyle} alt="Worcester Bosch Greenstar boiler in a bright modern kitchen" className="w-full h-auto object-cover" data-testid="img-hero-lifestyle" />
+              <img
+                src={heroLifestyle}
+                alt="Worcester Bosch Greenstar boiler in a bright modern kitchen"
+                className="w-full h-auto min-h-[300px] md:min-h-[400px] object-cover"
+                data-testid="img-hero-lifestyle"
+              />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 md:p-6">
                 <div className="flex items-center gap-3">
                   <img src={whichBestBuy} alt="Which? Best Buy" className="h-12 md:h-16 w-auto" />
                   <div>
-                    <p className="text-white font-bold text-sm md:text-base">Which? Best Buy 2024</p>
+                    <p className="text-white font-bold text-sm md:text-base">Which? Best Buy 2025</p>
                     <p className="text-white/80 text-xs md:text-sm">Recommended by Which? magazine</p>
                   </div>
                 </div>
@@ -177,7 +182,7 @@ function PricingSection() {
       price: "From £2,395",
       image: boiler4000Img,
       popular: true,
-      features: ["Up to 94% efficiency", "Which? Best Buy 2024", "10 year warranty", "Smart thermostat ready", "Quiet Mark certified", "Most popular choice"],
+      features: ["Up to 94% efficiency", "Which? Best Buy 2025", "10 year warranty", "Smart thermostat ready", "Quiet Mark certified", "Most popular choice"],
       desc: "Our most recommended boiler",
     },
     {
@@ -185,7 +190,7 @@ function PricingSection() {
       price: "From £2,995",
       image: boiler8000Img,
       popular: false,
-      features: ["Up to 94% efficiency", "Which? Best Buy 2024", "10 year warranty", "Built-in smart controls", "Premium black finish", "Sleek wall-mounted design"],
+      features: ["Up to 94% efficiency", "Which? Best Buy 2025", "10 year warranty", "Built-in smart controls", "Premium black finish", "Sleek wall-mounted design"],
       desc: "Premium design for modern homes",
     },
   ];
@@ -207,9 +212,9 @@ function PricingSection() {
                     Most Popular
                   </div>
                 )}
-                <div className="p-6 flex flex-col items-center gap-3 border-b border-gray-100" style={{ backgroundColor: tier.popular ? "#F0FAF0" : "#F8F9FA" }}>
-                  <img src={tier.image} alt={tier.name} className="h-36 w-auto object-contain" data-testid={`img-boiler-${i}`} />
-                  <h3 className="text-lg font-bold" style={{ color: WB_BLUE }}>{tier.name}</h3>
+                <div className="p-6 pb-4 flex flex-col items-center gap-2 border-b border-gray-100" style={{ backgroundColor: tier.popular ? "#F0FAF0" : "#F8F9FA" }}>
+                  <img src={tier.image} alt={tier.name} className="h-52 md:h-60 w-auto object-contain" loading="lazy" data-testid={`img-boiler-${i}`} />
+                  <h3 className="text-lg font-bold mt-1" style={{ color: WB_BLUE }}>{tier.name}</h3>
                   <p className="text-xs text-gray-500">{tier.desc}</p>
                   <p className="text-2xl font-black" style={{ color: WB_GREEN }}>{tier.price}</p>
                 </div>
@@ -231,6 +236,14 @@ function PricingSection() {
         </div>
         <div className="text-center mt-8">
           <p className="text-sm text-gray-500">All installations include up to 10 year Worcester Bosch guarantee when installed by an accredited installer</p>
+        </div>
+        <div className="mt-6 max-w-3xl mx-auto">
+          <div className="rounded-md px-6 py-4 text-center flex flex-wrap items-center justify-center gap-2" style={{ backgroundColor: "#FFF3E0", border: "1px solid #FFE0B2" }} data-testid="urgency-banner">
+            <Clock className="w-5 h-5 shrink-0" style={{ color: "#E65100" }} />
+            <p className="text-sm font-semibold" style={{ color: "#E65100" }}>
+              Spring offer ends 31st March &mdash; limited installations remaining at this price.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -282,33 +295,77 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-white" data-testid="section-how-it-works">
+    <section className="py-14 md:py-16 bg-white" data-testid="section-how-it-works">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Simple Process</p>
           <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>How It Works</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           {steps.map((s, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className="text-center space-y-4">
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className="text-center space-y-3">
               <div className="relative mx-auto">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ backgroundColor: WB_BLUE }}>
+                <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto" style={{ backgroundColor: WB_BLUE }}>
                   {s.icon}
                 </div>
-                <div className="absolute -bottom-2 -right-2 w-7 h-7 rounded-full text-white font-bold flex items-center justify-center text-xs" style={{ backgroundColor: WB_GREEN }}>{i + 1}</div>
+                <div className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full text-white font-bold flex items-center justify-center text-xs" style={{ backgroundColor: WB_GREEN }}>{i + 1}</div>
               </div>
-              <h3 className="text-lg font-bold" style={{ color: WB_BLUE }} data-testid={`text-step-${i + 1}`}>{s.title}</h3>
+              <h3 className="text-base font-bold" style={{ color: WB_BLUE }} data-testid={`text-step-${i + 1}`}>{s.title}</h3>
               <p className="text-sm text-gray-500">{s.desc}</p>
             </motion.div>
           ))}
         </div>
-        <div className="mt-12 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="mt-8 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="rounded-md overflow-hidden shadow-md">
-            <img src={engineerImg} alt="Worcester Bosch accredited engineer installing a boiler" className="w-full h-48 md:h-64 object-cover" data-testid="img-engineer" />
+            <img src={engineerImg} alt="Worcester Bosch accredited engineer installing a boiler" className="w-full h-44 md:h-56 object-cover" loading="lazy" data-testid="img-engineer" />
           </div>
           <div className="rounded-md overflow-hidden shadow-md">
-            <img src={utilityRoomImg} alt="Greenstar 4000 installed in a modern utility room" className="w-full h-48 md:h-64 object-cover" data-testid="img-utility-room" />
+            <img src={utilityRoomImg} alt="Greenstar 4000 installed in a modern utility room" className="w-full h-44 md:h-56 object-cover" loading="lazy" data-testid="img-utility-room" />
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function WhatHappensNext() {
+  const nextSteps = [
+    { icon: <Calendar className="w-6 h-6 text-white" />, title: "Book Your Free Assessment", desc: "Fill in the form or call us. We'll arrange a time that suits you. Completely free, no obligation." },
+    { icon: <ShieldCheck className="w-6 h-6 text-white" />, title: "We Visit & Recommend", desc: "Our Gas Safe engineer visits your home, checks your current system, and recommends the right boiler for your needs." },
+    { icon: <Users className="w-6 h-6 text-white" />, title: "You Decide - No Pressure", desc: "Take your time. There's no hard sell, no pressure. You choose whether to go ahead in your own time." },
+    { icon: <Rocket className="w-6 h-6 text-white" />, title: "Installed in 48 Hours", desc: "If you choose to go ahead, we can have your new boiler installed in as little as 48 hours." },
+  ];
+
+  return (
+    <section className="py-14 md:py-16" style={{ backgroundColor: "#F8F9FA" }} data-testid="section-what-happens-next">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Risk-Free Process</p>
+          <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>What Happens Next?</h2>
+          <p className="text-gray-500 mt-2 max-w-xl mx-auto">From booking to installation, we make the whole process simple and pressure-free.</p>
+        </div>
+        <div className="max-w-3xl mx-auto space-y-4">
+          {nextSteps.map((step, i) => (
+            <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+              <Card className="p-5 flex items-start gap-4" data-testid={`card-next-step-${i}`}>
+                <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: WB_BLUE }}>
+                  {step.icon}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-md text-white" style={{ backgroundColor: WB_GREEN }}>Step {i + 1}</span>
+                    <h3 className="font-bold" style={{ color: WB_BLUE }}>{step.title}</h3>
+                  </div>
+                  <p className="text-sm text-gray-500">{step.desc}</p>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+        <div className="text-center mt-8">
+          <Button size="lg" onClick={() => scrollTo("book-assessment")} className="text-white font-bold px-8" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-next-steps-cta">
+            Get Started - It's Free
+          </Button>
         </div>
       </div>
     </section>
@@ -317,7 +374,7 @@ function HowItWorks() {
 
 function SavingsSection() {
   return (
-    <section className="py-16 md:py-20" style={{ backgroundColor: "#F8F9FA" }} data-testid="section-savings">
+    <section className="py-14 md:py-16 bg-white" data-testid="section-savings">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
@@ -353,11 +410,11 @@ function SavingsSection() {
             </Button>
           </div>
           <div className="hidden md:flex flex-col items-center gap-6">
-            <img src={boilerPackShot} alt="Worcester Bosch Greenstar range" className="max-w-sm w-full rounded-md" data-testid="img-boiler-range" />
+            <img src={boilerPackShot} alt="Worcester Bosch Greenstar range" className="max-w-sm w-full rounded-md" loading="lazy" data-testid="img-boiler-range" />
             <div className="flex items-center gap-4 bg-white rounded-md px-5 py-4 shadow-sm border border-gray-100">
-              <img src={whichBestBuy} alt="Which? Best Buy 2024" className="h-14 w-auto object-contain" />
+              <img src={whichBestBuy} alt="Which? Best Buy 2025" className="h-14 w-auto object-contain" loading="lazy" />
               <div>
-                <p className="font-bold text-sm" style={{ color: WB_BLUE }}>Which? Best Buy 2024</p>
+                <p className="font-bold text-sm" style={{ color: WB_BLUE }}>Which? Best Buy 2025</p>
                 <p className="text-xs text-gray-500">Recommended by Which? magazine</p>
               </div>
             </div>
@@ -370,11 +427,11 @@ function SavingsSection() {
 
 function SmartControlSection() {
   return (
-    <section className="py-16 md:py-20 bg-white" data-testid="section-smart-control">
+    <section className="py-14 md:py-16" style={{ backgroundColor: "#F8F9FA" }} data-testid="section-smart-control">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div className="rounded-md overflow-hidden shadow-md">
-            <img src={easyControlImg} alt="Homeowner adjusting Worcester Bosch EasyControl thermostat" className="w-full h-auto object-cover" data-testid="img-easycontrol" />
+            <img src={easyControlImg} alt="Homeowner adjusting Worcester Bosch EasyControl thermostat" className="w-full h-auto object-cover" loading="lazy" data-testid="img-easycontrol" />
           </div>
           <div className="space-y-5">
             <p className="text-sm font-semibold uppercase tracking-widest" style={{ color: WB_GREEN }}>Smart Heating</p>
@@ -405,9 +462,9 @@ function Testimonials() {
   ];
 
   return (
-    <section className="py-16 md:py-20" style={{ backgroundColor: "#F8F9FA" }} data-testid="section-testimonials">
+    <section className="py-14 md:py-16 bg-white" data-testid="section-testimonials">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: WB_GREEN }}>Real Customer Reviews</p>
           <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>What Our Customers Say</h2>
         </div>
@@ -439,9 +496,9 @@ function FAQ() {
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-white" data-testid="section-faq">
+    <section className="py-14 md:py-16" style={{ backgroundColor: "#F8F9FA" }} data-testid="section-faq">
       <div className="container mx-auto px-4 max-w-3xl">
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold" style={{ color: WB_BLUE }}>Frequently Asked Questions</h2>
         </div>
         <Accordion type="single" collapsible className="space-y-3">
@@ -459,6 +516,7 @@ function FAQ() {
 
 function LeadForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [showFields, setShowFields] = useState(false);
   const { toast } = useToast();
   const form = useForm<InsertInquiry>({ resolver: zodResolver(insertInquirySchema), defaultValues: { name: "", phone: "", postcode: "" } });
   const mutation = useMutation({
@@ -500,22 +558,40 @@ function LeadForm() {
                 <h3 className="text-xl font-bold" style={{ color: WB_BLUE }}>Thank You!</h3>
                 <p className="text-gray-500">We'll be in touch shortly to arrange your free home heating assessment.</p>
               </div>
+            ) : !showFields ? (
+              <div className="text-center py-6 space-y-5" data-testid="form-step-1">
+                <div className="mx-auto w-14 h-14 rounded-full flex items-center justify-center" style={{ backgroundColor: "#E8F5E9" }}>
+                  <Zap className="w-7 h-7" style={{ color: WB_GREEN }} />
+                </div>
+                <h3 className="text-xl font-bold" style={{ color: WB_BLUE }}>Get Your Free Quote</h3>
+                <p className="text-sm text-gray-500">Find out how much you could save on your energy bills with a new Worcester Bosch boiler.</p>
+                <ul className="text-left text-sm text-gray-500 space-y-2 max-w-xs mx-auto">
+                  {["100% free, no obligation", "Takes less than 60 seconds", "No pressure, ever"].map((t, i) => (
+                    <li key={i} className="flex items-center gap-2"><CheckCircle className="w-4 h-4 shrink-0" style={{ color: WB_GREEN }} />{t}</li>
+                  ))}
+                </ul>
+                <Button size="lg" onClick={() => setShowFields(true)} className="w-full text-white font-bold text-lg" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-get-quote">
+                  Get My Free Quote
+                </Button>
+              </div>
             ) : (
-              <>
-                <h3 className="text-xl font-bold mb-1" style={{ color: WB_BLUE }}>Book Your Free Assessment</h3>
-                <p className="text-sm text-gray-500 mb-6">No obligation. Takes 2 minutes to book.</p>
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-4" data-testid="form-assessment">
-                    <FormField control={form.control} name="name" render={({ field }) => (<FormItem><FormControl><Input placeholder="Your Full Name" {...field} data-testid="input-name" /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField control={form.control} name="phone" render={({ field }) => (<FormItem><FormControl><Input placeholder="Phone Number" type="tel" {...field} data-testid="input-phone" /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField control={form.control} name="postcode" render={({ field }) => (<FormItem><FormControl><Input placeholder="Postcode" {...field} data-testid="input-postcode" /></FormControl><FormMessage /></FormItem>)} />
-                    <Button type="submit" size="lg" className="text-white font-bold w-full" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} disabled={mutation.isPending} data-testid="button-submit-form">
-                      {mutation.isPending ? "Submitting..." : "Book Your Free Assessment"}
-                    </Button>
-                    <p className="text-xs text-center text-gray-400">100% free. No obligation. No pressure.</p>
-                  </form>
-                </Form>
-              </>
+              <AnimatePresence>
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} data-testid="form-step-2">
+                  <h3 className="text-xl font-bold mb-1" style={{ color: WB_BLUE }}>Almost There!</h3>
+                  <p className="text-sm text-gray-500 mb-5">Just 3 quick details and we'll get back to you.</p>
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-4" data-testid="form-assessment">
+                      <FormField control={form.control} name="name" render={({ field }) => (<FormItem><FormControl><Input placeholder="Full Name" {...field} data-testid="input-name" /></FormControl><FormMessage /></FormItem>)} />
+                      <FormField control={form.control} name="phone" render={({ field }) => (<FormItem><FormControl><Input placeholder="Phone Number" type="tel" {...field} data-testid="input-phone" /></FormControl><FormMessage /></FormItem>)} />
+                      <FormField control={form.control} name="postcode" render={({ field }) => (<FormItem><FormControl><Input placeholder="Postcode" {...field} data-testid="input-postcode" /></FormControl><FormMessage /></FormItem>)} />
+                      <Button type="submit" size="lg" className="text-white font-bold w-full" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} disabled={mutation.isPending} data-testid="button-submit-form">
+                        {mutation.isPending ? "Submitting..." : "Book Your Free Assessment"}
+                      </Button>
+                      <p className="text-xs text-center text-gray-400">100% free. No obligation. No pressure.</p>
+                    </form>
+                  </Form>
+                </motion.div>
+              </AnimatePresence>
             )}
           </Card>
         </div>
@@ -593,6 +669,7 @@ export default function V10() {
       <PricingSection />
       <WhyChooseUs />
       <HowItWorks />
+      <WhatHappensNext />
       <SavingsSection />
       <SmartControlSection />
       <Testimonials />
