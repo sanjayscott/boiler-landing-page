@@ -15,6 +15,10 @@ import V7 from "@/pages/V7";
 import V8 from "@/pages/V8";
 import V9 from "@/pages/V9";
 import V10 from "@/pages/V10";
+import V10a from "@/pages/V10a";
+import V10b from "@/pages/V10b";
+import V10f from "@/pages/V10f";
+import V10h from "@/pages/V10h";
 import V11 from "@/pages/V11";
 
 function Router() {
@@ -31,6 +35,10 @@ function Router() {
       <Route path="/v8" component={V8} />
       <Route path="/v9" component={V9} />
       <Route path="/v10" component={V10} />
+      <Route path="/v10a" component={V10a} />
+      <Route path="/v10b" component={V10b} />
+      <Route path="/v10f" component={V10f} />
+      <Route path="/v10h" component={V10h} />
       <Route path="/v11" component={V11} />
       <Route component={NotFound} />
     </Switch>
