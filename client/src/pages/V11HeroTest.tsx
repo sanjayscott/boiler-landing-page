@@ -98,16 +98,13 @@ export default function V11HeroTest() {
       <OptionBanner label="Option B" description="Traditional kitchen with white overlay (90/80)" />
       <HeroVariant bgImage={kitchenTraditional} overlayClass="from-white/90 via-white/80 to-white" />
 
-      <OptionBanner label="Option C" description="Current lifestyle image, much lighter overlay (95/92)" />
-      <HeroVariant bgImage={heroLifestyle} overlayClass="from-white/95 via-white/92 to-white" />
-
-      <OptionBanner label="Option D" description="Installer photo with overlay (85/75)" />
+      <OptionBanner label="Option C" description="Installer photo with overlay (85/75)" />
       <HeroVariant bgImage={installerImg} overlayClass="from-white/85 via-white/75 to-white" />
 
-      <OptionBanner label="Option E" description="Greenstar kitchen hero with overlay (85/75)" />
+      <OptionBanner label="Option D" description="Greenstar kitchen hero with overlay (85/75)" />
       <HeroVariant bgImage={greenstarKitchen} overlayClass="from-white/85 via-white/75 to-white" />
 
-      <OptionBanner label="Option F" description="Responsive hybrid — pure white on mobile, lifestyle image on md+ with overlay" />
+      <OptionBanner label="Option E" description="Responsive hybrid — pure white on mobile, lifestyle image on md+ with overlay" />
       <section className="relative w-full">
         <div className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${heroLifestyle})` }} />
         <div className="hidden md:block absolute inset-0 bg-gradient-to-b from-white/90 via-white/80 to-white" />
