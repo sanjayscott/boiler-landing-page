@@ -106,6 +106,15 @@ export default function V11HeroTest() {
 
       <OptionBanner label="Option E" description="Greenstar kitchen hero with overlay (85/75)" />
       <HeroVariant bgImage={greenstarKitchen} overlayClass="from-white/85 via-white/75 to-white" />
+
+      <OptionBanner label="Option F" description="Responsive hybrid — pure white on mobile, lifestyle image on md+ with overlay" />
+      <section className="relative w-full">
+        <div className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${heroLifestyle})` }} />
+        <div className="hidden md:block absolute inset-0 bg-gradient-to-b from-white/90 via-white/80 to-white" />
+        <div className="relative z-10 container mx-auto px-4 py-12 md:py-20 lg:py-28">
+          <HeroContent />
+        </div>
+      </section>
     </div>
   );
 }
