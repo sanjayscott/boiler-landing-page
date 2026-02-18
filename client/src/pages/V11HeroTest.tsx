@@ -10,8 +10,9 @@ import gasSafeLogo from "@assets/Gas_Safe_Logo_1771321269776.png";
 import checkatradeLogo from "@assets/Checkatrade_Logo_2023_1771322021422.png";
 import wsbLogo from "@assets/WeServiceBoilers_Standard_1771321243040.png";
 import kitchenTraditional from "@assets/4000-Traditional_Kitchen-face-on_1771321846519.jpg";
-import installerImg from "@assets/Worcester_Bosch_CDi_Classic_Model_and_installer_in_Scandi_Kitc_1771321575784.jpg";
+import installerScandi from "@assets/Worcester_Bosch_CDi_Classic_Model_and_installer_in_Scandi_Kitc_1771321575784.jpg";
 import greenstarKitchen from "@assets/Worcester_Bosch_Greenstar_400_Kitchen_HERO_CROPPED_1771321563335.jpg";
+import homeownerEasyControl from "@assets/Homeowner_adjusting_EasyControl_1771321797513.jpg";
 
 const PHONE = "0800 048 5737";
 const PHONE_HREF = "tel:08000485737";
@@ -67,21 +68,38 @@ function HeroContent() {
 function OptionBanner({ label, description }: { label: string; description: string }) {
   return (
     <div className="bg-gray-900 text-white px-6 py-3 flex items-center gap-4">
-      <span className="text-lg font-black">{label}</span>
+      <span className="text-lg font-bold whitespace-nowrap">{label}</span>
       <span className="text-sm text-gray-300">{description}</span>
     </div>
   );
 }
 
-function HeroVariant({ bgImage, overlayClass }: { bgImage?: string; overlayClass?: string }) {
+/*
+  Progressive overlay approach:
+  - Mobile (< md): Pure white, no image
+  - Tablet (md): Image visible but heavily washed out (90/85/white)
+  - Desktop (lg): Image more visible, lighter overlay (80/70/white)
+  - Wide (xl): Image even more prominent (65/55/white)
+*/
+
+function ProgressiveHero({ bgImage }: { bgImage: string }) {
   return (
     <section className="relative w-full">
-      {bgImage && (
-        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${bgImage})` }} />
-      )}
-      {overlayClass && (
-        <div className={`absolute inset-0 bg-gradient-to-b ${overlayClass}`} />
-      )}
+      {/* Background image - hidden on mobile */}
+      <div
+        className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${bgImage})` }}
+      />
+
+      {/* Tablet overlay (md) - heavily washed */}
+      <div className="hidden md:block lg:hidden absolute inset-0 bg-gradient-to-b from-white/90 via-white/85 to-white" />
+
+      {/* Desktop overlay (lg) - lighter wash */}
+      <div className="hidden lg:block xl:hidden absolute inset-0 bg-gradient-to-b from-white/80 via-white/70 to-white" />
+
+      {/* Wide desktop overlay (xl) - most image visible */}
+      <div className="hidden xl:block absolute inset-0 bg-gradient-to-b from-white/65 via-white/55 to-white" />
+
       <div className="relative z-10 container mx-auto px-4 py-12 md:py-20 lg:py-28">
         <HeroContent />
       </div>
@@ -89,29 +107,52 @@ function HeroVariant({ bgImage, overlayClass }: { bgImage?: string; overlayClass
   );
 }
 
+const heroImages = [
+  {
+    label: "Option 1",
+    description: "Ri Lifestyle — Modern kitchen, boiler on wall (current V11 image)",
+    image: heroLifestyle,
+  },
+  {
+    label: "Option 2",
+    description: "Traditional Kitchen — Greenstar 4000 in classic kitchen setting",
+    image: kitchenTraditional,
+  },
+  {
+    label: "Option 3",
+    description: "Scandi Kitchen — Installer with CDi Classic in Scandinavian kitchen",
+    image: installerScandi,
+  },
+  {
+    label: "Option 4",
+    description: "Kitchen Hero — Greenstar 400 in modern kitchen, cropped hero shot",
+    image: greenstarKitchen,
+  },
+  {
+    label: "Option 5",
+    description: "Homeowner — Person adjusting EasyControl thermostat",
+    image: homeownerEasyControl,
+  },
+];
+
 export default function V11HeroTest() {
   return (
-    <div className="min-h-screen">
-      <OptionBanner label="Option A" description="Pure white — no background image" />
-      <HeroVariant />
-
-      <OptionBanner label="Option B" description="Traditional kitchen with white overlay (90/80)" />
-      <HeroVariant bgImage={kitchenTraditional} overlayClass="from-white/90 via-white/80 to-white" />
-
-      <OptionBanner label="Option C" description="Installer photo with overlay (85/75)" />
-      <HeroVariant bgImage={installerImg} overlayClass="from-white/85 via-white/75 to-white" />
-
-      <OptionBanner label="Option D" description="Greenstar kitchen hero with overlay (85/75)" />
-      <HeroVariant bgImage={greenstarKitchen} overlayClass="from-white/85 via-white/75 to-white" />
-
-      <OptionBanner label="Option E" description="Responsive hybrid — pure white on mobile, lifestyle image on md+ with overlay" />
-      <section className="relative w-full">
-        <div className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${heroLifestyle})` }} />
-        <div className="hidden md:block absolute inset-0 bg-gradient-to-b from-white/90 via-white/80 to-white" />
-        <div className="relative z-10 container mx-auto px-4 py-12 md:py-20 lg:py-28">
-          <HeroContent />
+    <div className="bg-white">
+      <div className="bg-gray-800 text-white text-center py-4 px-4">
+        <h2 className="text-xl font-bold">V11 Hero Options — Progressive Reveal</h2>
+        <p className="text-sm text-gray-300 mt-1">
+          Mobile: pure white · Tablet: heavily washed · Desktop: lighter wash · Wide: most visible
+        </p>
+        <p className="text-xs text-gray-400 mt-1">
+          Resize your browser window to see the progressive effect
+        </p>
+      </div>
+      {heroImages.map((hero) => (
+        <div key={hero.label}>
+          <OptionBanner label={hero.label} description={hero.description} />
+          <ProgressiveHero bgImage={hero.image} />
         </div>
-      </section>
+      ))}
     </div>
   );
 }
