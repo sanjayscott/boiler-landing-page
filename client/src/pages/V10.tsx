@@ -161,7 +161,7 @@ function PricingSection() {
     },
     {
       name: "Greenstar 4000",
-      price: "From £2,499",
+      price: "From £2,299",
       image: boiler4000Img,
       popular: true,
       features: ["Up to 94% efficiency", "Which? Best Buy 2025", "10 year warranty", "Smart thermostat ready", "Quiet Mark certified", "Most popular choice"],
