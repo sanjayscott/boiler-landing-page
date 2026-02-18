@@ -20,6 +20,7 @@ import V10b from "@/pages/V10b";
 import V10f from "@/pages/V10f";
 import V10h from "@/pages/V10h";
 import V11 from "@/pages/V11";
+import V11HeroTest from "@/pages/V11HeroTest";
 
 function Router() {
   return (
@@ -40,6 +41,7 @@ function Router() {
       <Route path="/v10f" component={V10f} />
       <Route path="/v10h" component={V10h} />
       <Route path="/v11" component={V11} />
+      <Route path="/v11-heroes" component={V11HeroTest} />
       <Route component={NotFound} />
     </Switch>
   );

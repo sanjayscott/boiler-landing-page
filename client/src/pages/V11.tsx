@@ -240,6 +240,7 @@ function HeroSection() {
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 pt-6">
             <img src={gasSafeLogo} alt="Gas Safe Registered" className="h-10 w-auto" />
             <img src={worcesterBoschLogo} alt="Worcester Bosch" className="h-7 w-auto" />
+            <img src={wsbLogo} alt="We Service Boilers" className="h-6 w-auto" />
             <img src={checkatradeLogo} alt="Checkatrade" className="h-6 w-auto" />
             <div className="flex items-center gap-1.5">
               <div className="flex gap-0.5">{[1,2,3,4,5].map(n => <Star key={n} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}</div>
