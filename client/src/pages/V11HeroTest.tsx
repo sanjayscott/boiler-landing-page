@@ -82,7 +82,7 @@ function OptionBanner({ label, description }: { label: string; description: stri
   - Wide (xl): Image even more prominent (65/55/white)
 */
 
-function ProgressiveHero({ bgImage }: { bgImage: string }) {
+function ProgressiveHero({ bgImage, id }: { bgImage: string; id: string }) {
   return (
     <section className="relative w-full">
       {/* Background image - hidden on mobile */}
@@ -91,14 +91,37 @@ function ProgressiveHero({ bgImage }: { bgImage: string }) {
         style={{ backgroundImage: `url(${bgImage})` }}
       />
 
-      {/* Tablet overlay (md) - heavily washed */}
-      <div className="hidden md:block lg:hidden absolute inset-0 bg-gradient-to-b from-white/90 via-white/85 to-white" />
-
-      {/* Desktop overlay (lg) - lighter wash */}
-      <div className="hidden lg:block xl:hidden absolute inset-0 bg-gradient-to-b from-white/80 via-white/70 to-white" />
-
-      {/* Wide desktop overlay (xl) - most image visible */}
-      <div className="hidden xl:block absolute inset-0 bg-gradient-to-b from-white/65 via-white/55 to-white" />
+      {/*
+        Progressive overlay: uses inline style + CSS custom property approach.
+        Single overlay div whose opacity changes at each breakpoint via a <style> tag.
+      */}
+      <style>{`
+        .hero-overlay-${id} {
+          display: none;
+        }
+        @media (min-width: 768px) {
+          .hero-overlay-${id} {
+            display: block;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.92), rgba(255,255,255,0.88), rgba(255,255,255,1));
+          }
+        }
+        @media (min-width: 1024px) {
+          .hero-overlay-${id} {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.75), rgba(255,255,255,0.65), rgba(255,255,255,1));
+          }
+        }
+        @media (min-width: 1280px) {
+          .hero-overlay-${id} {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.55), rgba(255,255,255,0.40), rgba(255,255,255,1));
+          }
+        }
+        @media (min-width: 1536px) {
+          .hero-overlay-${id} {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.40), rgba(255,255,255,0.25), rgba(255,255,255,1));
+          }
+        }
+      `}</style>
+      <div className={`hero-overlay-${id} absolute inset-0`} />
 
       <div className="relative z-10 container mx-auto px-4 py-12 md:py-20 lg:py-28">
         <HeroContent />
@@ -147,10 +170,10 @@ export default function V11HeroTest() {
           Resize your browser window to see the progressive effect
         </p>
       </div>
-      {heroImages.map((hero) => (
+      {heroImages.map((hero, idx) => (
         <div key={hero.label}>
           <OptionBanner label={hero.label} description={hero.description} />
-          <ProgressiveHero bgImage={hero.image} />
+          <ProgressiveHero bgImage={hero.image} id={`h${idx}`} />
         </div>
       ))}
     </div>
