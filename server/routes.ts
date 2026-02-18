@@ -4,19 +4,43 @@ import { storage } from "./storage";
 import { insertInquirySchema, insertVisitSchema } from "@shared/schema";
 import { z } from "zod";
 
-// Webhook URL for n8n notifications (set via env var)
+// Notification config (set via env vars in Replit Secrets)
+// WEBHOOK_URL = n8n webhook (optional, for future automation)
+// TELEGRAM_BOT_TOKEN = Telegram bot token for direct notifications
+// TELEGRAM_CHAT_ID = Sanjay's Telegram chat ID (8422310768)
 const WEBHOOK_URL = process.env.WEBHOOK_URL || "";
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "8422310768";
 
 async function notifyWebhook(type: string, data: any) {
-  if (!WEBHOOK_URL) return;
-  try {
-    await fetch(WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type, data, timestamp: new Date().toISOString() }),
-    });
-  } catch (e) {
-    console.error("Webhook notification failed:", e);
+  // n8n webhook (if configured)
+  if (WEBHOOK_URL) {
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, data, timestamp: new Date().toISOString() }),
+      });
+    } catch (e) {
+      console.error("Webhook notification failed:", e);
+    }
+  }
+
+  // Direct Telegram notification
+  if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID && type === "form_submission") {
+    const ref = data.ref ? ` (ref: ${data.ref})` : "";
+    const epc = data.epc ? ` | EPC: ${data.epc}` : "";
+    const source = data.source ? ` | Source: ${data.source}` : "";
+    const msg = `🔔 *New Landing Page Lead!*\n\n👤 *${data.name}*\n📞 ${data.phone}\n📍 ${data.postcode}${epc}${ref}${source}\n📝 ${data.notes || "—"}`;
+    try {
+      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode: "Markdown" }),
+      });
+    } catch (e) {
+      console.error("Telegram notification failed:", e);
+    }
   }
 }
 
