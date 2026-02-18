@@ -160,6 +160,7 @@ function BookingForm({ context }: { context?: string }) {
         <a href={PHONE_HREF} className="text-2xl font-bold text-white flex items-center justify-center gap-2">
           <Phone className="w-6 h-6" /> {PHONE}
         </a>
+        <span className="text-sm text-white/80">Freephone — calls are free from mobiles and landlines</span>
       </div>
     </Card>
   );
@@ -240,7 +241,7 @@ function HeroSection() {
             </Button>
             <a href={PHONE_HREF}>
               <Button size="lg" variant="outline" className="font-bold text-base px-8 gap-2 border-gray-300 text-gray-800 bg-white/70 backdrop-blur-sm">
-                <Phone className="w-5 h-5" /> {PHONE}
+                <Phone className="w-5 h-5" /> {PHONE} <span className="text-xs font-normal">(free call)</span>
               </Button>
             </a>
           </div>
@@ -712,7 +713,7 @@ function Header() {
         </div>
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
           <a href={PHONE_HREF} className="hidden lg:flex items-center gap-2 font-bold text-base" style={{ color: WB_BLUE }}>
-            <Phone className="w-4 h-4" /><span>{PHONE}</span>
+            <Phone className="w-4 h-4" /><span>{PHONE}</span><span className="text-xs font-normal text-gray-500 ml-1">(free call)</span>
           </a>
           <Button size="sm" onClick={() => scrollTo("book")} className="text-white font-semibold text-xs md:text-sm whitespace-nowrap" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }}>
             Book Free Assessment

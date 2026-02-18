@@ -71,7 +71,7 @@ function Header() {
         </div>
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
           <a href={PHONE_HREF} className="hidden lg:flex items-center gap-2 font-bold text-base" style={{ color: WB_BLUE }} data-testid="link-phone-header">
-            <Phone className="w-4 h-4" /><span>{PHONE}</span>
+            <Phone className="w-4 h-4" /><span>{PHONE}</span><span className="text-xs font-normal text-gray-500 ml-1">(free call)</span>
           </a>
           <Button size="sm" onClick={() => scrollTo("book-assessment")} className="text-white font-semibold text-xs md:text-sm whitespace-nowrap" style={{ backgroundColor: WB_GREEN, borderColor: WB_GREEN }} data-testid="button-header-cta">
             Free Assessment
@@ -118,7 +118,7 @@ function HeroSection() {
             </Button>
             <a href={PHONE_HREF} data-testid="link-phone-hero">
               <Button size="lg" variant="outline" className="font-bold text-base px-8 gap-2 border-gray-300 text-gray-800 bg-white/70 backdrop-blur-sm">
-                <Phone className="w-5 h-5" /> {PHONE}
+                <Phone className="w-5 h-5" /> {PHONE} <span className="text-xs font-normal">(free call)</span>
               </Button>
             </a>
           </div>
@@ -526,6 +526,7 @@ function LeadForm() {
             <div className="pt-2">
               <p className="text-blue-200 text-sm mb-2">Or call us free:</p>
               <a href={PHONE_HREF} className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3" data-testid="link-phone-final"><Phone className="w-7 h-7" />{PHONE}</a>
+              <span className="text-sm text-white/80">Freephone — calls are free from mobiles and landlines</span>
             </div>
           </div>
           <Card className="p-6 md:p-8" data-testid="card-form">
@@ -627,7 +628,7 @@ function StickyMobileCTA() {
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden shadow-lg" data-testid="sticky-mobile-cta">
       <div className="flex">
         <a href={PHONE_HREF} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_GREEN }} data-testid="link-phone-sticky">
-          <Phone className="w-5 h-5" /> Call {PHONE}
+          <Phone className="w-5 h-5" /> Call Free: {PHONE}
         </a>
         <button onClick={() => scrollTo("book-assessment")} className="flex-1 flex items-center justify-center gap-2 text-white font-bold py-4 text-base" style={{ backgroundColor: WB_BLUE }} data-testid="button-sticky-form">
           Free Assessment
