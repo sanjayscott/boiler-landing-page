@@ -51,7 +51,7 @@ const boilers = [
     name: "Greenstar 2000",
     model: "25kW Combi",
     price: "£2,299",
-    priceNum: 2099,
+    priceNum: 2299,
     warranty: "8 year",
     image: boiler2000Img,
     kw: "25kW",
@@ -63,26 +63,26 @@ const boilers = [
   {
     name: "Greenstar 4000",
     model: "25kW Combi",
-    price: "£2,299",
-    priceNum: 2399,
+    price: "£2,419",
+    priceNum: 2419,
     warranty: "10 year",
     image: boiler4000Img,
     kw: "25kW",
     tag: "Most Popular",
-    monthly: "£33",
+    monthly: "£35",
     features: ["Up to 94% efficiency", "Which? Best Buy 2025", "10 year warranty", "Built-in frost protection", "Smart thermostat compatible"],
     idealFor: "3-4 bed homes with 1-2 bathrooms and 10-15 radiators",
   },
   {
     name: "Greenstar 8000 Life",
     model: "35kW Combi",
-    price: "£3,299",
-    priceNum: 2899,
+    price: "£3,350",
+    priceNum: 3350,
     warranty: "12 year",
     image: boiler8000Img,
     kw: "35kW",
     tag: "Premium",
-    monthly: "£48",
+    monthly: "£49",
     features: ["Up to 94% efficiency", "Top-of-range model", "12 year warranty", "High hot water demand", "Designer black finish available"],
     idealFor: "4+ bed homes with 2+ bathrooms and 15+ radiators",
   },
@@ -763,8 +763,8 @@ function Footer() {
             <p className="font-bold text-sm mb-3" style={{ color: WB_BLUE }}>Products</p>
             <ul className="space-y-2 text-sm">
               <li>Greenstar 2000 — from £2,299</li>
-              <li>Greenstar 4000 — from £2,299</li>
-              <li>Greenstar 8000 Life — from £3,299</li>
+              <li>Greenstar 4000 — from £2,419</li>
+              <li>Greenstar 8000 Life — from £3,350</li>
             </ul>
           </div>
           <div>
