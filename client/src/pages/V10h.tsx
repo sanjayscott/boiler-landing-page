@@ -20,7 +20,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 import worcesterBoschLogo from "@assets/worcester-bosch-logo_(2)_1771281246798.png";
-import heroLifestyle from "@assets/Ri_-_Lifestyle_1771321781805.jpg";
+import heroLifestyle from "@assets/Worcester_Bosch_CDi_Classic_Model_and_installer_in_Scandi_Kitc_1771321575784.jpg";
 import boiler2000Img from "@assets/Worcester_Bosch_2000_584_x_550_1771321664217.jpg";
 import boiler4000Img from "@assets/Worcester_Bosch_4000_Combi_Boiler_584x550_1771321664218.jpg";
 import boiler8000Img from "@assets/8000_Style_Black_1771321846520.jpg";
@@ -89,18 +89,25 @@ function HeroSection() {
       data-testid="section-hero"
     >
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroLifestyle})` }}
         data-testid="img-hero-lifestyle"
       />
-      <div className="absolute inset-0 bg-white/85" />
+      <style>{`
+        .v10h-hero-overlay { display: none; }
+        @media (min-width: 768px) { .v10h-hero-overlay { display: block; background: linear-gradient(to bottom, rgba(255,255,255,0.92), rgba(255,255,255,0.88), rgba(255,255,255,1)); } }
+        @media (min-width: 1024px) { .v10h-hero-overlay { background: linear-gradient(to bottom, rgba(255,255,255,0.75), rgba(255,255,255,0.65), rgba(255,255,255,1)); } }
+        @media (min-width: 1280px) { .v10h-hero-overlay { background: linear-gradient(to bottom, rgba(255,255,255,0.55), rgba(255,255,255,0.40), rgba(255,255,255,1)); } }
+        @media (min-width: 1536px) { .v10h-hero-overlay { background: linear-gradient(to bottom, rgba(255,255,255,0.40), rgba(255,255,255,0.25), rgba(255,255,255,1)); } }
+      `}</style>
+      <div className="v10h-hero-overlay absolute inset-0" />
       <div className="relative z-10 container mx-auto px-4 py-12 md:py-20 lg:py-28">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-2xl space-y-6">
           <div className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold text-white" style={{ backgroundColor: WB_BLUE }} data-testid="badge-spring-promo">
             <Zap className="w-4 h-4" style={{ color: WB_GREEN }} /> Spring Promotion - Save Up To &pound;500
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight" style={{ color: WB_BLUE }} data-testid="text-hero-headline">
-            Worcester Bosch<br />Boilers From £1,790<br />Installed
+            Worcester Bosch<br />Boilers From &pound;1,790<br />Installed
           </h1>
           <p className="text-lg md:text-xl text-gray-700 max-w-lg">
             If your boiler is over 10 years old, you could be wasting hundreds of pounds a year. Book a free, no-obligation home heating assessment today.
