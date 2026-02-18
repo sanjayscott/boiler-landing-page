@@ -50,39 +50,39 @@ const boilers = [
   {
     name: "Greenstar 2000",
     model: "25kW Combi",
-    price: "£2,099",
+    price: "£2,299",
     priceNum: 2099,
     warranty: "8 year",
     image: boiler2000Img,
     kw: "25kW",
     tag: "Great Value",
-    monthly: "£30",
+    monthly: "£33",
     features: ["Up to 94% efficiency", "Compact & lightweight", "8 year warranty", "Quiet operation", "Easy to use controls"],
     idealFor: "1-2 bed homes with 1 bathroom and up to 10 radiators",
   },
   {
     name: "Greenstar 4000",
     model: "25kW Combi",
-    price: "£2,399",
+    price: "£2,499",
     priceNum: 2399,
     warranty: "10 year",
     image: boiler4000Img,
     kw: "25kW",
     tag: "Most Popular",
-    monthly: "£35",
+    monthly: "£36",
     features: ["Up to 94% efficiency", "Which? Best Buy 2025", "10 year warranty", "Built-in frost protection", "Smart thermostat compatible"],
     idealFor: "3-4 bed homes with 1-2 bathrooms and 10-15 radiators",
   },
   {
     name: "Greenstar 8000 Life",
     model: "35kW Combi",
-    price: "£2,899",
+    price: "£3,299",
     priceNum: 2899,
     warranty: "12 year",
     image: boiler8000Img,
     kw: "35kW",
     tag: "Premium",
-    monthly: "£42",
+    monthly: "£48",
     features: ["Up to 94% efficiency", "Top-of-range model", "12 year warranty", "High hot water demand", "Designer black finish available"],
     idealFor: "4+ bed homes with 2+ bathrooms and 15+ radiators",
   },
@@ -244,7 +244,7 @@ function HeroSection() {
             <Zap className="w-4 h-4" style={{ color: WB_GREEN }} /> Spring Promotion — Save Up To £500
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight" style={{ color: WB_BLUE }}>
-            Worcester Bosch Boilers<br />From <span style={{ color: WB_GREEN }}>£2,099</span> Installed
+            Worcester Bosch Boilers<br />From <span style={{ color: WB_GREEN }}>£2,299</span> Installed
           </h1>
           <p className="text-lg md:text-xl text-gray-700 max-w-lg mx-auto">
             Transparent pricing. Free home assessment. Up to 12 years warranty. From your local Worcester Bosch accredited installer.
@@ -678,7 +678,7 @@ function FAQ() {
     { q: "How quickly can you install?", a: "Once you've had your assessment and decided to go ahead, we can usually install within 48 hours. Most installs take just one day." },
     { q: "What areas do you cover?", a: "We cover Medway, Kent and surrounding areas including Chatham, Rochester, Gillingham, Rainham, Strood, Gravesend, Canterbury and more." },
     { q: "What warranties do you offer?", a: "As a Worcester Bosch Accredited Installer, we can offer up to 12 year manufacturer-backed guarantees on Greenstar boilers. This is the longest warranty available." },
-    { q: "Do you offer finance?", a: "Yes — spread the cost from just £26/month. 11.9% APR representative, over up to 10 years, subject to status. We'll go through all payment options during your free home assessment." },
+    { q: "Do you offer finance?", a: "Yes — spread the cost from just £33/month. 11.9% APR representative, over up to 10 years, subject to status. We'll go through all payment options during your free home assessment." },
     { q: "Can you beat BOXT / online prices?", a: "Yes — our prices are competitive with or lower than online-only companies, and you get a proper home assessment included. We price match any like-for-like Worcester Bosch quote." },
   ];
 
@@ -709,7 +709,7 @@ function PromoBanner() {
       <div className="container mx-auto flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
         <span className="text-white text-sm font-semibold">Spring Worcester Bosch Promotion</span>
         <span className="text-blue-200 text-sm hidden sm:inline">|</span>
-        <span className="text-white text-sm">New Boiler From <strong>£2,099</strong> Installed + <strong>Free Home Assessment</strong></span>
+        <span className="text-white text-sm">New Boiler From <strong>£2,299</strong> Installed + <strong>Free Home Assessment</strong></span>
         <button onClick={() => scrollTo("book")} className="text-sm font-bold underline underline-offset-2 flex items-center gap-0.5" style={{ color: WB_GREEN }}>
           Book Free Assessment <ChevronRight className="w-3.5 h-3.5" />
         </button>
@@ -762,9 +762,9 @@ function Footer() {
           <div>
             <p className="font-bold text-sm mb-3" style={{ color: WB_BLUE }}>Products</p>
             <ul className="space-y-2 text-sm">
-              <li>Greenstar 2000 — from £2,099</li>
-              <li>Greenstar 4000 — from £2,399</li>
-              <li>Greenstar 8000 Life — from £2,899</li>
+              <li>Greenstar 2000 — from £2,299</li>
+              <li>Greenstar 4000 — from £2,499</li>
+              <li>Greenstar 8000 Life — from £3,299</li>
             </ul>
           </div>
           <div>
