@@ -1,9 +1,12 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, createContext, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { insertInquirySchema, type InsertInquiry } from "@shared/schema";
+import { useTrackVisit, type TrackingParams } from "@/hooks/use-tracking";
+
+const TrackingContext = createContext<TrackingParams>({ ref: null, epc: null, source: null });
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -102,13 +105,20 @@ function getBallpark(beds: string, baths: string, rads: string) {
 function BookingForm({ context }: { context?: string }) {
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
+  const tracking = useContext(TrackingContext);
   const form = useForm<InsertInquiry>({
     resolver: zodResolver(insertInquirySchema),
     defaultValues: { name: "", phone: "", postcode: "" },
   });
   const mutation = useMutation({
     mutationFn: async (data: InsertInquiry) => {
-      const res = await apiRequest("POST", "/api/leads", { ...data, notes: context || "V11 booking form" });
+      const res = await apiRequest("POST", "/api/leads", {
+        ...data,
+        ref: tracking.ref,
+        epc: tracking.epc,
+        source: tracking.source || "direct",
+        notes: context || "V11 booking form",
+      });
       return res.json();
     },
     onSuccess: () => { setSubmitted(true); form.reset(); },
@@ -173,10 +183,14 @@ function CallbackForm({ context }: { context?: string }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const { toast } = useToast();
+  const tracking = useContext(TrackingContext);
   const mutation = useMutation({
     mutationFn: async () => {
       const res = await apiRequest("POST", "/api/leads", {
         name, phone, postcode: "",
+        ref: tracking.ref,
+        epc: tracking.epc,
+        source: tracking.source || "direct",
         notes: `Callback request${context ? `: ${context}` : ""}`,
       });
       return res.json();
@@ -808,20 +822,24 @@ function StickyMobileCTA() {
 // ─── Main Page ───────────────────────────────────────────────────────────
 
 export default function V11() {
+  const tracking = useTrackVisit("v11");
+
   return (
-    <div className="min-h-screen flex flex-col font-sans">
-      <Header />
-      <HeroSection />
-      <PricingSection />
-      <WhatHappensNext />
-      <BookingSection />
-      <BallparkQuiz />
-      <WhyAssessment />
-      <ComparisonSection />
-      <Testimonials />
-      <FAQ />
-      <Footer />
-      <StickyMobileCTA />
-    </div>
+    <TrackingContext.Provider value={tracking}>
+      <div className="min-h-screen flex flex-col font-sans">
+        <Header />
+        <HeroSection />
+        <PricingSection />
+        <WhatHappensNext />
+        <BookingSection />
+        <BallparkQuiz />
+        <WhyAssessment />
+        <ComparisonSection />
+        <Testimonials />
+        <FAQ />
+        <Footer />
+        <StickyMobileCTA />
+      </div>
+    </TrackingContext.Provider>
   );
 }

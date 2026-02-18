@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, createContext, useContext } from "react";
+import { useTrackVisit, type TrackingParams } from "@/hooks/use-tracking";
+
+const TrackingContext = createContext<TrackingParams>({ ref: null, epc: null, source: null });
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -497,7 +500,17 @@ function LeadForm() {
   const { toast } = useToast();
   const form = useForm<InsertInquiry>({ resolver: zodResolver(insertInquirySchema), defaultValues: { name: "", phone: "", postcode: "" } });
   const mutation = useMutation({
-    mutationFn: async (data: InsertInquiry) => { const res = await apiRequest("POST", "/api/leads", data); return res.json(); },
+    mutationFn: async (data: InsertInquiry) => {
+      const tracking = window.__wsb_tracking || {};
+      const res = await apiRequest("POST", "/api/leads", {
+        ...data,
+        ref: tracking.ref || null,
+        epc: tracking.epc || null,
+        source: tracking.source || "direct",
+        notes: "V10 booking form",
+      });
+      return res.json();
+    },
     onSuccess: () => { setSubmitted(true); form.reset(); },
     onError: () => { toast({ title: "Something went wrong", description: "Please try again or call us.", variant: "destructive" }); },
   });
@@ -639,6 +652,11 @@ function StickyMobileCTA() {
 }
 
 export default function V10() {
+  const tracking = useTrackVisit("v10");
+
+  // Store tracking on window for nested components that don't use context
+  (window as any).__wsb_tracking = tracking;
+
   return (
     <div className="min-h-screen flex flex-col font-sans" data-testid="landing-page-v10">
       <Header />
