@@ -33,11 +33,17 @@ async function notifyWebhook(type: string, data: any) {
     const source = data.source ? ` | Source: ${data.source}` : "";
     const msg = `🔔 *New Landing Page Lead!*\n\n👤 *${data.name}*\n📞 ${data.phone}\n📍 ${data.postcode}${epc}${ref}${source}\n📝 ${data.notes || "—"}`;
     try {
-      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      const tgRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode: "Markdown" }),
       });
+      const tgBody = await tgRes.json();
+      if (!tgBody.ok) {
+        console.error("Telegram API error:", JSON.stringify(tgBody));
+      } else {
+        console.log("Telegram notification sent successfully for:", data.name);
+      }
     } catch (e) {
       console.error("Telegram notification failed:", e);
     }
