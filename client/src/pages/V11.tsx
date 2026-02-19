@@ -1,10 +1,11 @@
-import { useState, useCallback, createContext, useContext } from "react";
+import { useState, useCallback, createContext, useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { insertInquirySchema, type InsertInquiry } from "@shared/schema";
 import { useTrackVisit, type TrackingParams } from "@/hooks/use-tracking";
+import { usePartialCapture } from "@/hooks/use-partial-capture";
 
 const TrackingContext = createContext<TrackingParams>({ ref: null, epc: null, source: null });
 import { Button } from "@/components/ui/button";
@@ -106,12 +107,24 @@ function BookingForm({ context }: { context?: string }) {
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
   const tracking = useContext(TrackingContext);
+  const { update: updatePartial, markSubmitted: markPartialSubmitted } = usePartialCapture("/v11", tracking.source || "direct");
   const form = useForm<InsertInquiry>({
     resolver: zodResolver(insertInquirySchema),
     defaultValues: { name: "", phone: "", postcode: "" },
   });
+
+  useEffect(() => {
+    const sub = form.watch((values) => {
+      if (values.name) updatePartial("name", values.name);
+      if (values.phone) updatePartial("phone", values.phone);
+      if (values.postcode) updatePartial("postcode", values.postcode);
+    });
+    return () => sub.unsubscribe();
+  }, [form, updatePartial]);
+
   const mutation = useMutation({
     mutationFn: async (data: InsertInquiry) => {
+      markPartialSubmitted();
       const res = await apiRequest("POST", "/api/leads", {
         ...data,
         ref: tracking.ref,
@@ -184,8 +197,14 @@ function CallbackForm({ context }: { context?: string }) {
   const [phone, setPhone] = useState("");
   const { toast } = useToast();
   const tracking = useContext(TrackingContext);
+  const { update: updatePartial, markSubmitted: markPartialSubmitted } = usePartialCapture("/v11", tracking.source || "direct");
+
+  useEffect(() => { if (name) updatePartial("name", name); }, [name, updatePartial]);
+  useEffect(() => { if (phone) updatePartial("phone", phone); }, [phone, updatePartial]);
+
   const mutation = useMutation({
     mutationFn: async () => {
+      markPartialSubmitted();
       const res = await apiRequest("POST", "/api/leads", {
         name, phone, postcode: "",
         ref: tracking.ref,

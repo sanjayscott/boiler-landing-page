@@ -29,7 +29,10 @@ Preferred communication style: Simple, everyday language.
 ### Data Storage
 - **Database**: PostgreSQL via `DATABASE_URL` environment variable
 - **ORM**: Drizzle ORM with `drizzle-zod` for automatic Zod schema generation from table definitions
-- **Schema Location**: `shared/schema.ts` — single `inquiries` table with fields: id, name, email, phone, postcode, selectedModel, message, createdAt
+- **Schema Location**: `shared/schema.ts` — three tables:
+  - `inquiries` — Full lead submissions (name, phone, postcode, ref, epc, source, notes, notified flag, createdAt)
+  - `visits` — Page visit tracking (ref, epc, page, userAgent, ip, createdAt)
+  - `partial_leads` — Unsubmitted form inputs captured on page exit (name, phone, postcode, page, source, converted flag, createdAt)
 - **Migrations**: Managed with `drizzle-kit push` (schema push approach, not migration files)
 - **Storage Pattern**: `server/storage.ts` defines an `IStorage` interface with a `DatabaseStorage` implementation, making storage swappable
 
@@ -69,7 +72,18 @@ Preferred communication style: Simple, everyday language.
 - `@replit/vite-plugin-cartographer` — Dev tooling (conditionally loaded)
 - `@replit/vite-plugin-dev-banner` — Dev environment banner (conditionally loaded)
 
+### Notifications
+- **Telegram Bot** — Sends real-time alerts for new leads, site visits, and partial form captures
+  - `TELEGRAM_BOT_TOKEN` secret — Bot API token
+  - `TELEGRAM_CHAT_ID` defaults to `8422310768` (Sanjay's chat)
+  - Retry logic: 3 attempts with exponential backoff
+  - `notified` flag on inquiries table tracks whether notification was delivered
+- **Partial Form Capture** — Uses `navigator.sendBeacon` on page exit to capture unsubmitted form inputs
+  - Hook: `client/src/hooks/use-partial-capture.ts`
+  - Endpoint: `POST /api/partial-leads`
+
 ### External Services
 - **Google Fonts** — DM Sans, Geist Mono, Fira Code, Architects Daughter fonts loaded via CDN
+- **Telegram Bot API** — Direct notifications for leads and visits
 - No authentication system is implemented
-- No third-party API integrations (no payment processing, no email sending currently active)
+- No email sending currently active (Resend integration available but not set up)
