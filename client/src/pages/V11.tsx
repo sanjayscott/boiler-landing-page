@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { insertInquirySchema, type InsertInquiry } from "@shared/schema";
+import { leadFormSchema, callbackFormSchema, type InsertInquiry } from "@shared/schema";
 import { useTrackVisit, type TrackingParams } from "@/hooks/use-tracking";
 import { usePartialCapture } from "@/hooks/use-partial-capture";
 
@@ -109,7 +109,7 @@ function BookingForm({ context }: { context?: string }) {
   const tracking = useContext(TrackingContext);
   const { update: updatePartial, markSubmitted: markPartialSubmitted } = usePartialCapture("/v11", tracking.source || "direct");
   const form = useForm<InsertInquiry>({
-    resolver: zodResolver(insertInquirySchema),
+    resolver: zodResolver(leadFormSchema),
     defaultValues: { name: "", phone: "", postcode: "" },
   });
 
@@ -193,20 +193,29 @@ function BookingForm({ context }: { context?: string }) {
 
 function CallbackForm({ context }: { context?: string }) {
   const [submitted, setSubmitted] = useState(false);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
   const { toast } = useToast();
   const tracking = useContext(TrackingContext);
   const { update: updatePartial, markSubmitted: markPartialSubmitted } = usePartialCapture("/v11", tracking.source || "direct");
 
-  useEffect(() => { if (name) updatePartial("name", name); }, [name, updatePartial]);
-  useEffect(() => { if (phone) updatePartial("phone", phone); }, [phone, updatePartial]);
+  const form = useForm<InsertInquiry>({
+    resolver: zodResolver(callbackFormSchema),
+    defaultValues: { name: "", phone: "", postcode: "" },
+  });
+
+  useEffect(() => {
+    const sub = form.watch((values) => {
+      if (values.name) updatePartial("name", values.name);
+      if (values.phone) updatePartial("phone", values.phone);
+    });
+    return () => sub.unsubscribe();
+  }, [form, updatePartial]);
 
   const mutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (data: InsertInquiry) => {
       markPartialSubmitted();
       const res = await apiRequest("POST", "/api/leads", {
-        name, phone, postcode: "",
+        ...data,
+        postcode: "",
         ref: tracking.ref,
         epc: tracking.epc,
         source: tracking.source || "direct",
@@ -214,7 +223,7 @@ function CallbackForm({ context }: { context?: string }) {
       });
       return res.json();
     },
-    onSuccess: () => { setSubmitted(true); setName(""); setPhone(""); },
+    onSuccess: () => { setSubmitted(true); form.reset(); },
     onError: () => { toast({ title: "Something went wrong", description: "Please try again or call us.", variant: "destructive" }); },
   });
 
@@ -231,15 +240,21 @@ function CallbackForm({ context }: { context?: string }) {
   }
 
   return (
-    <div className="space-y-4">
-      <Input placeholder="Your Name" value={name} onChange={e => setName(e.target.value)} className="border-gray-200 py-5 text-base" />
-      <Input placeholder="Phone Number" type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="border-gray-200 py-5 text-base" />
-      <Button size="lg" onClick={() => mutation.mutate()} disabled={!name.trim() || !phone.trim() || mutation.isPending}
-        className="w-full text-white font-bold text-base" style={{ backgroundColor: WB_BLUE, borderColor: WB_BLUE }}>
-        {mutation.isPending ? "Requesting..." : <><PhoneCall className="w-5 h-5 mr-2" /> Request a Callback</>}
-      </Button>
-      <p className="text-xs text-center text-gray-400">We'll call you back within 2 hours. No obligation.</p>
-    </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
+        <FormField control={form.control} name="name" render={({ field }) => (
+          <FormItem><FormControl><Input placeholder="Your Name" className="border-gray-200 py-5 text-base" {...field} /></FormControl><FormMessage /></FormItem>
+        )} />
+        <FormField control={form.control} name="phone" render={({ field }) => (
+          <FormItem><FormControl><Input placeholder="Phone Number" type="tel" className="border-gray-200 py-5 text-base" {...field} /></FormControl><FormMessage /></FormItem>
+        )} />
+        <Button type="submit" size="lg" disabled={mutation.isPending}
+          className="w-full text-white font-bold text-base" style={{ backgroundColor: WB_BLUE, borderColor: WB_BLUE }}>
+          {mutation.isPending ? "Requesting..." : <><PhoneCall className="w-5 h-5 mr-2" /> Request a Callback</>}
+        </Button>
+        <p className="text-xs text-center text-gray-400">We'll call you back within 2 hours. No obligation.</p>
+      </form>
+    </Form>
   );
 }
 

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { insertInquirySchema, type InsertInquiry } from "@shared/schema";
+import { leadFormSchema, type InsertInquiry } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -498,7 +498,7 @@ function LeadForm() {
   const [submitted, setSubmitted] = useState(false);
   const [showFields, setShowFields] = useState(false);
   const { toast } = useToast();
-  const form = useForm<InsertInquiry>({ resolver: zodResolver(insertInquirySchema), defaultValues: { name: "", phone: "", postcode: "" } });
+  const form = useForm<InsertInquiry>({ resolver: zodResolver(leadFormSchema), defaultValues: { name: "", phone: "", postcode: "" } });
   const mutation = useMutation({
     mutationFn: async (data: InsertInquiry) => {
       const tracking = window.__wsb_tracking || {};

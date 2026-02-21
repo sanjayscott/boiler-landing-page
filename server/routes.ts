@@ -4,6 +4,13 @@ import { storage } from "./storage";
 import { insertInquirySchema, insertVisitSchema, insertPartialLeadSchema } from "@shared/schema";
 import { z } from "zod";
 
+const ukPhoneRegex = /^(?:(?:\+44\s?|0)(?:1\d{3,4}\s?\d{3,4}\s?\d{0,4}|2\d\s?\d{4}\s?\d{4}|3\d{2,3}\s?\d{3,4}\s?\d{0,4}|7\d{3}\s?\d{3}\s?\d{3}|800\s?\d{3}\s?\d{3,4}|8[0-9]{2}\s?\d{3}\s?\d{3,4}))$/;
+
+function isValidUkPhone(phone: string): boolean {
+  const cleaned = phone.replace(/[\s\-\(\)]/g, "");
+  return ukPhoneRegex.test(cleaned);
+}
+
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "8422310768";
 
@@ -44,6 +51,9 @@ export async function registerRoutes(
       const data = insertInquirySchema.parse(req.body);
       if (!data.name?.trim() && !data.phone?.trim()) {
         return res.status(400).json({ message: "Name or phone number is required" });
+      }
+      if (data.phone?.trim() && !isValidUkPhone(data.phone)) {
+        return res.status(400).json({ message: "Please enter a valid UK phone number" });
       }
       const inquiry = await storage.createInquiry(data);
 

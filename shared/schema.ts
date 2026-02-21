@@ -21,6 +21,29 @@ export const insertInquirySchema = createInsertSchema(inquiries).omit({
   createdAt: true,
 });
 
+const ukPhoneRegex = /^(?:(?:\+44\s?|0)(?:1\d{3,4}\s?\d{3,4}\s?\d{0,4}|2\d\s?\d{4}\s?\d{4}|3\d{2,3}\s?\d{3,4}\s?\d{0,4}|7\d{3}\s?\d{3}\s?\d{3}|800\s?\d{3}\s?\d{3,4}|8[0-9]{2}\s?\d{3}\s?\d{3,4}))$/;
+const ukPostcodeRegex = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
+
+export const leadFormSchema = insertInquirySchema.extend({
+  name: z.string().min(2, "Please enter your name"),
+  phone: z.string()
+    .min(1, "Please enter your phone number")
+    .transform(v => v.replace(/[\s\-\(\)]/g, ""))
+    .pipe(z.string().regex(ukPhoneRegex, "Please enter a valid UK phone number")),
+  postcode: z.string()
+    .min(1, "Please enter your postcode")
+    .regex(ukPostcodeRegex, "Please enter a valid UK postcode"),
+});
+
+export const callbackFormSchema = insertInquirySchema.extend({
+  name: z.string().min(2, "Please enter your name"),
+  phone: z.string()
+    .min(1, "Please enter your phone number")
+    .transform(v => v.replace(/[\s\-\(\)]/g, ""))
+    .pipe(z.string().regex(ukPhoneRegex, "Please enter a valid UK phone number")),
+  postcode: z.string().optional(),
+});
+
 export type Inquiry = typeof inquiries.$inferSelect;
 export type InsertInquiry = z.infer<typeof insertInquirySchema>;
 
