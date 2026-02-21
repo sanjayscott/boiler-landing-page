@@ -42,13 +42,25 @@ export async function registerRoutes(
   const handleInquiry = async (req: any, res: any) => {
     try {
       const data = insertInquirySchema.parse(req.body);
+      if (!data.name?.trim() && !data.phone?.trim()) {
+        return res.status(400).json({ message: "Name or phone number is required" });
+      }
       const inquiry = await storage.createInquiry(data);
 
-      const ref = inquiry.ref ? ` (ref: ${esc(inquiry.ref)})` : "";
+      const nameLine = inquiry.name?.trim() ? `<b>${esc(inquiry.name.trim())}</b>` : "<i>No name provided</i>";
+      const phoneLine = inquiry.phone?.trim() ? `📞 ${esc(inquiry.phone.trim())}` : "<i>No phone</i>";
+      const postcodeLine = inquiry.postcode?.trim() ? `📍 ${esc(inquiry.postcode.trim())}` : "";
+      const ref = inquiry.ref ? `\n🏷 Ref: ${esc(inquiry.ref)}` : "";
       const epc = inquiry.epc ? ` | EPC: ${esc(inquiry.epc)}` : "";
-      const source = inquiry.source ? ` | Source: ${esc(inquiry.source)}` : "";
-      const notes = inquiry.notes ? esc(inquiry.notes) : "-";
-      const msg = `<b>New Landing Page Lead!</b>\n\n<b>${esc(inquiry.name)}</b>\n${esc(inquiry.phone)}\n${esc(inquiry.postcode)}${epc}${ref}${source}\n${notes}`;
+      const source = inquiry.source ? `\n📊 Source: ${esc(inquiry.source)}` : "";
+      const notes = inquiry.notes ? `\n📝 ${esc(inquiry.notes)}` : "";
+      const lines = [`<b>🔔 New Landing Page Lead!</b>`, "", nameLine, phoneLine];
+      if (postcodeLine) lines.push(postcodeLine);
+      if (ref) lines.push(ref.trim());
+      if (epc) lines.push(epc.trim());
+      if (source) lines.push(source.trim());
+      if (notes) lines.push(notes.trim());
+      const msg = lines.join("\n");
 
       sendTelegram(msg).then(async (sent) => {
         if (sent) {
@@ -84,7 +96,7 @@ export async function registerRoutes(
 
       const page = data.page || "unknown";
       const ref = data.ref ? ` (ref: ${esc(data.ref)})` : "";
-      const visitMsg = `<b>Site Visit</b>\nPage: ${esc(page)}${ref}\nIP: ${ip ? esc(ip.split(",")[0].trim()) : "-"}`;
+      const visitMsg = `<b>👁 Site Visit</b>\nPage: ${esc(page)}${ref}\nIP: ${ip ? esc(ip.split(",")[0].trim()) : "-"}`;
       sendTelegram(visitMsg);
 
       res.status(201).json({ ok: true });
@@ -110,7 +122,7 @@ export async function registerRoutes(
       if (data.name) fields.push(esc(data.name));
       if (data.phone) fields.push(esc(data.phone));
       if (data.postcode) fields.push(esc(data.postcode));
-      const partialMsg = `<b>Partial Lead (not submitted)</b>\n${fields.join("\n")}\nPage: ${esc(data.page || "-")}`;
+      const partialMsg = `<b>⚠️ Partial Lead (not submitted)</b>\n${fields.join("\n")}\nPage: ${esc(data.page || "-")}`;
       sendTelegram(partialMsg);
 
       res.status(201).json({ ok: true, saved: true });
