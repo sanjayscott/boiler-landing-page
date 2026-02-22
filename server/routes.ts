@@ -202,17 +202,51 @@ export async function registerRoutes(
     }
   });
 
-  // Financials
-  app.get("/api/dashboard/financials", dashboardAuth, async (_req, res) => {
+  // Financials (with optional date range filtering)
+  app.get("/api/dashboard/financials", dashboardAuth, async (req, res) => {
     try {
-      const [monthlyPnl, expensesByCategory, incomeByCustomer, platformSpend, materialsSpend] = await Promise.all([
-        supabaseQuery("monthly_pnl?order=month.asc"),
-        supabaseQuery("expenses_by_category?order=total_spent.desc&limit=15"),
-        supabaseQuery("income_by_customer?order=total_paid.desc&limit=15"),
+      const { from, to } = req.query as { from?: string; to?: string };
+      const hasRange = from && to;
+
+      // Build date filter for SQL queries
+      const dateFilter = hasRange ? `WHERE date >= '${from}-01' AND date <= '${to}-31'` : "";
+      const dateFilterAnd = hasRange ? `AND date >= '${from}-01' AND date <= '${to}-31'` : "";
+
+      const queries: Promise<any>[] = [
+        // Monthly P&L - filter by month range
+        hasRange
+          ? supabaseQuery(`monthly_pnl?order=month.asc&month=gte.${from}&month=lte.${to}`)
+          : supabaseQuery("monthly_pnl?order=month.asc"),
+        // Expenses by category - use SQL for date filtering
+        hasRange
+          ? supabaseSQL(`SELECT json_agg(row_to_json(t)) FROM (SELECT category, sub_category, sum(paid_out) as total_spent, count(*) as transaction_count FROM transactions WHERE paid_out > 0 AND date >= '${from}-01' AND date <= '${to}-31' GROUP BY category, sub_category ORDER BY sum(paid_out) DESC LIMIT 15) t`)
+          : supabaseQuery("expenses_by_category?order=total_spent.desc&limit=15"),
+        // Income by customer - use SQL for date filtering
+        hasRange
+          ? supabaseSQL(`SELECT json_agg(row_to_json(t)) FROM (SELECT payee, sum(paid_in) as total_paid, count(*) as payment_count FROM transactions WHERE paid_in > 0 ${dateFilterAnd} GROUP BY payee ORDER BY sum(paid_in) DESC LIMIT 15) t`)
+          : supabaseQuery("income_by_customer?order=total_paid.desc&limit=15"),
+        // Platform spend
         supabaseQuery("lead_platform_spend?order=month.desc&limit=12"),
+        // Materials spend
         supabaseQuery("materials_spend?order=month.desc&limit=12"),
-      ]);
-      res.json({ monthlyPnl, expensesByCategory, incomeByCustomer, platformSpend, materialsSpend });
+        // P&L summary totals
+        supabaseSQL(`SELECT json_agg(row_to_json(t)) FROM (SELECT coalesce(sum(paid_in), 0) as total_income, coalesce(sum(paid_out), 0) as total_expenses, coalesce(sum(paid_in), 0) - coalesce(sum(paid_out), 0) as net_profit, count(*) as transaction_count FROM transactions ${dateFilter}) t`),
+      ];
+
+      const [monthlyPnl, expensesByCategory, incomeByCustomer, platformSpend, materialsSpend, pnlSummary] = await Promise.all(queries);
+
+      // SQL results from json_agg are the array directly; no unwrapping needed
+      const expenses = hasRange ? (expensesByCategory || []) : expensesByCategory;
+      const income = hasRange ? (incomeByCustomer || []) : incomeByCustomer;
+
+      res.json({
+        monthlyPnl,
+        expensesByCategory: expenses,
+        incomeByCustomer: income,
+        platformSpend,
+        materialsSpend,
+        pnlSummary: pnlSummary?.[0] || { total_income: 0, total_expenses: 0, net_profit: 0, transaction_count: 0 },
+      });
     } catch (e) {
       res.status(500).json({ error: "Failed to fetch financials" });
     }
