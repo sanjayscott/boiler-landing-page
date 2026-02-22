@@ -4,6 +4,12 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
+import DashboardLogin from "@/pages/dashboard/DashboardLogin";
+import Overview from "@/pages/dashboard/Overview";
+import LeadsPage from "@/pages/dashboard/Leads";
+import FinancialsPage from "@/pages/dashboard/Financials";
+import CampaignPage from "@/pages/dashboard/Campaign";
+import PipelinePage from "@/pages/dashboard/Pipeline";
 import VariantIndex from "@/pages/VariantIndex";
 import Home from "@/pages/Home";
 import V2 from "@/pages/V2";
@@ -42,6 +48,12 @@ function Router() {
       <Route path="/v10h" component={V10h} />
       <Route path="/v11" component={V11} />
       <Route path="/v11-heroes" component={V11HeroTest} />
+      <Route path="/dashboard/login" component={DashboardLogin} />
+      <Route path="/dashboard" component={Overview} />
+      <Route path="/dashboard/leads" component={LeadsPage} />
+      <Route path="/dashboard/financials" component={FinancialsPage} />
+      <Route path="/dashboard/campaign" component={CampaignPage} />
+      <Route path="/dashboard/pipeline" component={PipelinePage} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -3,6 +3,7 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { insertInquirySchema, insertVisitSchema } from "@shared/schema";
 import { z } from "zod";
+import cookieParser from "cookie-parser";
 
 // Notification config (set via env vars in Replit Secrets)
 // WEBHOOK_URL = n8n webhook (optional, for future automation)
@@ -11,6 +12,11 @@ import { z } from "zod";
 const WEBHOOK_URL = process.env.WEBHOOK_URL || "";
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "8422310768";
+
+// Supabase config
+const SUPABASE_URL = "https://agswgxnhbywwdxjhgjjs.supabase.co";
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || "";
+const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD || "wsb2026";
 
 async function notifyWebhook(type: string, data: any) {
   // n8n webhook (if configured)
@@ -44,10 +50,37 @@ async function notifyWebhook(type: string, data: any) {
   }
 }
 
+async function supabaseQuery(path: string, params?: Record<string, string>) {
+  const url = new URL(`${SUPABASE_URL}/rest/v1/${path}`);
+  if (params) Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  const res = await fetch(url.toString(), {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+    },
+  });
+  return res.json();
+}
+
+async function supabaseSQL(query: string) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/exec_sql`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query }),
+  });
+  return res.json();
+}
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express,
 ): Promise<Server> {
+  app.use(cookieParser());
+
   const handleInquiry = async (req: any, res: any) => {
     try {
       const data = insertInquirySchema.parse(req.body);
@@ -95,6 +128,125 @@ export async function registerRoutes(
 
   app.post("/api/inquiries", handleInquiry);
   app.post("/api/leads", handleInquiry);
+
+  // ============================================================
+  // Dashboard API routes
+  // ============================================================
+
+  // Dashboard auth - simple password gate
+  app.post("/api/dashboard/auth", (req, res) => {
+    const { password } = req.body;
+    if (password === DASHBOARD_PASSWORD) {
+      (req as any).session = (req as any).session || {};
+      // Set a cookie
+      res.cookie("wsb_dashboard", "authenticated", {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        sameSite: "lax"
+      });
+      res.json({ ok: true });
+    } else {
+      res.status(401).json({ error: "Wrong password" });
+    }
+  });
+
+  // Auth check middleware for dashboard routes
+  const dashboardAuth = (req: any, res: any, next: any) => {
+    if (req.cookies?.wsb_dashboard === "authenticated") {
+      next();
+    } else {
+      res.status(401).json({ error: "Unauthorized" });
+    }
+  };
+
+  app.get("/api/dashboard/check-auth", (req: any, res) => {
+    if (req.cookies?.wsb_dashboard === "authenticated") {
+      res.json({ authenticated: true });
+    } else {
+      res.status(401).json({ authenticated: false });
+    }
+  });
+
+  // Overview KPIs
+  app.get("/api/dashboard/overview", dashboardAuth, async (_req, res) => {
+    try {
+      const [leads, pipeline, platformCounts, monthlyRevenue] = await Promise.all([
+        supabaseSQL("SELECT json_agg(row_to_json(t)) FROM (SELECT count(*) as total, count(*) FILTER (WHERE created_at > now() - interval '7 days') as this_week, count(*) FILTER (WHERE status = 'won' OR status = 'done') as won, count(*) FILTER (WHERE status = 'new') as new_leads FROM leads) t"),
+        supabaseSQL("SELECT json_agg(row_to_json(t)) FROM (SELECT status, count(*) as cnt FROM leads GROUP BY status ORDER BY CASE status WHEN 'new' THEN 1 WHEN 'responded' THEN 2 WHEN 'shortlisted' THEN 3 WHEN 'quoted' THEN 4 WHEN 'won' THEN 5 WHEN 'done' THEN 6 WHEN 'declined' THEN 7 END) t"),
+        supabaseSQL("SELECT json_agg(row_to_json(t)) FROM (SELECT platform, count(*) as cnt FROM leads GROUP BY platform ORDER BY count(*) DESC) t"),
+        supabaseSQL("SELECT json_agg(row_to_json(t)) FROM (SELECT * FROM monthly_pnl ORDER BY month DESC LIMIT 12) t"),
+      ]);
+      res.json({ leads, pipeline, platformCounts, monthlyRevenue });
+    } catch (e) {
+      res.status(500).json({ error: "Failed to fetch overview" });
+    }
+  });
+
+  // Leads list with filtering
+  app.get("/api/dashboard/leads", dashboardAuth, async (req, res) => {
+    try {
+      const { platform, status, search, limit = "100", offset = "0" } = req.query as any;
+      let query = "leads?select=id,platform,title,description,location,distance_miles,job_type,customer_name,status,lead_date,created_at&order=created_at.desc";
+      if (platform) query += `&platform=eq.${platform}`;
+      if (status) query += `&status=eq.${status}`;
+      if (search) query += `&or=(title.ilike.*${search}*,customer_name.ilike.*${search}*,location.ilike.*${search}*)`;
+      query += `&limit=${limit}&offset=${offset}`;
+
+      const [leads, countResult] = await Promise.all([
+        supabaseQuery(query),
+        supabaseSQL(`SELECT json_agg(row_to_json(t)) FROM (SELECT count(*) as total FROM leads ${platform ? `WHERE platform='${platform}'` : ''} ${status ? `${platform ? 'AND' : 'WHERE'} status='${status}'` : ''}) t`),
+      ]);
+      res.json({ leads, total: countResult?.[0]?.total || 0 });
+    } catch (e) {
+      res.status(500).json({ error: "Failed to fetch leads" });
+    }
+  });
+
+  // Financials
+  app.get("/api/dashboard/financials", dashboardAuth, async (_req, res) => {
+    try {
+      const [monthlyPnl, expensesByCategory, incomeByCustomer, platformSpend, materialsSpend] = await Promise.all([
+        supabaseQuery("monthly_pnl?order=month.asc"),
+        supabaseQuery("expenses_by_category?order=total_spent.desc&limit=15"),
+        supabaseQuery("income_by_customer?order=total_paid.desc&limit=15"),
+        supabaseQuery("lead_platform_spend?order=month.desc&limit=12"),
+        supabaseQuery("materials_spend?order=month.desc&limit=12"),
+      ]);
+      res.json({ monthlyPnl, expensesByCategory, incomeByCustomer, platformSpend, materialsSpend });
+    } catch (e) {
+      res.status(500).json({ error: "Failed to fetch financials" });
+    }
+  });
+
+  // Campaign
+  app.get("/api/dashboard/campaign", dashboardAuth, async (_req, res) => {
+    try {
+      const [targetStats, newMoversSummary, boilerTiers, hotPostcodes, mailable] = await Promise.all([
+        supabaseSQL("SELECT json_agg(row_to_json(t)) FROM (SELECT count(*) as total, count(*) FILTER (WHERE energy_rating IN ('D','E','F','G')) as poor_epc, count(*) FILTER (WHERE lead_score >= 8) as high_score FROM campaign_targets) t"),
+        supabaseSQL("SELECT json_agg(row_to_json(t)) FROM (SELECT campaign_segment, sum(count) as total FROM new_movers_summary GROUP BY campaign_segment ORDER BY sum(count) DESC) t"),
+        supabaseQuery("new_movers_boiler_tiers"),
+        supabaseQuery("new_movers_hot_by_postcode?order=count.desc&limit=20"),
+        supabaseSQL("SELECT json_agg(row_to_json(t)) FROM (SELECT count(*) as total, count(*) FILTER (WHERE resident_name IS NOT NULL) as with_names FROM new_movers) t"),
+      ]);
+      res.json({ targetStats, newMoversSummary, boilerTiers, hotPostcodes, mailable });
+    } catch (e) {
+      res.status(500).json({ error: "Failed to fetch campaign data" });
+    }
+  });
+
+  // Pipeline
+  app.get("/api/dashboard/pipeline", dashboardAuth, async (_req, res) => {
+    try {
+      const [funnel, declineReasons, dailyActivity] = await Promise.all([
+        supabaseQuery("lead_funnel"),
+        supabaseQuery("decline_reasons?order=count.desc&limit=15"),
+        supabaseQuery("daily_activity?order=day.desc&limit=30"),
+      ]);
+      res.json({ funnel, declineReasons, dailyActivity });
+    } catch (e) {
+      res.status(500).json({ error: "Failed to fetch pipeline data" });
+    }
+  });
 
   return httpServer;
 }
