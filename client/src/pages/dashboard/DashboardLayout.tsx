@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Users, PoundSterling, Target, GitBranch, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, Users, PoundSterling, Target, GitBranch, LogOut, Menu, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -12,8 +12,32 @@ const navItems = [
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/dashboard/check-auth", { credentials: "include" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.authenticated) {
+          setLocation("/dashboard/login");
+        } else {
+          setAuthChecked(true);
+        }
+      })
+      .catch(() => {
+        setLocation("/dashboard/login");
+      });
+  }, [setLocation]);
+
+  if (!authChecked) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+      </div>
+    );
+  }
 
   const sidebarContent = (
     <>
