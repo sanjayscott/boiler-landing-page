@@ -32,7 +32,7 @@ export default function Leads() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<any>(null);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, dataUpdatedAt } = useQuery({
     queryKey: ["/api/dashboard/leads", platform, status, search],
     queryFn: async () => {
       const params = new URLSearchParams({ limit: "500" });
@@ -44,6 +44,7 @@ export default function Leads() {
       return res.json();
     },
     staleTime: 30000,
+    refetchInterval: 120000,
   });
 
   const leads = data?.leads || [];
@@ -53,7 +54,12 @@ export default function Leads() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">Leads</h2>
-          <span className="text-sm text-gray-500">{leads.length} results</span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-500">{leads.length} results</span>
+            {dataUpdatedAt > 0 && (
+              <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">Updated {(() => { const s = Math.floor((Date.now() - dataUpdatedAt) / 1000); return s < 60 ? "just now" : s < 3600 ? `${Math.floor(s / 60)}m ago` : `${Math.floor(s / 3600)}h ago`; })()}</span>
+            )}
+          </div>
         </div>
 
         {/* Filters */}

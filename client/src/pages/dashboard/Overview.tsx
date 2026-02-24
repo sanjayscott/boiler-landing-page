@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from "recharts";
+import { Loader2, Bot } from "lucide-react";
 import DashboardLayout from "./DashboardLayout";
 
 const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4"];
@@ -10,8 +10,15 @@ const STATUS_COLORS: Record<string, string> = {
   won: "#10b981", done: "#059669", declined: "#ef4444",
 };
 
+function timeAgo(date: Date): string {
+  const secs = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (secs < 60) return "just now";
+  if (secs < 3600) return `${Math.floor(secs / 60)}m ago`;
+  return `${Math.floor(secs / 3600)}h ago`;
+}
+
 export default function Overview() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, dataUpdatedAt } = useQuery({
     queryKey: ["/api/dashboard/overview"],
     queryFn: async () => {
       const res = await fetch("/api/dashboard/overview", { credentials: "include" });
@@ -19,16 +26,25 @@ export default function Overview() {
       return res.json();
     },
     staleTime: 60000,
+    refetchInterval: 120000,
+  });
+
+  const { data: autoData } = useQuery({
+    queryKey: ["/api/dashboard/automation"],
+    queryFn: async () => {
+      const res = await fetch("/api/dashboard/automation", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed");
+      return res.json();
+    },
+    staleTime: 60000,
+    refetchInterval: 120000,
   });
 
   if (isLoading) return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold">Overview</h2>
-        <div className="grid grid-cols-4 gap-4">
-          {[1,2,3,4].map(i => <Skeleton key={i} className="h-28 rounded-xl" />)}
-        </div>
-        <Skeleton className="h-80 rounded-xl" />
+      <div className="flex flex-col items-center justify-center py-32 gap-3">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        <p className="text-sm text-gray-500">Loading overview...</p>
       </div>
     </DashboardLayout>
   );
@@ -38,10 +54,22 @@ export default function Overview() {
   const platforms = data?.platformCounts || [];
   const revenue = (data?.monthlyRevenue || []).reverse();
 
+  const autoStats = autoData || {};
+  const todayTotal = Number(autoStats.today_total || 0);
+  const todayResponded = Number(autoStats.today_responded || 0);
+  const todayDeclined = Number(autoStats.today_declined || 0);
+  const successRate = todayTotal > 0 ? Math.round((todayResponded / todayTotal) * 100) : 0;
+  const lastActivity = autoStats.last_activity ? new Date(autoStats.last_activity) : null;
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-900">Overview</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-gray-900">Overview</h2>
+          {dataUpdatedAt > 0 && (
+            <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">Updated {timeAgo(new Date(dataUpdatedAt))}</span>
+          )}
+        </div>
 
         {/* KPI Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -62,6 +90,40 @@ export default function Overview() {
             <CardContent><p className="text-3xl font-bold text-amber-600">{kpis.new_leads || 0}</p></CardContent>
           </Card>
         </div>
+
+        {/* MyBuilder Auto Stats */}
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <Bot className="w-4 h-4 text-blue-600" />
+              <CardTitle className="text-sm font-medium">MyBuilder Auto (Today)</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <p className="text-xs text-gray-500">Responded</p>
+                <p className="text-2xl font-bold text-green-600">{todayResponded}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Declined</p>
+                <p className="text-2xl font-bold text-red-600">{todayDeclined}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Success Rate</p>
+                <p className="text-2xl font-bold">{successRate}%</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Last Activity</p>
+                <p className="text-sm font-medium text-gray-700 mt-1">
+                  {lastActivity
+                    ? lastActivity.toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })
+                    : "—"}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Pipeline */}

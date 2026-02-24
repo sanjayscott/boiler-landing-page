@@ -9,7 +9,7 @@ const COLORS = ["#ef4444", "#f59e0b", "#3b82f6", "#10b981", "#8b5cf6", "#ec4899"
 const SEGMENT_COLORS: Record<string, string> = { HOT: "#ef4444", WARM: "#f59e0b", COLD: "#3b82f6" };
 
 export default function Campaign() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, dataUpdatedAt } = useQuery({
     queryKey: ["/api/dashboard/campaign"],
     queryFn: async () => {
       const res = await fetch("/api/dashboard/campaign", { credentials: "include" });
@@ -17,6 +17,7 @@ export default function Campaign() {
       return res.json();
     },
     staleTime: 60000,
+    refetchInterval: 120000,
   });
 
   if (isLoading) return (
@@ -37,7 +38,12 @@ export default function Campaign() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-900">Campaign</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-gray-900">Campaign</h2>
+          {dataUpdatedAt > 0 && (
+            <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">Updated {(() => { const s = Math.floor((Date.now() - dataUpdatedAt) / 1000); return s < 60 ? "just now" : s < 3600 ? `${Math.floor(s / 60)}m ago` : `${Math.floor(s / 3600)}h ago`; })()}</span>
+          )}
+        </div>
 
         {/* KPI Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

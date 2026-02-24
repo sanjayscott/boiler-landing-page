@@ -3,19 +3,24 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import { Loader2 } from "lucide-react";
 import DashboardLayout from "./DashboardLayout";
 
 const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4", "#84cc16", "#f97316", "#14b8a6"];
+const PLATFORM_COLORS: Record<string, string> = {
+  mybuilder: "#3b82f6",
+  bark: "#10b981",
+  rated_people: "#f59e0b",
+  myjobquote: "#8b5cf6",
+};
 
 function getPresetRange(preset: string): { from: string; to: string } {
   const now = new Date();
   const y = now.getFullYear();
-  const m = now.getMonth(); // 0-indexed
+  const m = now.getMonth();
   switch (preset) {
     case "tax-year":
-      // UK tax year: 6 Apr – 5 Apr. If before April, current tax year started last year
       return m < 3
         ? { from: `${y - 1}-04`, to: `${y}-03` }
         : { from: `${y}-04`, to: `${y + 1}-03` };
@@ -43,13 +48,19 @@ function getPresetRange(preset: string): { from: string; to: string } {
   }
 }
 
+function timeAgo(date: Date): string {
+  const secs = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (secs < 60) return "just now";
+  if (secs < 3600) return `${Math.floor(secs / 60)}m ago`;
+  return `${Math.floor(secs / 3600)}h ago`;
+}
+
 export default function Financials() {
-  // Default to current tax year
   const defaultRange = getPresetRange("tax-year");
   const [from, setFrom] = useState(defaultRange.from);
   const [to, setTo] = useState(defaultRange.to);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch, dataUpdatedAt } = useQuery({
     queryKey: ["/api/dashboard/financials", from, to],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -60,6 +71,7 @@ export default function Financials() {
       return res.json();
     },
     staleTime: 60000,
+    refetchInterval: 120000,
   });
 
   const applyPreset = (preset: string) => {
@@ -75,11 +87,18 @@ export default function Financials() {
 
   if (isLoading) return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold">Financials</h2>
-        <Skeleton className="h-12 rounded-xl" />
-        <div className="grid grid-cols-4 gap-4">{[1,2,3,4].map(i => <Skeleton key={i} className="h-28 rounded-xl" />)}</div>
-        <Skeleton className="h-80 rounded-xl" />
+      <div className="flex flex-col items-center justify-center py-32 gap-3">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        <p className="text-sm text-gray-500">Loading financials...</p>
+      </div>
+    </DashboardLayout>
+  );
+
+  if (isError) return (
+    <DashboardLayout>
+      <div className="flex flex-col items-center justify-center py-32 gap-3">
+        <p className="text-sm text-red-600">Failed to load financial data</p>
+        <Button variant="outline" size="sm" onClick={() => refetch()}>Retry</Button>
       </div>
     </DashboardLayout>
   );
@@ -88,6 +107,8 @@ export default function Financials() {
   const expenses = data?.expensesByCategory || [];
   const income = data?.incomeByCustomer || [];
   const summary = data?.pnlSummary || {};
+  const platformSpend = (data?.platformSpend || []).reverse();
+  const materialsSpend = (data?.materialsSpend || []).reverse();
 
   const netProfit = Number(summary.net_profit || 0);
   const rangeLabel = from && to
@@ -97,7 +118,12 @@ export default function Financials() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-900">Financials</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-gray-900">Financials</h2>
+          {dataUpdatedAt > 0 && (
+            <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">Updated {timeAgo(new Date(dataUpdatedAt))}</span>
+          )}
+        </div>
 
         {/* Date Range Picker */}
         <Card>
@@ -105,21 +131,11 @@ export default function Financials() {
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
                 <label className="text-sm text-gray-500">From</label>
-                <input
-                  type="month"
-                  value={from}
-                  onChange={(e) => setFrom(e.target.value)}
-                  className="border rounded-md px-3 py-1.5 text-sm"
-                />
+                <input type="month" value={from} onChange={(e) => setFrom(e.target.value)} className="border rounded-md px-3 py-1.5 text-sm" />
               </div>
               <div className="flex items-center gap-2">
                 <label className="text-sm text-gray-500">To</label>
-                <input
-                  type="month"
-                  value={to}
-                  onChange={(e) => setTo(e.target.value)}
-                  className="border rounded-md px-3 py-1.5 text-sm"
-                />
+                <input type="month" value={to} onChange={(e) => setTo(e.target.value)} className="border rounded-md px-3 py-1.5 text-sm" />
               </div>
               <div className="h-6 w-px bg-gray-200 mx-1" />
               <Button variant="outline" size="sm" onClick={() => applyPreset("tax-year")}>This Tax Year</Button>
@@ -230,6 +246,46 @@ export default function Financials() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Platform Spend */}
+        {platformSpend.length > 0 && (
+          <Card>
+            <CardHeader><CardTitle className="text-sm font-medium">Lead Platform Spend by Month</CardTitle></CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={platformSpend}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                  <YAxis tick={{ fontSize: 11 }} />
+                  <Tooltip formatter={(v: any) => `£${Number(v || 0).toLocaleString()}`} />
+                  <Legend />
+                  <Bar dataKey="mybuilder" fill={PLATFORM_COLORS.mybuilder} name="MyBuilder" stackId="a" />
+                  <Bar dataKey="bark" fill={PLATFORM_COLORS.bark} name="Bark" stackId="a" />
+                  <Bar dataKey="rated_people" fill={PLATFORM_COLORS.rated_people} name="Rated People" stackId="a" />
+                  <Bar dataKey="myjobquote" fill={PLATFORM_COLORS.myjobquote} name="MyJobQuote" stackId="a" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Materials Spend */}
+        {materialsSpend.length > 0 && (
+          <Card>
+            <CardHeader><CardTitle className="text-sm font-medium">Materials Spend by Month</CardTitle></CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={materialsSpend}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                  <YAxis tick={{ fontSize: 11 }} />
+                  <Tooltip formatter={(v: any) => `£${Number(v || 0).toLocaleString()}`} />
+                  <Bar dataKey="total_spent" fill="#f59e0b" name="Materials" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </DashboardLayout>
   );
