@@ -130,6 +130,69 @@ export async function registerRoutes(
     }
   });
 
+  // ============================================================
+  // Email open tracking pixel
+  // GET /t?r=BASE64_ENCODED_JSON
+  // Decodes to { email, company, town }
+  // Logs the open and sends a Telegram notification
+  // Returns a 1x1 transparent GIF
+  // ============================================================
+  const PIXEL_GIF = Buffer.from(
+    "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+    "base64"
+  );
+  const emailOpenLog = new Map<string, number>(); // rate limit: 1 notification per email per hour
+
+  app.get("/t", async (req, res) => {
+    try {
+      // Always return the pixel immediately
+      res.set({
+        "Content-Type": "image/gif",
+        "Content-Length": PIXEL_GIF.length.toString(),
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      });
+      res.end(PIXEL_GIF);
+
+      // Decode the tracking ref
+      const ref = req.query.r as string;
+      if (!ref) return;
+
+      let data: { email?: string; company?: string; town?: string };
+      try {
+        data = JSON.parse(Buffer.from(ref, "base64url").toString("utf-8"));
+      } catch {
+        return;
+      }
+
+      const email = data.email || "unknown";
+      const company = data.company || "unknown";
+      const town = data.town || "";
+
+      // Rate limit: only notify once per email per hour
+      const lastSeen = emailOpenLog.get(email) || 0;
+      const now = Date.now();
+      if (now - lastSeen < 3600000) return; // 1 hour
+      emailOpenLog.set(email, now);
+
+      // Clean up old entries periodically
+      if (emailOpenLog.size > 500) {
+        for (const [k, v] of emailOpenLog) {
+          if (now - v > 7200000) emailOpenLog.delete(k);
+        }
+      }
+
+      const townTag = town ? ` (${esc(town)})` : "";
+      const msg = `📧 <b>Estate Agent Email Opened</b>\n\n🏢 <b>${esc(company)}</b>${townTag}\n✉️ ${esc(email)}`;
+      sendTelegram(msg);
+
+      console.log(`Email open: ${company} ${town} - ${email}`);
+    } catch (e) {
+      console.error("Tracking pixel error:", e);
+    }
+  });
+
   app.post("/api/partial-leads", async (req, res) => {
     try {
       const data = insertPartialLeadSchema.parse(req.body);
