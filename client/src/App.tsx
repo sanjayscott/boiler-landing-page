@@ -31,7 +31,7 @@ import V11HeroTest from "@/pages/V11HeroTest";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={VariantIndex} />
+      <Route path="/" component={V11} />
       <Route path="/v1" component={Home} />
       <Route path="/v2" component={V2} />
       <Route path="/v3" component={V3} />
