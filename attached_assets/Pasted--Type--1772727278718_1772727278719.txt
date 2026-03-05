@@ -1,0 +1,25 @@
+
+❯     Type                                                                                                                                       
+  Name                                                                                                                                       
+  Data                                                                                                                                           
+  TTL                                                                                                                                        
+  Delete                                                                                                                                         
+  Edit                                                                                                                                           
+                                                                                                                                             
+  a    @    34.111.179.208    600 seconds                                                                                                    
+                                                                                                                                             
+  ns    @    ns21.domaincontrol.com.    1 Hour                                                                                               
+  Can't delete                                                                                                                               
+  Can't edit                                                                                                                                 
+                                                                                                                                             
+  ns    @    ns22.domaincontrol.com.    1 Hour                                                                                               
+  Can't delete                                                                                                                               
+  Can't edit                                                                                                                                 
+                                                                                                                                             
+  cname    _domainconnect    _domainconnect.gd.domaincontrol.com.    1 Hour                                                                  
+                                                                                                                                             
+  soa    @    Primary nameserver: ns21.domaincontrol.com.    1 Hour                                                                          
+                                                                                                                                             
+  txt    @    replit-verify=d15fb418-2722-4e9c-93b1-63635abe000d    1 Hour                                                                   
+                                                                                                                                             
+  txt    _dmarc    v=DMARC1; p=reject; adkim=r; aspf=r; rua=mailto:dmarc_rua@onsecureserver.net;    1 Hour                  
