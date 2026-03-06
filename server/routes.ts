@@ -116,7 +116,23 @@ export async function registerRoutes(
 
       const page = data.page || "unknown";
       const ref = data.ref ? ` (ref: ${esc(data.ref)})` : "";
-      const visitMsg = `👁 <b>Site Visit</b>\n📄 Page: ${esc(page)}${ref}\n📍 IP: ${ip ? esc(ip.split(",")[0].trim()) : "—"}`;
+      const cleanIp = ip ? ip.split(",")[0].trim() : "";
+
+      // Fire Telegram immediately, then enrich with geolocation
+      let visitMsg = `👁 <b>Site Visit</b>\n📄 Page: ${esc(page)}${ref}\n📍 IP: ${cleanIp || "—"}`;
+
+      if (cleanIp && cleanIp !== "127.0.0.1" && cleanIp !== "::1") {
+        try {
+          const geo = await fetch(`http://ip-api.com/json/${cleanIp}?fields=city,regionName,country,isp`).then(r => r.json());
+          if (geo.city) {
+            visitMsg += `\n📌 ${esc(geo.city)}, ${esc(geo.regionName)}, ${esc(geo.country)}`;
+          }
+          if (geo.isp) {
+            visitMsg += `\n🌐 ${esc(geo.isp)}`;
+          }
+        } catch {}
+      }
+
       sendTelegram(visitMsg);
 
       res.status(201).json({ ok: true });
