@@ -1,6 +1,7 @@
-import { inquiries, visits, partialLeads, type Inquiry, type InsertInquiry, type Visit, type InsertVisit, type PartialLead, type InsertPartialLead } from "@shared/schema";
-import { db } from "./db";
-import { eq } from "drizzle-orm";
+import type { Inquiry, InsertInquiry, Visit, InsertVisit, PartialLead, InsertPartialLead } from "@shared/schema";
+
+const SUPABASE_URL = "https://agswgxnhbywwdxjhgjjs.supabase.co";
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || "";
 
 export interface IStorage {
   createInquiry(inquiry: InsertInquiry): Promise<Inquiry>;
@@ -9,24 +10,57 @@ export interface IStorage {
   createPartialLead(partial: InsertPartialLead): Promise<PartialLead>;
 }
 
+async function supabaseInsert<T>(table: string, data: Record<string, unknown>): Promise<T> {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Supabase insert into ${table} failed (${res.status}): ${err}`);
+  }
+  const rows = await res.json();
+  return rows[0];
+}
+
+async function supabasePatch(table: string, id: number, data: Record<string, unknown>): Promise<void> {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+    method: "PATCH",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Supabase patch ${table} id=${id} failed (${res.status}): ${err}`);
+  }
+}
+
 export class DatabaseStorage implements IStorage {
   async createInquiry(inquiry: InsertInquiry): Promise<Inquiry> {
-    const [newInquiry] = await db.insert(inquiries).values(inquiry).returning();
-    return newInquiry;
+    return supabaseInsert<Inquiry>("inquiries", inquiry as Record<string, unknown>);
   }
 
   async markNotified(id: number): Promise<void> {
-    await db.update(inquiries).set({ notified: true }).where(eq(inquiries.id, id));
+    await supabasePatch("inquiries", id, { notified: true });
   }
 
   async createVisit(visit: InsertVisit): Promise<Visit> {
-    const [newVisit] = await db.insert(visits).values(visit).returning();
-    return newVisit;
+    const { userAgent, ...rest } = visit as any;
+    return supabaseInsert<Visit>("visits", { ...rest, user_agent: userAgent });
   }
 
   async createPartialLead(partial: InsertPartialLead): Promise<PartialLead> {
-    const [newPartial] = await db.insert(partialLeads).values(partial).returning();
-    return newPartial;
+    return supabaseInsert<PartialLead>("partial_leads", partial as Record<string, unknown>);
   }
 }
 
